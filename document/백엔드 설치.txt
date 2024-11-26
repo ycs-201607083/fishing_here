@@ -1,3 +1,5 @@
+팀장
+
 1.
 스프링부트3.3.6v 디펜던시즈
 MyBatis Framework 
@@ -31,3 +33,15 @@ git add .
 git commit --amend -m 'first commit' (이전커밋 덮어쓰기)
 git 추가
  git push -u origin master
+
+
+
+5.
+
+application.properties
+->
+mybatis.configuration.map-underscore-to-camel-case=true
+spring.jackson.default-property-inclusion=non_null
+spring.config.import=classpath:secret/custom.properties 추가
+
+
