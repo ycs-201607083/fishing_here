@@ -45,3 +45,12 @@ spring.jackson.default-property-inclusion=non_null
 spring.config.import=classpath:secret/custom.properties 추가
 
 
+6.vite.config.js
+  server:{
+    proxy:{
+      "/api":{
+        target:"http://localhost:8080"
+      }
+    }
+  } 추가
+
