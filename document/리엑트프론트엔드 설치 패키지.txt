@@ -1,0 +1,26 @@
+차크라 ui
+1. npm i @chakra-ui/react @emotion/react
+2. npx @chakra-ui/cli snippet add
+
+axios
+1. npm install axios
+
+jwt decode
+1. npm i jwt-decode
+
+prettier
+1.  npm i prettier
+
+react router (version 6.28)
+1. npm i react-router-dom@6.28.0
+
+(언인스톨)npm uninstall react-router-dom
+
+
+use immer
+1. npm i use-immer
+
+react icons
+1. npm install react-icons
+
+설치목록 확인 pakage.json

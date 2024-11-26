@@ -1,0 +1,33 @@
+1.
+스프링부트3.3.6v 디펜던시즈
+MyBatis Framework 
+lombok
+OAuth2 resource server
+spring boot devtools
+mariaDb
+
+
+2.
+build.gradle
+-> dependencies{  implementation 'software.amazon.awssdk:s3:2.29.17' }
++ compileJava{
+    options.compilerArgs +=['--enable-preview']
+}
+
+
+3.
+src -> maim -> resources폴더 -> secret폴더생성
+
+
+4.
+git
+
+cd .. (상위폴더로 이동)
+git init
+git add .
+git commit -m 'first commit'
+(시크릿폴더 git 이그노어)
+git add .
+git commit --amend -m 'first commit' (이전커밋 덮어쓰기)
+git 추가
+ git push -u origin master
