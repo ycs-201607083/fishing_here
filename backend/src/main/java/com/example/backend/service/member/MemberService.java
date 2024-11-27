@@ -17,4 +17,8 @@ public class MemberService {
 
         return cnt == 1;
     }
+
+    public boolean checkId(String id) {
+        return mapper.selectById(id) != null;
+    }
 }

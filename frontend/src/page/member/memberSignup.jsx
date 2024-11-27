@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Box, Input, Span, Stack } from "@chakra-ui/react";
+import { Box, Group, Input, Span, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { PasswordInput } from "../../components/ui/password-input.jsx";
 import axios from "axios";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 export function MemberSignup() {
   //데이터 입력
@@ -18,6 +19,7 @@ export function MemberSignup() {
   const [address, setAddress] = useState("");
 
   //유효성 체크 & 오류메시지
+  const [idCheck, setIdCheck] = useState(false);
   const [emailMessage, setEmailMessage] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [pwMessage, setPwMessage] = useState("");
@@ -42,6 +44,20 @@ export function MemberSignup() {
         console.log("안됨");
       });
   }
+
+  const handleIdCheckClick = () => {
+    axios
+      .get("/api/member/check", { params: { id: id } })
+      .then((res) => res.data)
+      .then((data) => {
+        const message = data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+        setIdCheck(data.available);
+      });
+  };
 
   const handleEmailChange = (e) => {
     const value = e.target.value;
@@ -73,8 +89,10 @@ export function MemberSignup() {
   };
 
   let disabled = true;
-  if (emailError && pwError) {
-    disabled = false;
+  if (idCheck) {
+    if (emailError && pwError) {
+      disabled = false;
+    }
   }
 
   return (
@@ -82,7 +100,18 @@ export function MemberSignup() {
       <h3>회원가입</h3>
       <Stack gap={5}>
         <Field label={"아이디"}>
-          <Input value={id} onChange={(e) => setId(e.target.value)} />
+          <Group attached>
+            <Input
+              value={id}
+              onChange={(e) => {
+                setIdCheck(false);
+                setId(e.target.value);
+              }}
+            />
+            <Button onClick={handleIdCheckClick} variant={"outline"}>
+              중복확인
+            </Button>
+          </Group>
         </Field>
         <Field label={"이메일"}>
           <Input value={email} onChange={handleEmailChange} />

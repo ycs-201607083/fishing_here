@@ -3,6 +3,7 @@ package com.example.backend.mapper.member;
 import com.example.backend.dto.member.Member;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface MemberMapper {
@@ -19,4 +20,11 @@ public interface MemberMapper {
             VALUES (#{id},#{email},#{password},#{phone},#{name},#{birth},#{post},#{address})
             """)
     int insert(Member member);
+
+    @Select("""
+            SELECT *
+            FROM member
+            WHERE member_id = #{id}
+            """)
+    Member selectById(String id);
 }
