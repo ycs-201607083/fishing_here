@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Group, Input, Span, Stack } from "@chakra-ui/react";
+import { Box, Group, Heading, Input, Span, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { PasswordInput } from "../../components/ui/password-input.jsx";
@@ -101,9 +101,6 @@ export function MemberSignup() {
     const { address, zonecode } = e;
     setPost(zonecode);
     setAddress(address);
-
-    console.log(zonecode);
-    console.log(address);
   };
   const handleClose = (e) => {
     if (e === "FORCE_CLOSE") {
@@ -111,6 +108,9 @@ export function MemberSignup() {
     } else if (e === "COMPLETE_CLOSE") {
       setIsOpen(false);
     }
+  };
+  const handleButtonClose = () => {
+    setIsOpen(false);
   };
 
   let disabled = true;
@@ -121,8 +121,8 @@ export function MemberSignup() {
   }
 
   return (
-    <Box>
-      <h3>회원가입</h3>
+    <Box mx={"auto"} w={{ md: "500px" }}>
+      <Heading>회원가입</Heading>
       <Stack gap={5}>
         <Field label={"아이디"}>
           <Group attached>
@@ -163,26 +163,43 @@ export function MemberSignup() {
         <Field label={"생년월일"}>
           <Input value={birth} onChange={(e) => setBirth(e.target.value)} />
         </Field>
-        <Field label={"우편번호"}>
-          <Group>
-            <Input value={post} onChange={(e) => setPost(e.target.value)} />
-            <Button onClick={handleApi}>우편번호 찾기</Button>
-          </Group>
-        </Field>
-        <Field label={"상세주소"}>
-          <Input value={address} onChange={(e) => setAddress(e.target.value)} />
-        </Field>
-
-        {isOpen && (
-          <div className="modal">
-            <DaumPostcodeEmbed
-              onComplete={handleComplete}
-              onClose={handleClose}
-            />
-          </div>
-        )}
         <Box>
-          <Button disabled={disabled} onClick={handleSaveClick}>
+          <Field label={"우편번호"}>
+            <Group>
+              <Input
+                value={post}
+                readOnly
+                onChange={(e) => setPost(e.target.value)}
+              />
+              <Button onClick={handleApi}>우편번호 찾기</Button>
+            </Group>
+          </Field>
+          <Field label={"상세주소"}>
+            <Input
+              value={address}
+              readOnly
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </Field>
+
+          {isOpen && (
+            <div>
+              <DaumPostcodeEmbed
+                onComplete={handleComplete}
+                onClose={handleClose}
+              />
+              <Button onClick={handleButtonClose}>닫기</Button>
+            </div>
+          )}
+        </Box>
+        <Box>
+          <Button
+            disabled={disabled}
+            onClick={handleSaveClick}
+            mx={"auto"}
+            w={{ md: "100%" }}
+            colorPalette={"blue"}
+          >
             가입
           </Button>
         </Box>
