@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Box, Input, Stack } from "@chakra-ui/react";
+import { Box, Input, Span, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
+import { PasswordInput } from "../../components/ui/password-input.jsx";
 import axios from "axios";
 
 export function MemberSignup() {
+  //데이터 입력
   const [id, setId] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,6 +16,12 @@ export function MemberSignup() {
   const [birth, setBirth] = useState("");
   const [post, setPost] = useState("");
   const [address, setAddress] = useState("");
+
+  //유효성 체크 & 오류메시지
+  const [emailMessage, setEmailMessage] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [pwMessage, setPwMessage] = useState("");
+  const [pwError, setPwError] = useState(false);
 
   function handleSaveClick() {
     axios
@@ -35,6 +43,40 @@ export function MemberSignup() {
       });
   }
 
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+
+    const emailRegex =
+      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{3}$/i;
+
+    if (!emailRegex.test(value)) {
+      setEmailError(false);
+      setEmailMessage("유효하지 않은 이메일 형식입니다");
+    } else {
+      setEmailError(true);
+      setEmailMessage("올바른 이메일 형식입니다.");
+    }
+  };
+
+  const handlePasswordCheck = (e) => {
+    const value = e.target.value;
+    setPasswordCheck(value);
+
+    if (password === value) {
+      setPwError(true);
+      setPwMessage("비밀번호가 일치합니다.");
+    } else {
+      setPwError(false);
+      setPwMessage("비밀번호가 일치하지 않습니다.");
+    }
+  };
+
+  let disabled = true;
+  if (emailError && pwError) {
+    disabled = false;
+  }
+
   return (
     <Box>
       <h3>회원가입</h3>
@@ -43,19 +85,20 @@ export function MemberSignup() {
           <Input value={id} onChange={(e) => setId(e.target.value)} />
         </Field>
         <Field label={"이메일"}>
-          <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input value={email} onChange={handleEmailChange} />
+          <Span style={{ color: emailError ? "green" : "red" }}>
+            {emailMessage}
+          </Span>
         </Field>
         <Field label={"비밀번호"}>
-          <Input
+          <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </Field>
         <Field label={"비밀번호 확인"}>
-          <Input
-            value={passwordCheck}
-            onChange={(e) => setPasswordCheck(e.target.value)}
-          />
+          <PasswordInput value={passwordCheck} onChange={handlePasswordCheck} />
+          <Span style={{ color: pwError ? "green" : "red" }}>{pwMessage}</Span>
         </Field>
         <Field label={"전화번호"}>
           <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
@@ -73,7 +116,9 @@ export function MemberSignup() {
           <Input value={address} onChange={(e) => setAddress(e.target.value)} />
         </Field>
         <Box>
-          <Button onClick={handleSaveClick}>가입</Button>
+          <Button disabled={disabled} onClick={handleSaveClick}>
+            가입
+          </Button>
         </Box>
       </Stack>
     </Box>
