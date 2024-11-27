@@ -10,17 +10,17 @@ import java.util.List;
 public interface MemberMapper {
 
     @Select("""
-                    SELECT *
-                    FROM member
-                    WHERE id = #{id}
+            SELECT member_id id, member_password password
+            FROM member
+            WHERE member_id = #{id}
             """)
     Member selectById(String id);
 
 
     @Select("""
-                SELECT auth
-                FROM auth
-                WHERE member_id = #{id}
+            SELECT auth
+            FROM auth
+            WHERE auth_id = #{id}
             """)
-    List<String> selectAuthByMember(String id);
+    List<String> selectAuthByMemberId(String id);
 }

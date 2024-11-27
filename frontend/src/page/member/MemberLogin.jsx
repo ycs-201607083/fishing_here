@@ -1,22 +1,37 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Box, Flex, Input, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
 export function MemberLogin(props) {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const authentication = useContext(AuthenticationContext);
 
   function handleLoginClick() {
     axios
-      .post("/api/member/login", {
-        id,
-        password,
-      })
+      .post("/api/member/login", { id, password })
       .then((res) => res.data)
+      .then((data) => {
+        // 토스트 띄우고
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+        // login
+        console.log(data.token);
+        authentication.login(data.token);
+      })
       .catch((e) => {
-        console.log("ㄴㄴ");
+        const message = e.response.data.message;
+        // 토스트 띄우고
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
       })
       .finally();
   }
@@ -35,6 +50,7 @@ export function MemberLogin(props) {
         </Field>
         <Field label="암호">
           <Input
+            type={"password"}
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);

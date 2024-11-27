@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
@@ -16,18 +18,20 @@ public class MemberController {
 
     final private MemberService service;
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Member member) {
+    @PostMapping("login")
+    public ResponseEntity<Map<String, Object>> login(@RequestBody Member member) {
         String token = service.token(member);
-        System.out.println("sdsdsd");
-        System.out.println("ID: " + member.getId() + ", Password: " + member.getPassword());
-
+        
         if (token != null) {
-            return ResponseEntity.ok(token);
+            // 로그인 성공
+            return ResponseEntity.ok(Map.of("token", token,
+                    "message", Map.of("type", "success",
+                            "text", "로그인 되었습니다.")));
+        } else {
+            // 로그인 실패
+            return ResponseEntity.status(401)
+                    .body(Map.of("message", Map.of("type", "warning",
+                            "text", "아이디와 암호를 확인해주세요.")));
         }
-
-
-        return ResponseEntity.ok("로그인 성공");
-
     }
 }

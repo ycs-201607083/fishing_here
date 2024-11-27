@@ -9,11 +9,28 @@ CREATE TABLE auth
 SELECT *
 FROM auth;
 
-INSERT INTO auth
-    VALUE ('1', 'kms');
+DROP TABLE auth;
+
+DESC member;
 
 INSERT INTO auth
-    VALUE ('1', 'ybk');
+    VALUE ('1', 'auth');
 
 INSERT INTO auth
-    VALUE ('1', 'kjb');
+    VALUE ('ybk', 'auth');
+
+INSERT INTO auth
+    VALUE ('kjb', 'auth');
+
+SELECT *
+FROM member
+WHERE member_id = '1';
+
+DESC member;
+
+SELECT *
+FROM member;
+
+SELECT member_id id, member_password password
+FROM member
+WHERE member_id = '1';
