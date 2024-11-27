@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/button.jsx";
 import { PasswordInput } from "../../components/ui/password-input.jsx";
 import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
+import DaumPostcodeEmbed from "react-daum-postcode";
 
 export function MemberSignup() {
   //데이터 입력
@@ -24,6 +25,10 @@ export function MemberSignup() {
   const [emailError, setEmailError] = useState(false);
   const [pwMessage, setPwMessage] = useState("");
   const [pwError, setPwError] = useState(false);
+
+  //우편번호api
+  const [isOpen, setIsOpen] = useState(false);
+  const [zonecode, setZonecode] = useState("");
 
   function handleSaveClick() {
     axios
@@ -88,6 +93,26 @@ export function MemberSignup() {
     }
   };
 
+  // api
+  const handleApi = () => {
+    setIsOpen(true);
+  };
+  const handleComplete = (e) => {
+    const { address, zonecode } = e;
+    setPost(zonecode);
+    setAddress(address);
+
+    console.log(zonecode);
+    console.log(address);
+  };
+  const handleClose = (e) => {
+    if (e === "FORCE_CLOSE") {
+      setIsOpen(false);
+    } else if (e === "COMPLETE_CLOSE") {
+      setIsOpen(false);
+    }
+  };
+
   let disabled = true;
   if (idCheck) {
     if (emailError && pwError) {
@@ -139,11 +164,23 @@ export function MemberSignup() {
           <Input value={birth} onChange={(e) => setBirth(e.target.value)} />
         </Field>
         <Field label={"우편번호"}>
-          <Input value={post} onChange={(e) => setPost(e.target.value)} />
+          <Group>
+            <Input value={post} onChange={(e) => setPost(e.target.value)} />
+            <Button onClick={handleApi}>우편번호 찾기</Button>
+          </Group>
         </Field>
         <Field label={"상세주소"}>
           <Input value={address} onChange={(e) => setAddress(e.target.value)} />
         </Field>
+
+        {isOpen && (
+          <div className="modal">
+            <DaumPostcodeEmbed
+              onComplete={handleComplete}
+              onClose={handleClose}
+            />
+          </div>
+        )}
         <Box>
           <Button disabled={disabled} onClick={handleSaveClick}>
             가입
