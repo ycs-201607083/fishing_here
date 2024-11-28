@@ -106,12 +106,12 @@ export function MemberLogin(props) {
           wrap="wrap" // 화면 크기에 맞춰 버튼들이 줄바꿈 가능하도록
           gap={4} // 버튼들 사이에 간격 추가>
         >
-          <Button onClick={handleLoginClick} w={"30%"} justify={"center"}>
+          <Button onClick={handleLoginClick} w={"28%"} justify={"center"}>
             로그인
           </Button>
-          <Button w={"30%"} justify={"center"} onClick={handleLogin}>
-            카카오 로그인
-          </Button>
+          <button onClick={handleLogin}>
+            <img src={"/kakao_login_m.png"} alt={"카카오 로그인"} />
+          </button>
         </Flex>
       </Stack>
     </Box>
