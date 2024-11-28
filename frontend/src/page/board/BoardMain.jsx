@@ -5,15 +5,21 @@ import { useState } from "react";
 export function BoardMain() {
   const [tagList, setTagList] = useState([]);
 
-  function handleClick() {
-    console.log("클릭");
-  }
+  const categories = [
+    { name: "가전제품", src: "src/components/Image/가전제품.jpg" },
+    { name: "생활용품", src: "src/components/Image/생활용품.jpg" },
+    { name: "학용품", src: "src/components/Image/학용품.jpg" },
+    { name: "의류", src: "src/components/Image/의류.jpg" },
+    { name: "스포츠용품", src: "src/components/Image/스포츠용품.jpg" },
+    { name: "도서", src: "src/components/Image/도서.jpg" },
+  ];
 
   const boxStyle = {
     w: "150px",
     h: "150px",
     bgColor: "white",
     textAlign: "center",
+    cursor: "pointer",
   };
 
   const tagImageStyle = {
@@ -22,44 +28,29 @@ export function BoardMain() {
     h: "100px",
   };
 
+  function handleClick(category) {
+    console.log(`${category} 클릭`);
+  }
+
   return (
     <Box>
       <MyHeading>메인페이지</MyHeading>
-      <Center mx={"auto"}>
-        <Flex gap="4">
-          <Box {...boxStyle} onClick={handleClick}>
-            <Image
-              {...tagImageStyle}
-              src={"src/components/Image/가전제품.jpg"}
-            />
-            <Text mt="4">가전제품</Text>
-          </Box>
-          <Box {...boxStyle} onClick={handleClick}>
-            <Image
-              {...tagImageStyle}
-              src={"src/components/Image/생활용품.jpg"}
-            />
-            <Text mt="4">생활용품</Text>
-          </Box>
-          <Box {...boxStyle} onClick={handleClick}>
-            <Image {...tagImageStyle} src={"src/components/Image/학용품.jpg"} />
-            <Text mt="4">학용품</Text>
-          </Box>
-          <Box {...boxStyle} onClick={handleClick}>
-            <Image {...tagImageStyle} src={"src/components/Image/의류.jpg"} />
-            <Text mt="4">의류</Text>
-          </Box>
-          <Box {...boxStyle} onClick={handleClick}>
-            <Image
-              {...tagImageStyle}
-              src={"src/components/Image/스포츠용품.jpg"}
-            />
-            <Text mt="4">스포츠용품</Text>
-          </Box>
-          <Box {...boxStyle} onClick={handleClick}>
-            <Image {...tagImageStyle} src={"src/components/Image/도서.jpg"} />
-            <Text mt="4">도서</Text>
-          </Box>
+      <Center>
+        <Flex gap="4" wrap="wrap" justify="center">
+          {categories.map((category) => (
+            <Box
+              key={category.name}
+              {...boxStyle}
+              onClick={() => handleClick(category.name)}
+            >
+              <Image
+                {...tagImageStyle}
+                src={category.src}
+                alt={category.name}
+              />
+              <Text mt="4">{category.name}</Text>
+            </Box>
+          ))}
         </Flex>
       </Center>
     </Box>
