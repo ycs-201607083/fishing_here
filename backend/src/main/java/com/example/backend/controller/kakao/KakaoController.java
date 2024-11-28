@@ -6,15 +6,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/kakao")
+//@RequestMapping("/api/kakao")
 public class KakaoController {
 
     @Value("${kakao.client.id}")
@@ -29,7 +29,7 @@ public class KakaoController {
     private final KakaoService kakaoService;
 
 
-    @GetMapping("/auth")
+    @GetMapping("/api/oauth/kakao")
     public ResponseEntity<?> kakaoLogin(
             @RequestParam("code") String code,
             HttpSession session) {
@@ -41,12 +41,12 @@ public class KakaoController {
         System.out.println("accessToken = " + accessToken);
 
         //클라이언트의 이메일이 존재할 때 세션에 대한 해당 이메일과 토큰 등록
-        if (userInfo.get("nickname") != null) {
+       /* if (userInfo.get("nickname") != null) {
             session.setAttribute("userId", userInfo.get("email"));
             session.setAttribute("access_Token", accessToken);
-        }
+        }*/
 
 
-        return ResponseEntity.ok(response); // JSON 형태로 응답response;
+        return ResponseEntity.ok(Map.of("token", accessToken)); // JSON 형태로 응답response;
     }
 }

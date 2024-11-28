@@ -14,16 +14,13 @@ export const LoginKakaoHandler = (props) => {
   useEffect(() => {
     const kakaoLogin = async () => {
       try {
-        const respone = await axios.get(
-          `${KAKAO_REDIRECT_URI}/oauth/kakao?code=${code}`,
-          {
-            headers: { "Content-Type": "application/json;charset=utf-8" },
-          },
-        );
+        const respone = await axios.get(`/api/oauth/kakao?code=${code}`, {
+          headers: { "Content-Type": "application/json;charset=utf-8" },
+        });
 
         //받은 토큰과 사용자 정보
-        const { token, userInfo } = respone.data;
-
+        // const { token, userInfo } = respone.data;
+        const { token } = respone.data;
         if (token) {
           console.log("token! = ", token);
           localStorage.setItem("kakaoToken", token);
@@ -39,7 +36,7 @@ export const LoginKakaoHandler = (props) => {
       }
     };
     kakaoLogin();
-  }, [code, authentication, navigate, KAKAO_REDIRECT_URI]);
+  }, []);
 
   return (
     <div>
