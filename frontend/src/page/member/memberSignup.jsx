@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Box, Group, Heading, Input, Span, Stack } from "@chakra-ui/react";
+import { Box, Group, Input, Span, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { PasswordInput } from "../../components/ui/password-input.jsx";
 import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
 import DaumPostcodeEmbed from "react-daum-postcode";
+import { MyHeading } from "../../components/root/MyHeading.jsx";
 
 export function MemberSignup() {
   //데이터 입력
@@ -64,6 +65,7 @@ export function MemberSignup() {
       });
   };
 
+  //이메일 정규식
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
@@ -80,6 +82,7 @@ export function MemberSignup() {
     }
   };
 
+  //비밀번호 확인
   const handlePasswordCheck = (e) => {
     const value = e.target.value;
     setPasswordCheck(value);
@@ -92,6 +95,15 @@ export function MemberSignup() {
       setPwMessage("비밀번호가 일치하지 않습니다.");
     }
   };
+
+  //전화번호 정규식
+  function regPhoneNumber(e) {
+    const result = e.target.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
+      .replace(/(-{1,2})$/g, "");
+    setPhone(result);
+  }
 
   // api
   const handleApi = () => {
@@ -122,8 +134,8 @@ export function MemberSignup() {
 
   return (
     <Box mx={"auto"} w={{ md: "500px" }}>
-      <Heading>회원가입</Heading>
-      <Stack gap={5}>
+      <MyHeading>회원가입</MyHeading>
+      <Stack gap={5} p="5" bg="blue.200">
         <Field label={"아이디"}>
           <Group attached>
             <Input
@@ -132,14 +144,15 @@ export function MemberSignup() {
                 setIdCheck(false);
                 setId(e.target.value);
               }}
+              variant="subtle"
             />
-            <Button onClick={handleIdCheckClick} variant={"outline"}>
+            <Button onClick={handleIdCheckClick} colorPalette={"cyan"}>
               중복확인
             </Button>
           </Group>
         </Field>
         <Field label={"이메일"}>
-          <Input value={email} onChange={handleEmailChange} />
+          <Input value={email} onChange={handleEmailChange} variant="subtle" />
           <Span style={{ color: emailError ? "green" : "red" }}>
             {emailMessage}
           </Span>
@@ -148,20 +161,33 @@ export function MemberSignup() {
           <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            variant="subtle"
           />
         </Field>
         <Field label={"비밀번호 확인"}>
-          <PasswordInput value={passwordCheck} onChange={handlePasswordCheck} />
+          <PasswordInput
+            value={passwordCheck}
+            onChange={handlePasswordCheck}
+            variant="subtle"
+          />
           <Span style={{ color: pwError ? "green" : "red" }}>{pwMessage}</Span>
         </Field>
         <Field label={"전화번호"}>
-          <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <Input value={phone} onChange={regPhoneNumber} variant="subtle" />{" "}
         </Field>
         <Field label={"이름"}>
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            variant="subtle"
+          />
         </Field>
         <Field label={"생년월일"}>
-          <Input value={birth} onChange={(e) => setBirth(e.target.value)} />
+          <Input
+            value={birth}
+            onChange={(e) => setBirth(e.target.value)}
+            variant="subtle"
+          />
         </Field>
         <Box>
           <Field label={"우편번호"}>
@@ -170,6 +196,7 @@ export function MemberSignup() {
                 value={post}
                 readOnly
                 onChange={(e) => setPost(e.target.value)}
+                variant="subtle"
               />
               <Button onClick={handleApi}>우편번호 찾기</Button>
             </Group>
@@ -179,17 +206,20 @@ export function MemberSignup() {
               value={address}
               readOnly
               onChange={(e) => setAddress(e.target.value)}
+              variant="subtle"
             />
           </Field>
 
           {isOpen && (
-            <div>
+            <Field mt="5">
               <DaumPostcodeEmbed
                 onComplete={handleComplete}
                 onClose={handleClose}
               />
-              <Button onClick={handleButtonClose}>닫기</Button>
-            </div>
+              <Button onClick={handleButtonClose} w={{ md: "100%" }}>
+                닫기
+              </Button>
+            </Field>
           )}
         </Box>
         <Box>
