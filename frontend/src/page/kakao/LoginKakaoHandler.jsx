@@ -14,13 +14,14 @@ export const LoginKakaoHandler = (props) => {
   useEffect(() => {
     const kakaoLogin = async () => {
       try {
-        const respone = await axios.get(`/api/oauth/kakao?code=${code}`, {
+        const response = await axios.get(`/api/oauth/kakao?code=${code}`, {
           headers: { "Content-Type": "application/json;charset=utf-8" },
         });
 
         //받은 토큰과 사용자 정보
         // const { token, userInfo } = respone.data;
-        const { token } = respone.data;
+        const { token } = response.data;
+        console.log("data = ", response.data);
         if (token) {
           console.log("token! = ", token);
           localStorage.setItem("kakaoToken", token);

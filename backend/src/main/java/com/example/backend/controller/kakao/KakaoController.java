@@ -36,9 +36,6 @@ public class KakaoController {
         String accessToken = kakaoService.getKakaoAccessToken(code);
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(accessToken);
         HashMap<String, Object> response = new HashMap<>();
-        System.out.println("userInfo = " + userInfo);
-        System.out.println("인가코드 = " + code);
-        System.out.println("accessToken = " + accessToken);
 
         //클라이언트의 이메일이 존재할 때 세션에 대한 해당 이메일과 토큰 등록
        /* if (userInfo.get("nickname") != null) {

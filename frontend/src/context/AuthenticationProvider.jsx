@@ -22,10 +22,12 @@ function AuthenticationProvider({ children }) {
     setUserToken(decoded);
   }
 
-  function kakaoLogin(kakaoToken) {
-    localStorage.setItem("kakaoToken", kakaoToken);
-    const kakaoDecode = jwtDecode(kakaoToken);
-    setKakaoToken(kakaoDecode);
+  function kakaoLogin(kakaoAccessToken) {
+    const kakaoToken = localStorage.setItem("kakaoToken", kakaoAccessToken);
+    if (kakaoToken) {
+      const kakaoDecode = jwtDecode(kakaoToken);
+      setKakaoToken(kakaoDecode);
+    }
   }
 
   function logout() {
