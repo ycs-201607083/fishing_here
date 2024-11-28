@@ -5,7 +5,7 @@ import { useEffect } from "react";
 export const LoginKakaoHandler = () => {
   const navigate = useNavigate();
   const code = new URL(window.location.href).searchParams.get("code");
-  const a = process.env.REACT_APP_RESTAPI_KEY;
+  const a = import.meta.env.VITE_KAKAO_LOGIN_API_KEY;
 
   console.log(a);
   //인가코드 백으로 보내기
