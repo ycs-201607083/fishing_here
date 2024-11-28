@@ -10,7 +10,7 @@ import java.util.List;
 public interface BoardMapper {
 
     @Select("""
-            SELECT board_number, board_title, board_writer, board_view_count, board_date
+            SELECT board_number AS number, board_title AS title, board_writer AS writer, board_view_count AS viewCount, board_date AS date
             FROM board
             ORDER BY board_date DESC
             """)
