@@ -7,6 +7,8 @@ export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   // 로딩 상태
   const [isLoading, setIsLoading] = useState(false);
+  // 에러 메시지 상태
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchBoardList();
@@ -14,6 +16,7 @@ export function BoardList() {
 
   const fetchBoardList = async () => {
     setIsLoading(true);
+    setErrorMessage("");
     try {
       const response = await axios.get("/api/board/list");
       setBoardList(response.data);
@@ -33,6 +36,8 @@ export function BoardList() {
             <Spinner size="xl" />
           </HStack>
         </Center>
+      ) : errorMessage ? (
+        <p style={{ color: "red" }}>{errorMessage}</p>
       ) : (
         <Table.Root interactive>
           <Table.Header>
