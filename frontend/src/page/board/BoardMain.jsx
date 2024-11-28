@@ -1,10 +1,7 @@
 import { Box, Center, Flex, Image, Text } from "@chakra-ui/react";
 import { MyHeading } from "../../components/root/MyHeading.jsx";
-import { useState } from "react";
 
 export function BoardMain() {
-  const [tagList, setTagList] = useState([]);
-
   const categories = [
     { name: "가전제품", src: "src/components/Image/가전제품.jpg" },
     { name: "생활용품", src: "src/components/Image/생활용품.jpg" },
