@@ -1,87 +1,37 @@
-import { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { Box, SimpleGrid } from "@chakra-ui/react";
 import axios from "axios";
-import {
-  HStack,
-  IconButton,
-  Input,
-  NativeSelectField,
-  NativeSelectRoot,
-  Stack,
-} from "@chakra-ui/react";
-import { LuSearch } from "react-icons/lu";
-import { useNavigate } from "react-router-dom";
 
 export function BoardList() {
-  const navigate = useNavigate();
-
   const [boardList, setBoardList] = useState([]);
-  const [search, setSearch] = useState("전체");
-  const [searchValue, setSearchValue] = useState("");
-
-  const fetchBoards = () => {
-    axios
-      .get("/api/board/list", {
-        params: { field: searchField, value: searchValue },
-      })
-      .then((res) => res.data)
-      .then((data) => setBoardList(data));
-  };
-
-  function handleRowClick(id) {
-    navigate(`/view/${id}`);
-  }
 
   useEffect(() => {
-    fetchBoards();
+    axios
+      .get("/api/board/list")
+      .then((res) => res.data)
+      .then((data) => setBoardList(data));
   }, []);
 
-  const handleSearch = () => {
-    fetchBoards();
-  };
-
   return (
-    <div>
-      {/*검색 기능*/}
-      <HStack>
-        <NativeSelectRoot
-          value={search}
-          onChange={(e) => setSearch({ ...search, type: e.target.value })}
-        >
-          <NativeSelectField
-            items={[
-              { label: "전체", value: "all" },
-              { label: "제목", value: "board_title" },
-              { label: "작성자", value: "board_write" },
-            ]}
-          ></NativeSelectField>
-        </NativeSelectRoot>
+    <Box>
+      <div>
+        {boardList.map((board) => (
+          <li>
+            {board.board_number}
+            {board.board_title}
+            {board.board_writer}
+            {board.board_view_count}
+            {board.board_date}
+          </li>
+        ))}
+      </div>
 
-        <Input
-          type="text"
-          placeholder="Please enter your search term..."
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
-
-        <IconButton aria-label="Search database" onClick={handleSearch}>
-          <LuSearch />
-        </IconButton>
-      </HStack>
-
-      {/* 목록 */}
-
-      {boardList.map((board) => (
-        <Stack
-          key={board.board_number}
-          onClick={() => handleRowClick(board.board_number)}
-        >
-          <div>{board.board_number}</div>
-          <div>{board.board_title}</div>
-          <div>{board.board_writer}</div>
-          <div>{board.board_view_count}</div>
-          <div>{board.board_date}</div>
-        </Stack>
-      ))}
-    </div>
+      <SimpleGrid columns={2} gap="40px">
+        <DecorativeBox height="20" />
+        <DecorativeBox height="20" />
+        <DecorativeBox height="20" />
+        <DecorativeBox height="20" />
+      </SimpleGrid>
+    </Box>
   );
 }

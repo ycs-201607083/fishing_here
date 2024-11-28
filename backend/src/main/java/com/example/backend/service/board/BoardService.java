@@ -11,13 +11,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final BoardMapper mapper;
+    private final BoardMapper boardMapper;
 
-    public List<Board> searchlist(String field, String value) {
-        return mapper.searchBoards(field, value);
-    }
-
-    public List<Board> list() {
-        return mapper.selectAll();
+    public List<Board> getAllBoards() {
+        return boardMapper.findAllBoards();
     }
 }

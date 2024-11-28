@@ -17,14 +17,8 @@ axios.interceptors.request.use(function (config) {
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <>layout</>,
-    children: [
-      {
-        path: "list",
-        element: <BoardList />,
-      },
-    ],
+    path: "/list",
+    element: <BoardList />,
   },
 ]);
 
