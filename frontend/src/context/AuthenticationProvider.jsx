@@ -6,6 +6,7 @@ export const AuthenticationContext = createContext(null);
 
 function AuthenticationProvider({ children }) {
   const [userToken, setUserToken] = useState({});
+  const [kakaoToken, setKakaoToken] = useState({});
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -19,6 +20,12 @@ function AuthenticationProvider({ children }) {
     localStorage.setItem("token", token);
     const decoded = jwtDecode(token);
     setUserToken(decoded);
+  }
+
+  function kakaoLogin(kakaoToken) {
+    localStorage.setItem("kakaoToken", kakaoToken);
+    const kakaoDecode = jwtDecode(kakaoToken);
+    setKakaoToken(kakaoDecode);
   }
 
   function logout() {
@@ -41,6 +48,7 @@ function AuthenticationProvider({ children }) {
     <AuthenticationContext.Provider
       value={{
         id: userToken.sub,
+        kakaoLogin,
         login,
         logout,
         isAuthenticated,

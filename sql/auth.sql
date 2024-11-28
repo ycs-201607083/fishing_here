@@ -14,7 +14,7 @@ DROP TABLE auth;
 DESC member;
 
 INSERT INTO auth
-    VALUE ('1', 'auth');
+    VALUE ('kms', 'auth');
 
 INSERT INTO auth
     VALUE ('ybk', 'auth');

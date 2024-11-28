@@ -1,15 +1,46 @@
 import { Spinner } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import axios from "axios";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
-export const LoginKakaoHandler = () => {
-  const navigate = useNavigate();
+export const LoginKakaoHandler = (props) => {
+  const KAKAO_REDIRECT_URI = import.meta.env.VITE_KAKAO_LOGIN_REDIRECT_URL;
   const code = new URL(window.location.href).searchParams.get("code");
-  const a = import.meta.env.VITE_KAKAO_LOGIN_API_KEY;
+  const authentication = useContext(AuthenticationContext);
+  const navigate = useNavigate();
 
-  console.log(a);
   //인가코드 백으로 보내기
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const kakaoLogin = async () => {
+      try {
+        const respone = await axios.get(
+          `${KAKAO_REDIRECT_URI}/oauth/kakao?code=${code}`,
+          {
+            headers: { "Content-Type": "application/json;charset=utf-8" },
+          },
+        );
+
+        //받은 토큰과 사용자 정보
+        const { token, userInfo } = respone.data;
+
+        if (token) {
+          console.log("token! = ", token);
+          localStorage.setItem("kakaoToken", token);
+          //인증 상태 업데이트
+          authentication.kakaoLogin(token);
+          // 로그인 성공 시 이동 페이지
+          navigate("/loginSuccess");
+        } else {
+          console.log("non token!");
+        }
+      } catch (e) {
+        console.log("로그인 실패", e);
+      }
+    };
+    kakaoLogin();
+  }, [code, authentication, navigate, KAKAO_REDIRECT_URI]);
+
   return (
     <div>
       <p>로그인 중입니다.</p>

@@ -2,8 +2,10 @@ import axios from "axios";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import AuthenticationProvider from "./context/AuthenticationProvider.jsx";
+
 import { LoginKakaoHandler } from "./page/kakao/LoginKakaoHandler.jsx";
+import LoginSuccess from "./page/kakao/LoginSuccess.jsx";
+import AuthenticationProvider from "./context/AuthenticationProvider.jsx";
 
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
@@ -26,8 +28,12 @@ const router = createBrowserRouter([
     element: <MemberLogin />,
   },
   {
-    path: "/auth",
+    path: "kakao/auth",
     element: <LoginKakaoHandler />,
+  },
+  {
+    path: "/loginSuccess",
+    element: <LoginSuccess />,
   },
 ]);
 
