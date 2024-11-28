@@ -29,7 +29,7 @@ import java.security.interfaces.RSAPublicKey;
 @Configuration
 @EnableMethodSecurity
 public class AppConfiguration {
-    
+
     @Value("classpath:secret/app.pub")
     RSAPublicKey pub;
 

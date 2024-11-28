@@ -8,4 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/board")
 @RequiredArgsConstructor
 public class BoardController {
+
 }

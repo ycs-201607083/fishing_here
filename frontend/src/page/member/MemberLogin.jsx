@@ -1,15 +1,57 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Flex, Input, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
+import { useNavigate } from "react-router-dom";
 
 export function MemberLogin(props) {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const authentication = useContext(AuthenticationContext);
+  const REST_API_KEY = "cef29df69b0dbbf853963df05a35bbbf";
+  const REDIRECT_URI = "http://localhost:5173/auth";
+  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    window.location.href = kakaoURL;
+  };
+  /*
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get("code");
+    useEffect(() => {
+      axios.get(`${REDIRECT_URI}kakaoLogin${code}`).then((r) => {
+        console.log(r.data);
+        localStorage.setItem("name", r.data.user_name);
+  
+        navigate("/member/login");
+      });
+    }, []);
+  */
+
+  useEffect(() => {
+    try {
+      const code = new URL(window.location.href).searchParams.get("code");
+      console.log("code : " + code);
+      if (code) {
+        axios
+          .get(`http://localhost:5173/auth?code=${code}`)
+          .then((response) => {
+            console.log("Success:", response.data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      } else {
+        console.error("No code parameter found in URL");
+      }
+    } catch (err) {
+      console.error("Unexpected error in AuthHandler:", err);
+    }
+  }, []);
 
   function handleLoginClick() {
     axios
@@ -67,7 +109,7 @@ export function MemberLogin(props) {
           <Button onClick={handleLoginClick} w={"30%"} justify={"center"}>
             로그인
           </Button>
-          <Button w={"30%"} justify={"center"}>
+          <Button w={"30%"} justify={"center"} onClick={handleLogin}>
             카카오 로그인
           </Button>
         </Flex>

@@ -3,6 +3,8 @@ import { MemberLogin } from "./page/member/MemberLogin.jsx";
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AuthenticationProvider from "./context/AuthenticationProvider.jsx";
+import { LoginKakaoHandler } from "./page/kakao/LoginKakaoHandler.jsx";
+
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 // import './App.css'
@@ -22,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "member/login",
     element: <MemberLogin />,
+  },
+  {
+    path: "/auth",
+    element: <LoginKakaoHandler />,
   },
 ]);
 

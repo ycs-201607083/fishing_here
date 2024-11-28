@@ -21,9 +21,7 @@ public class MemberService {
     private final JwtEncoder jwtEncoder;
 
     public String token(Member member) {
-        System.out.println(member);
         Member db = mapper.selectById(member.getId());
-        System.out.println(db);
         List<String> auths = mapper.selectAuthByMemberId(member.getId());
         System.out.println("Auths: " + auths);
         String authsString = auths.stream()
