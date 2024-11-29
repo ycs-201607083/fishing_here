@@ -5,17 +5,11 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface MemberMapper {
-
-    @Select("""
-            SELECT member_id id, member_password password
-            FROM member
-            WHERE member_id = #{id}
-            """)
-    Member selectById(String id);
-
-
+    
     @Select("""
             SELECT auth
             FROM auth
