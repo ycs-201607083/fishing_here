@@ -1,4 +1,12 @@
-import { Box, Center, HStack, Input, Spinner, Table } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  HStack,
+  Input,
+  Spinner,
+  Table,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
@@ -6,6 +14,8 @@ import { useSearchParams } from "react-router-dom";
 export function BoardList() {
   // 게시판 데이터 상태
   const [boardList, setBoardList] = useState([]);
+  const [keyword, setKeyword] = useState("");
+
   // 로딩 상태
   const [isLoading, setIsLoading] = useState(false);
   // 에러 메시지 상태
@@ -14,7 +24,7 @@ export function BoardList() {
 
   useEffect(() => {
     fetchBoardList();
-  }, []);
+  }, [searchParams]);
 
   const fetchBoardList = async () => {
     setIsLoading(true);
@@ -40,8 +50,9 @@ export function BoardList() {
       <HStack mb={4}>
         <Input
           placeholder="검색어를 입력하세요"
-          onChange={(e) => setSearchParams({ keyword: e.target.value })}
+          onChange={(e) => setKeyword(e.target.value)}
         />
+        <Button onClick={(e) => setSearchParams({ keyword })}>검색</Button>
       </HStack>
       {isLoading ? (
         <Center h="100vh">
