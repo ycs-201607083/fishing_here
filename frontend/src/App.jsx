@@ -8,7 +8,7 @@ import AuthenticationProvider from "./context/AuthenticationProvider.jsx";
 import { BoardMain } from "./page/board/BoardMain.jsx";
 import { RootLayout } from "./page/root/RootLayout.jsx";
 import MemberSignup from "./page/member/memberSignup.jsx";
-import { MemberList } from "./page/manager/MemberList.jsx";
+import { ManagementPage } from "./page/manager/ManagementPage.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -42,8 +42,8 @@ const router = createBrowserRouter([
         element: <LoginKakaoHandler />,
       },
       {
-        path: "member/list",
-        element: <MemberList />,
+        path: "/list",
+        element: <ManagementPage />,
       },
     ],
   },

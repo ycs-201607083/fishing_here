@@ -14,4 +14,5 @@ public class Member {
     private String post;
     private String address;
     private String inserted;
+    private Integer point;
 }

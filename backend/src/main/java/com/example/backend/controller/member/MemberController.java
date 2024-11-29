@@ -1,5 +1,6 @@
 package com.example.backend.controller.member;
 
+import com.example.backend.dto.board.Board;
 import com.example.backend.dto.member.Member;
 import com.example.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -60,10 +61,5 @@ public class MemberController {
                         Map.of("type", "success", "text", "사용 가능한 아이디 입니다."), "available", true));
             }
         }
-    }
-
-    @GetMapping("list")
-    public List<Member> list() {
-        return service.list();
     }
 }

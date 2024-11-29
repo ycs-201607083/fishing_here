@@ -1,5 +1,6 @@
 package com.example.backend.mapper.member;
 
+import com.example.backend.dto.board.Board;
 import com.example.backend.dto.member.Member;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -39,10 +40,5 @@ public interface MemberMapper {
     Member selectById(String id);
 
 
-    @Select("""
-            SELECT member_id id, member_email email, member_inserted inserted
-            from member
-            ORDER BY id;
-            """)
-    List<Member> selectAll();
+
 }

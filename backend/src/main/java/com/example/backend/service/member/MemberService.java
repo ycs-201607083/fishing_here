@@ -1,5 +1,6 @@
 package com.example.backend.service.member;
 
+import com.example.backend.dto.board.Board;
 import com.example.backend.dto.member.Member;
 import com.example.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
@@ -53,9 +54,5 @@ public class MemberService {
         }
 
         return null;
-    }
-
-    public List<Member> list() {
-        return mapper.selectAll();
     }
 }

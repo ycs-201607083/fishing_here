@@ -4,11 +4,23 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MyHeading } from "../../components/root/MyHeading.jsx";
 
-export function MemberList() {
+export function ManagementPage() {
   const [memberList, setMemberList] = useState([]);
+  const [boardList, setBoardList] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get("/api/member/list").then((res) => setMemberList(res.data));
+    axios.get("/api/list")
+      .then((res) => {
+        const {members, boards} = res.data
+        setMemberList(members);
+        setBoardList(boards);
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+      .finally(() => {
+        console.log("error")
+      })
   }, []);
 
   //테이블 행 클릭 시 회원정보 보기로 이동
@@ -44,6 +56,7 @@ export function MemberList() {
                 <Table.ColumnHeader>아이디</Table.ColumnHeader>
                 <Table.ColumnHeader>이메일</Table.ColumnHeader>
                 <Table.ColumnHeader>가입일시</Table.ColumnHeader>
+                <Table.ColumnHeader>매너점수</Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -55,6 +68,7 @@ export function MemberList() {
                   <Table.Cell>{member.id}</Table.Cell>
                   <Table.Cell>{member.email}</Table.Cell>
                   <Table.Cell>{member.inserted}</Table.Cell>
+                  <Table.Cell>{member.point}점</Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
@@ -75,20 +89,20 @@ export function MemberList() {
             <TableRoot interactive>
               <Table.Header>
                 <Table.Row>
-                  <Table.ColumnHeader>아이디</Table.ColumnHeader>
-                  <Table.ColumnHeader>이메일</Table.ColumnHeader>
-                  <Table.ColumnHeader>가입일시</Table.ColumnHeader>
+                  <Table.ColumnHeader>게시글 번호</Table.ColumnHeader>
+                  <Table.ColumnHeader>제목</Table.ColumnHeader>
+                  <Table.ColumnHeader>작성자</Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {memberList.map((member) => (
+                {boardList.map((board) => (
                   <Table.Row
                     omClick={() => handleRowClick(member.id)}
-                    key={member.id}
+                    key={board.number}
                   >
-                    <Table.Cell>{member.id}</Table.Cell>
-                    <Table.Cell>{member.email}</Table.Cell>
-                    <Table.Cell>{member.inserted}</Table.Cell>
+                    <Table.Cell>{board.number}</Table.Cell>
+                    <Table.Cell>{board.title}</Table.Cell>
+                    <Table.Cell>{board.writer}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
