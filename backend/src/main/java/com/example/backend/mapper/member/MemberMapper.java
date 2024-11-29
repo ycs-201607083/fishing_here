@@ -7,6 +7,22 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface MemberMapper {
+
+    @Select("""
+            SELECT member_id id, member_password password
+            FROM member
+            WHERE member_id = #{id}
+            """)
+    Member selectById(String id);
+
+
+    @Select("""
+            SELECT auth
+            FROM auth
+            WHERE auth_id = #{id}
+            """)
+    List<String> selectAuthByMemberId(String id);
+
     @Insert("""
             INSERT INTO member
             (member_id,
