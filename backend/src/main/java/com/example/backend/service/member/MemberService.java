@@ -20,6 +20,16 @@ public class MemberService {
     final private MemberMapper mapper;
     private final JwtEncoder jwtEncoder;
 
+    public boolean add(Member member) {
+        int cnt = mapper.insert(member);
+
+        return cnt == 1;
+    }
+
+    public boolean checkId(String id) {
+        return mapper.selectById(id) != null;
+    }
+
     public String token(Member member) {
         Member db = mapper.selectById(member.getId());
         List<String> auths = mapper.selectAuthByMemberId(member.getId());
