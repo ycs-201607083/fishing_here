@@ -16,6 +16,7 @@ public interface MemberMapper {
             WHERE auth_id = #{id}
             """)
     List<String> selectAuthByMemberId(String id);
+    
 
     @Insert("""
             INSERT INTO member
