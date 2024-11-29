@@ -54,4 +54,8 @@ public class MemberService {
 
         return null;
     }
+
+    public List<Member> list() {
+        return mapper.selectAll();
+    }
 }

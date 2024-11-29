@@ -13,4 +13,5 @@ public class Member {
     private String birth;
     private String post;
     private String address;
+    private String inserted;
 }

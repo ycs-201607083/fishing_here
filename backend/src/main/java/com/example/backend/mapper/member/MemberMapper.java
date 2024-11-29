@@ -37,4 +37,12 @@ public interface MemberMapper {
             WHERE member_id = #{id}
             """)
     Member selectById(String id);
+
+
+    @Select("""
+            SELECT member_id id, member_email email, member_inserted inserted
+            from member
+            ORDER BY id;
+            """)
+    List<Member> selectAll();
 }
