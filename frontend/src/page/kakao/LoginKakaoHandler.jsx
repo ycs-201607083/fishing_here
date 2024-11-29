@@ -28,7 +28,7 @@ export const LoginKakaoHandler = (props) => {
           //인증 상태 업데이트
           authentication.kakaoLogin(token);
           // 로그인 성공 시 이동 페이지
-          navigate("/loginSuccess");
+          navigate("/");
         } else {
           console.log("non token!");
         }

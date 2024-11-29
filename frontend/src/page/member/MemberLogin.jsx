@@ -65,7 +65,7 @@ export function MemberLogin(props) {
         // login
         console.log("token? = ", data.token);
         authentication.login(data.token);
-        navigate("/loginSuccess");
+        navigate("/");
       })
       .catch((e) => {
         const message = e.response.data.message;

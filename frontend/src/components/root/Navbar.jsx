@@ -10,7 +10,7 @@ export function Navbar() {
       <Box>중고입찰</Box>
       <Box>커뮤니티</Box>
       <Box onClick={() => navigate("/member/signup")}>회원가입</Box>
-      <Box>로그인</Box>
+      <Box onClick={() => navigate("member/login")}>로그인</Box>
     </Flex>
   );
 }
