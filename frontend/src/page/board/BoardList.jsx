@@ -1,4 +1,4 @@
-import { Box, Center, HStack, Spinner, Table } from "@chakra-ui/react";
+import { Box, Center, HStack, Input, Spinner, Table } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
@@ -32,9 +32,17 @@ export function BoardList() {
     }
   };
   console.log(searchParams.get("keyword"));
+
   return (
     <Box>
       <h3>게시물 목록</h3>
+
+      <HStack mb={4}>
+        <Input
+          placeholder="검색어를 입력하세요"
+          onChange={(e) => setSearchParams({ keyword: e.target.value })}
+        />
+      </HStack>
       {isLoading ? (
         <Center h="100vh">
           <HStack gap="5">
