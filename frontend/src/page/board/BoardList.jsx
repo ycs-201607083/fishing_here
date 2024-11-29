@@ -1,6 +1,7 @@
 import { Box, Center, HStack, Spinner, Table } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
 export function BoardList() {
   // 게시판 데이터 상태
@@ -9,6 +10,7 @@ export function BoardList() {
   const [isLoading, setIsLoading] = useState(false);
   // 에러 메시지 상태
   const [errorMessage, setErrorMessage] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     fetchBoardList();
@@ -18,7 +20,10 @@ export function BoardList() {
     setIsLoading(true);
     setErrorMessage("");
     try {
-      const response = await axios.get("/api/board/list");
+      const response = await axios.get("/api/board/list", {
+        params: searchParams,
+      });
+      console.log(response);
       setBoardList(response.data);
     } catch (error) {
       console.error("데이터를 불러오는 데 실페하였습니다.");
@@ -26,7 +31,7 @@ export function BoardList() {
       setIsLoading(false);
     }
   };
-
+  console.log(searchParams.get("keyword"));
   return (
     <Box>
       <h3>게시물 목록</h3>

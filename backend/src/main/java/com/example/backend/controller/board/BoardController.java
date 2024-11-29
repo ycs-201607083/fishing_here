@@ -5,6 +5,7 @@ import com.example.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -17,7 +18,8 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/list")
-    public List<Board> searchBoards() {
-        return boardService.getAllBoards();
+    public List<Board> searchBoards(@RequestParam("keyword") String search) {
+        return boardService.getAllBoards(search);
     }
+
 }

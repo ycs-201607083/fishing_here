@@ -12,7 +12,10 @@ public interface BoardMapper {
     @Select("""
             SELECT board_number AS number, board_title AS title, board_writer AS writer, board_view_count AS viewCount, board_date AS date
             FROM board
+            WHERE board_title LIKE CONCAT('%',#{search},'%')
             ORDER BY board_date DESC
             """)
-    List<Board> findAllBoards();
+    List<Board> findAllBoards(String search);
+
+
 }
