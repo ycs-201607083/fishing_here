@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface MemberMapper {
-    
+
     @Select("""
             SELECT auth
             FROM auth
@@ -32,7 +32,7 @@ public interface MemberMapper {
     int insert(Member member);
 
     @Select("""
-            SELECT *
+            SELECT member_id id, member_password password
             FROM member
             WHERE member_id = #{id}
             """)

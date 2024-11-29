@@ -34,3 +34,6 @@ FROM member;
 SELECT member_id id, member_password password
 FROM member
 WHERE member_id = '1';
+
+select *
+from member;
