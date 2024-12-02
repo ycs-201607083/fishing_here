@@ -45,6 +45,7 @@ export function BoardList() {
       setBoardList(response.data);
     } catch (error) {
       console.error("데이터를 불러오는데 실패했습니다.");
+      setErrorMessage("데이터를 불러오는 데 실패하였습니다."); // ** 에러 메시지 추가
     } finally {
       setIsLoading(false);
     }
@@ -90,6 +91,13 @@ export function BoardList() {
         <Alert title="Alert Title" icon={<LuTerminal />}>
           데이터를 불러오는 데 실페하였습니다.
         </Alert>
+      ) : boardList.length === 0 ? ( // ** 검색 결과 없음 조건
+        <Center flexDirection="column" gap={2}>
+          <h2>해당 게시글이 없습니다.</h2>
+          <Box as="p" fontSize="sm" color="gray.600" mt={2} textAlign="center">
+            검색어를 수정하시거나, 다른 조건으로 검색해주세요.
+          </Box>
+        </Center>
       ) : (
         <Table.Root interactive>
           <Table.Header>

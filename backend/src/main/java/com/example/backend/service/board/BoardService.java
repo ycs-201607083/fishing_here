@@ -13,7 +13,7 @@ public class BoardService {
 
     private final BoardMapper boardMapper;
 
-    public List<Board> getAllBoards(String search) {
-        return boardMapper.findAllBoards(search);
+    public List<Board> getAllBoards(String search, String type) {
+        return boardMapper.findAllBoards(search, type);
     }
 }
