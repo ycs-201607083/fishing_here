@@ -17,7 +17,8 @@ public interface BoardMapper {
                 board_title AS title, 
                 board_writer AS writer, 
                 board_view_count AS viewCount, 
-                board_date AS date
+                board_date AS date,
+                board_content AS content
             FROM board
             WHERE 
                 <choose>
@@ -29,7 +30,7 @@ public interface BoardMapper {
                     </when>
                     <when test="type == 'writer'">
                         board_writer LIKE CONCAT('%', #{keyword}, '%') -- 작성자 검색
-                    </when>
+                    </when> 
                     <otherwise>
                         (board_title LIKE CONCAT('%', #{keyword}, '%') -- 전체 검색
                         OR board_content LIKE CONCAT('%', #{keyword}, '%')
@@ -39,5 +40,5 @@ public interface BoardMapper {
             ORDER BY board_number DESC
             </script>
             """)
-    List<Board> findAllBoards(@Param("keyword") String keyword, @Param("type") String type); // @Param 어노테이션으로 명시적 바인딩
+    List<Board> findAllBoards(@Param("keyword") String keyword, @Param("type") String type);
 }
