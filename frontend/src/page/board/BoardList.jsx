@@ -12,6 +12,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import { LuSearch, LuTerminal } from "react-icons/lu";
+import {
+  NativeSelectField,
+  NativeSelectRoot,
+} from "../../components/ui/native-select.jsx";
 
 export function BoardList() {
   // 게시판 데이터 상태
@@ -57,8 +61,8 @@ export function BoardList() {
       <h3>게시물 목록</h3>
 
       <HStack mb={4}>
-        <Box>
-          <select
+        <NativeSelectRoot size="sm" width="240px">
+          <NativeSelectField
             value={type} // **
             onChange={(e) => setType(e.target.value)}
           >
@@ -66,8 +70,8 @@ export function BoardList() {
             <option value={"title"}>제목</option>
             <option value={"content"}>본문</option>
             <option value={"writer"}>작성자</option>
-          </select>
-        </Box>
+          </NativeSelectField>
+        </NativeSelectRoot>
 
         <Input
           placeholder="검색어를 입력하세요"
@@ -104,6 +108,7 @@ export function BoardList() {
             <Table.Row>
               <Table.ColumnHeader>번호</Table.ColumnHeader>
               <Table.ColumnHeader>제목</Table.ColumnHeader>
+              <Table.ColumnHeader>본문</Table.ColumnHeader>
               <Table.ColumnHeader>작성자</Table.ColumnHeader>
               <Table.ColumnHeader>조회수</Table.ColumnHeader>
               <Table.ColumnHeader>작성일시</Table.ColumnHeader>
@@ -114,6 +119,7 @@ export function BoardList() {
               <Table.Row key={board.number}>
                 <Table.Cell>{board.number}</Table.Cell>
                 <Table.Cell>{board.title}</Table.Cell>
+                <Table.Cell>{board.content}</Table.Cell>
                 <Table.Cell>{board.writer}</Table.Cell>
                 <Table.Cell>{board.viewCount}</Table.Cell>
                 <Table.Cell>{board.date}</Table.Cell>
