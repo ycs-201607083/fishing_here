@@ -12,11 +12,10 @@ export function KakaoMap() {
       level: 3
     };
     const map = new kakao.maps.Map(container, options);
-
   }, []);
 
 
-  return <Box>
-    <div id="map" style={{width: "500px", height: "400px"}}></div>
+  return <Box mx={"auto"} w={{md: "800px"}} mt={"150px"} bgColor={"black"}>
+    <Box id="map" style={{width: "800px", height: "500px"}}></Box>
   </Box>
 }
