@@ -20,6 +20,7 @@ import {
   NativeSelectField,
   NativeSelectRoot,
 } from "../../components/ui/native-select.jsx";
+import * as board from "prop-types";
 
 export function BoardList() {
   // 게시판 데이터 상태
@@ -36,6 +37,7 @@ export function BoardList() {
   const [type, setType] = useState("all"); // 검색 타입 (전체, 제목, 본문 중 선택)
   // 검색 타입(장소)
   const [site, setSite] = useState("allSite");
+  /*  const navigate = useNavigate();*/ // 네비게이션
 
   useEffect(() => {
     fetchBoardList();
@@ -61,6 +63,11 @@ export function BoardList() {
     }
   };
   console.log(searchParams.get("keyword"));
+
+  function handleRowClick(id) {
+    console.log(`${board.number}번 view로 연동하기`);
+    // navigate(`/view/${number}`); //클릭시 네비게이션 연동
+  }
 
   return (
     <Box>
@@ -144,7 +151,13 @@ export function BoardList() {
                 <Card.Description>{board.content}</Card.Description>
               </Card.Body>
               <Card.Footer justifyContent="flex-end">
-                <Button variant="outline">View</Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleRowClick(board.id)}
+                  key={board.id}
+                >
+                  View
+                </Button>
               </Card.Footer>
             </Card.Root>
           ))}
