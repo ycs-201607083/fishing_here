@@ -5,9 +5,11 @@ import {LuSearch} from "react-icons/lu";
 
 const {kakao} = window;
 
-export function KakaoMap({searchPlace}) {
+export function KakaoMap() {
   const [map, setMap] = useState(null);
-  const [keyWord, setKeyWord] = useState("");
+  const [keyWord, setKeyWord] = useState("");//검색어
+  const [searchService, setSearchService] = useState(null);//장소검색서비스
+  const [marker, setMarker] = useState([]);//마커 관리
 
   useEffect(() => {
     //지도 초기화
@@ -17,13 +19,11 @@ export function KakaoMap({searchPlace}) {
       level: 3
     };
     const mapInstance = new kakao.maps.Map(container, options);
+    //장소검색 초기화
     const ps = new kakao.maps.services.Places();
 
-    console.log(searchPlace);
-
-    ps.keywordSearch(searchPlace,)
-
     setMap(mapInstance);
+    setSearchService(ps);
   }, []);
 
 
@@ -35,6 +35,25 @@ export function KakaoMap({searchPlace}) {
 
   const handleClickButton = (e) => {
 
+    setSearchService.keywordSerch(keyWord, (data, status) => {
+      if (status === kakao.maps.service.Status.ok) {
+        const bounds = new kakao.maps.LatLngBounds();//검색결과 범위
+
+        data.forEach((e) => {
+          const markerPosition = new kakao.maps.LatLng(e.y, e.x);
+          const markerSetting = new kakao.maps.Marker({
+            position: markerPosition,
+            map: map
+          });
+          setMarker((prev) => [...prev, markerSetting]);
+
+          //결과 범위 확장
+          bounds.extend(markerPosition);
+        })
+        //지도범위 확장
+        map.setBounds(bounds);
+      }
+    })
   };
 
   return <HStack
