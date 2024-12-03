@@ -73,8 +73,8 @@ export function BoardList() {
     <Box>
       <h3>게시물 목록</h3>
 
-      <HStack mb={4}>
-        <NativeSelectRoot size="sm" width="240px">
+      <HStack mb={4} justifyContent="center">
+        <NativeSelectRoot width="240px" maxW="120px" W="120px" maxH="50" H="50">
           <NativeSelectField
             value={site} // **
             onChange={(e) => setSite(e.target.value)}
@@ -85,7 +85,7 @@ export function BoardList() {
           </NativeSelectField>
         </NativeSelectRoot>
 
-        <NativeSelectRoot size="sm" width="240px">
+        <NativeSelectRoot width="240px" maxW="100px" W="120px" maxH="50" H="50">
           <NativeSelectField
             value={type} // **
             onChange={(e) => setType(e.target.value)}
@@ -101,14 +101,22 @@ export function BoardList() {
           placeholder="검색어를 입력하세요"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
+          maxW="700px"
+          w="100%"
+          maxH="50"
+          H="50"
         />
         <IconButton
           aria-label="Search database"
           onClick={(e) => setSearchParams({ type, keyword, site })} // **
+          maxH="50"
+          H="30"
         >
           <LuSearch />
         </IconButton>
       </HStack>
+      <Box></Box>
+
       {isLoading ? (
         <Center h="100vh">
           <HStack gap="5">
@@ -127,7 +135,11 @@ export function BoardList() {
           </Box>
         </Center>
       ) : (
-        <SimpleGrid columns={[1, 2, null, 3, 4]} gap="40px">
+        <SimpleGrid
+          columns={[1, 2, null, 3, 4, 5]}
+          gap="40px"
+          justifyItems="center"
+        >
           {boardList.map((board) => (
             <Card.Root key={board.number} width="320px" mb="4">
               <Card.Body gap="2">
