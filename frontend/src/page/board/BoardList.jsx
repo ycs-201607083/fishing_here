@@ -21,114 +21,25 @@ import {
   NativeSelectRoot,
 } from "../../components/ui/native-select.jsx";
 
-function SearchFilters({
-  site,
-  setSite,
-  type,
-  setType,
-  keyword,
-  setKeyword,
-  onSearch,
-}) {
-  return (
-    <HStack mb={4}>
-      <NativeSelectRoot size="sm" width="240px">
-        <NativeSelectField
-          value={site}
-          onChange={(e) => setSite(e.target.value)}
-        >
-          <option value="allSite">민물/바다</option>
-          <option value="riverSite">민물낚시</option>
-          <option value="seaSite">바다낚시</option>
-        </NativeSelectField>
-      </NativeSelectRoot>
-      <NativeSelectRoot size="sm" width="240px">
-        <NativeSelectField
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-        >
-          <option value="all">전체</option>
-          <option value="title">제목</option>
-          <option value="content">본문</option>
-          <option value="writer">작성자</option>
-        </NativeSelectField>
-      </NativeSelectRoot>
-      <Input
-        placeholder="검색어를 입력하세요"
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-      />
-      <IconButton aria-label="Search database" onClick={onSearch}>
-        <LuSearch />
-      </IconButton>
-    </HStack>
-  );
-}
-
-function LoadingSpinner() {
-  return (
-    <Center h="100vh">
-      <Spinner size="xl" />
-    </Center>
-  );
-}
-
-function ErrorMessage({ message }) {
-  return (
-    <Alert status="error" icon={<LuTerminal />}>
-      {message}
-    </Alert>
-  );
-}
-
-function NoResults() {
-  return (
-    <Center flexDirection="column" gap={2}>
-      <h2>해당 게시글이 없습니다.</h2>
-      <Box as="p" fontSize="sm" color="gray.600" mt={2} textAlign="center">
-        검색어를 수정하시거나, 다른 조건으로 검색해주세요.
-      </Box>
-    </Center>
-  );
-}
-
-function BoardCard({ board }) {
-  return (
-    <Card.Root key={board.number} width="320px" mb="4">
-      <Card.Body gap="2">
-        <Image
-          rounded="md"
-          src={board.imageUrl || "/default-image.png"}
-          alt={board.title || "Default Image"}
-        />
-        <Card.Title mt="2">{board.title}</Card.Title>
-        <Text fontSize="sm" color="gray.500" mt="1">
-          {board.site}
-        </Text>
-        <Text fontSize="sm" color="gray.500" mt="1">
-          {board.writer}
-        </Text>
-        <Card.Description>{board.content}</Card.Description>
-      </Card.Body>
-      <Card.Footer justifyContent="flex-end">
-        <Button variant="outline">View</Button>
-      </Card.Footer>
-    </Card.Root>
-  );
-}
-
 export function BoardList() {
+  // 게시판 데이터 상태
   const [boardList, setBoardList] = useState([]);
+  // 검색 키워드
   const [keyword, setKeyword] = useState("");
+  // 로딩 상태
   const [isLoading, setIsLoading] = useState(false);
+  // 에러 메시지 상태
   const [errorMessage, setErrorMessage] = useState("");
+  // 검색 데이터
   const [searchParams, setSearchParams] = useSearchParams("");
-  const [type, setType] = useState("all");
+  // 검색 타입(제목...)
+  const [type, setType] = useState("all"); // 검색 타입 (전체, 제목, 본문 중 선택)
+  // 검색 타입(장소)
   const [site, setSite] = useState("allSite");
 
   useEffect(() => {
     fetchBoardList();
-  }, [searchParams]);
+  }, [searchParams, type, site]);
 
   const fetchBoardList = async () => {
     setIsLoading(true);
@@ -136,44 +47,101 @@ export function BoardList() {
 
     try {
       const response = await axios.get("/api/board/list", {
-        params: Object.fromEntries(searchParams.entries()),
+        params: Object.fromEntries(searchParams.entries()), //**URL의 쿼리스트링을 서버로 전달
+        //entries() : 키-값 쌍의 반복 가능한 이터레이터
       });
 
+      console.log(response);
       setBoardList(response.data);
     } catch (error) {
-      setErrorMessage("데이터를 불러오는 데 실패하였습니다.");
+      console.error("데이터를 불러오는데 실패했습니다.");
+      setErrorMessage("데이터를 불러오는 데 실패하였습니다."); // ** 에러 메시지 추가
     } finally {
       setIsLoading(false);
     }
   };
-
-  const handleSearch = () => {
-    setSearchParams({ type, keyword, site });
-  };
+  console.log(searchParams.get("keyword"));
 
   return (
     <Box>
       <h3>게시물 목록</h3>
-      <SearchFilters
-        site={site}
-        setSite={setSite}
-        type={type}
-        setType={setType}
-        keyword={keyword}
-        setKeyword={setKeyword}
-        onSearch={handleSearch}
-      />
 
+      <HStack mb={4}>
+        <NativeSelectRoot size="sm" width="240px">
+          <NativeSelectField
+            value={site} // **
+            onChange={(e) => setSite(e.target.value)}
+          >
+            <option value={"allSite"}>민물/바다</option>
+            <option value={"riverSite"}>민물낚시</option>
+            <option value={"seaSite"}>바다낚시</option>
+          </NativeSelectField>
+        </NativeSelectRoot>
+
+        <NativeSelectRoot size="sm" width="240px">
+          <NativeSelectField
+            value={type} // **
+            onChange={(e) => setType(e.target.value)}
+          >
+            <option value={"all"}>전체</option>
+            <option value={"title"}>제목</option>
+            <option value={"content"}>본문</option>
+            <option value={"writer"}>작성자</option>
+          </NativeSelectField>
+        </NativeSelectRoot>
+
+        <Input
+          placeholder="검색어를 입력하세요"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
+        <IconButton
+          aria-label="Search database"
+          onClick={(e) => setSearchParams({ type, keyword, site })} // **
+        >
+          <LuSearch />
+        </IconButton>
+      </HStack>
       {isLoading ? (
-        <LoadingSpinner />
+        <Center h="100vh">
+          <HStack gap="5">
+            <Spinner size="xl" />
+          </HStack>
+        </Center>
       ) : errorMessage ? (
-        <ErrorMessage message={errorMessage} />
-      ) : boardList.length === 0 ? (
-        <NoResults />
+        <Alert title="Alert Title" icon={<LuTerminal />}>
+          데이터를 불러오는 데 실페하였습니다.
+        </Alert>
+      ) : boardList.length === 0 ? ( // ** 검색 결과 없음 조건
+        <Center flexDirection="column" gap={2}>
+          <h2>해당 게시글이 없습니다.</h2>
+          <Box as="p" fontSize="sm" color="gray.600" mt={2} textAlign="center">
+            검색어를 수정하시거나, 다른 조건으로 검색해주세요.
+          </Box>
+        </Center>
       ) : (
-        <SimpleGrid columns={[1, 2, 3]} spacing={4}>
+        <SimpleGrid columns={[2, null, 3]} gap="40px">
           {boardList.map((board) => (
-            <BoardCard key={board.number} board={board} />
+            <Card.Root key={board.number} width="320px" mb="4">
+              <Card.Body gap="2">
+                <Image
+                  rounded="md"
+                  src="https://bit.ly/dan-abramov"
+                  alt="Dan Abramov"
+                />
+                <Text fontSize="sm" color="gray.500" mt="1">
+                  {board.site}
+                </Text>
+                <Card.Title mt="2">{board.title}</Card.Title>
+                <Text fontSize="sm" color="gray.500" mt="1">
+                  {board.writer}
+                </Text>
+                <Card.Description>{board.content}</Card.Description>
+              </Card.Body>
+              <Card.Footer justifyContent="flex-end">
+                <Button variant="outline">View</Button>
+              </Card.Footer>
+            </Card.Root>
           ))}
         </SimpleGrid>
       )}
