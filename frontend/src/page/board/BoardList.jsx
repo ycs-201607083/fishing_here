@@ -28,12 +28,14 @@ export function BoardList() {
   const [errorMessage, setErrorMessage] = useState("");
   // 검색 데이터
   const [searchParams, setSearchParams] = useSearchParams();
-  // 검색 타입**
+  // 검색 타입(제목...)
   const [type, setType] = useState("all"); // 검색 타입 (전체, 제목, 본문 중 선택)
+  // 검색 타입(장소)
+  const [site, setSite] = useState();
 
   useEffect(() => {
     fetchBoardList();
-  }, [searchParams, type]);
+  }, [searchParams, type, site]);
 
   const fetchBoardList = async () => {
     setIsLoading(true);
@@ -61,6 +63,17 @@ export function BoardList() {
       <h3>게시물 목록</h3>
 
       <HStack mb={4}>
+        <NativeSelectRoot size="sm" width="240px">
+          <NativeSelectField
+            value={site} // **
+            onChange={(e) => setSite(e.target.value)}
+          >
+            <option value={"allSite"}>민물/바다</option>
+            <option value={"riverSite"}>민물낚시</option>
+            <option value={"seaSite"}>바다낚시</option>
+          </NativeSelectField>
+        </NativeSelectRoot>
+
         <NativeSelectRoot size="sm" width="240px">
           <NativeSelectField
             value={type} // **
@@ -107,6 +120,7 @@ export function BoardList() {
           <Table.Header>
             <Table.Row>
               <Table.ColumnHeader>번호</Table.ColumnHeader>
+              <Table.ColumnHeader>낚시 장소</Table.ColumnHeader>
               <Table.ColumnHeader>제목</Table.ColumnHeader>
               <Table.ColumnHeader>본문</Table.ColumnHeader>
               <Table.ColumnHeader>작성자</Table.ColumnHeader>
@@ -118,6 +132,7 @@ export function BoardList() {
             {boardList.map((board) => (
               <Table.Row key={board.number}>
                 <Table.Cell>{board.number}</Table.Cell>
+                <Table.Cell>{board.site}</Table.Cell>
                 <Table.Cell>{board.title}</Table.Cell>
                 <Table.Cell>{board.content}</Table.Cell>
                 <Table.Cell>{board.writer}</Table.Cell>
