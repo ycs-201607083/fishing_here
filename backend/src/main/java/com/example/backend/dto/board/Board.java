@@ -13,4 +13,5 @@ public class Board {
     private Integer viewCount;
     private LocalDateTime date;
     private String content;
+    private String site;
 }
