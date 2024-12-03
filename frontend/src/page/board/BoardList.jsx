@@ -27,11 +27,11 @@ export function BoardList() {
   // 에러 메시지 상태
   const [errorMessage, setErrorMessage] = useState("");
   // 검색 데이터
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams("");
   // 검색 타입(제목...)
   const [type, setType] = useState("all"); // 검색 타입 (전체, 제목, 본문 중 선택)
   // 검색 타입(장소)
-  const [site, setSite] = useState();
+  const [site, setSite] = useState("allSite");
 
   useEffect(() => {
     fetchBoardList();
@@ -93,7 +93,7 @@ export function BoardList() {
         />
         <IconButton
           aria-label="Search database"
-          onClick={(e) => setSearchParams({ type, keyword })} // **
+          onClick={(e) => setSearchParams({ type, keyword, site })} // **
         >
           <LuSearch />
         </IconButton>
