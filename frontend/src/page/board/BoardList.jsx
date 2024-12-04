@@ -20,7 +20,6 @@ import {
   NativeSelectField,
   NativeSelectRoot,
 } from "../../components/ui/native-select.jsx";
-import * as board from "prop-types";
 
 export function BoardList() {
   // 게시판 데이터 상태
@@ -64,8 +63,8 @@ export function BoardList() {
   };
   console.log(searchParams.get("keyword"));
 
-  function handleRowClick(id) {
-    console.log(`${board.number}번 view로 연동하기`);
+  function handleRowClick(number) {
+    console.log(`${number}번 view로 연동하기`);
     // navigate(`/view/${number}`); //클릭시 네비게이션 연동
   }
 
@@ -165,8 +164,8 @@ export function BoardList() {
               <Card.Footer justifyContent="flex-end">
                 <Button
                   variant="outline"
-                  onClick={() => handleRowClick(board.id)}
-                  key={board.id}
+                  onClick={() => handleRowClick(board.number)}
+                  key={board.number}
                 >
                   View
                 </Button>
