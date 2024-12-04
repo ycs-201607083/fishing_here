@@ -4,6 +4,7 @@ import com.example.backend.dto.board.Board;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -78,4 +79,12 @@ public interface BoardMapper {
                 LIMIT 3
             """)
     List<Board> findTopBoardsByViews();
+
+
+    @Update("""
+            UPDATE board
+            SET board_view_count = board_view_count + 1
+            WHERE board_number = #{board_number}
+            """)
+    void updateViewCount(@Param("number") Integer number);
 }

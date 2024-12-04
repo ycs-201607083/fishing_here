@@ -52,7 +52,7 @@ export function BoardList() {
       const response = await axios.get("/api/board/top-views"); // 상위 10개 조회수 API 호출
       setTopBoards(response.data); // 데이터 저장
     } catch (error) {
-      console.error("상위 게시글 데이터를 가져오는 데 실패했습니다.");
+      console.error("인기 게시글 데이터를 가져오는 데 실패했습니다.");
     }
   };
 
@@ -74,10 +74,18 @@ export function BoardList() {
   };
   console.log(searchParams.get("keyword"));
 
-  function handleRowClick(number) {
-    console.log(`${number}번 view로 연동하기`);
-    navigate("board/view/${number}");
-  }
+  /*클릭 시 조회수 증가 처리 추가*/
+  const handleRowClick = async (number) => {
+    console.log(`${number}번 게시물 이동`);
+    try {
+      await axios.post("/board/view/${number}");
+      fetchBoardList();
+      navigate("/board/view/${number}");
+      console.log(`${number}번 게시물 클릭으로 조회수 증가`);
+    } catch (error) {
+      console.error("조회수를 증가시키는 데 실패했습니다.");
+    }
+  };
 
   const handleWriteClick = () => {
     navigate("/board/add");
@@ -138,7 +146,7 @@ export function BoardList() {
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        p={4} // 스크롤 막힘 방지를 위해 패딩 추가
+        p={4}
       >
         <h3>인기 게시물 Top 3</h3>
         {/* 조회수가 높은 게시물 카드 형태로 표시 */}

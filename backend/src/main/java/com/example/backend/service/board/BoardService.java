@@ -22,4 +22,8 @@ public class BoardService {
     public List<Board> getTopBoardsByViews() {
         return mapper.findTopBoardsByViews();
     }
+
+    public void increaseViewCount(Integer number) {
+        mapper.updateViewCount(number);
+    }
 }
