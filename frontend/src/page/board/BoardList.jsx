@@ -52,7 +52,7 @@ export function BoardList() {
   useEffect(() => {
     fetchBoardList();
     fetchTopBoards();
-  }, [searchParams, type, site]);
+  }, [searchParams, type, site, searchPage]);
 
   const fetchTopBoards = async () => {
     try {
@@ -66,8 +66,15 @@ export function BoardList() {
   console.log(searchPage.toString());
 
   // page 번호
-  const pageParam = searchPage.get("page") ? searchParams.get("page") : "1";
+  const pageParam = searchPage.get("page") ? searchPage.get("page") : "1";
   const page = Number(pageParam);
+
+  function handlePageChange(e) {
+    console.log(e.page);
+    const nextSearchParams = new URLSearchParams(searchPage);
+    nextSearchParams.set("page", e.page);
+    setSearchPage(nextSearchParams);
+  }
 
   const fetchBoardList = async () => {
     try {
@@ -253,7 +260,12 @@ export function BoardList() {
         </Table.Root>
       )}
       {/*페이지 네이션*/}
-      <PaginationRoot count={1500} pageSize={10} page={page}>
+      <PaginationRoot
+        onPageChange={handlePageChange}
+        count={1500}
+        pageSize={10}
+        page={page}
+      >
         <HStack>
           <PaginationPrevTrigger />
           <PaginationItems />
