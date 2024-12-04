@@ -29,7 +29,7 @@ import java.security.interfaces.RSAPublicKey;
 @Configuration
 @EnableMethodSecurity
 public class AppConfiguration {
-    
+
     @Value("classpath:secret/app.pub")
     RSAPublicKey pub;
 
@@ -74,4 +74,6 @@ public class AppConfiguration {
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
     }
+
+
 }

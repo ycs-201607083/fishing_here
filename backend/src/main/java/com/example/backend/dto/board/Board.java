@@ -9,6 +9,7 @@ public class Board {
     private Integer number;
     private Integer tagNumber;
     private String title;
+    private String content;
     private String writer;
     private Integer viewCount;
     private LocalDateTime date;

@@ -4,16 +4,18 @@ import com.example.backend.dto.board.Board;
 import com.example.backend.mapper.board.BoardMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final BoardMapper boardMapper;
+    private final BoardMapper mapper;
 
     public List<Board> getAllBoards(String search, String type, String site) {
-        return boardMapper.findAllBoards(search, type, site);
+        return mapper.findAllBoards(search, type, site);
     }
 }
