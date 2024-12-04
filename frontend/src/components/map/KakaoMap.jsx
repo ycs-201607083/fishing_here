@@ -33,7 +33,7 @@ export function KakaoMap() {
   }
 
 
-  const handleClickButton = (e) => {
+  const handleClickButton = () => {
     if (!keyWord || !searchService || !map) {
       return;
     }
