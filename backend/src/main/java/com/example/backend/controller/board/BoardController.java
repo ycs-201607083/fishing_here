@@ -22,7 +22,8 @@ public class BoardController {
 
         return null;
     }
-    @GetMapping("/list")
+
+    @GetMapping("list")
     public List<Board> searchBoards(@RequestParam(value = "keyword", defaultValue = "") String search,
                                     @RequestParam(value = "type", defaultValue = "all") String type,
                                     @RequestParam(value = "site", defaultValue = "allSite") String site

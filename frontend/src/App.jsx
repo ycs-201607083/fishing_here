@@ -1,10 +1,9 @@
 import axios from "axios";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import {LoginKakaoHandler} from "./page/kakao/LoginKakaoHandler.jsx";
-import LoginSuccess from "./page/kakao/LoginSuccess.jsx";
+import { LoginKakaoHandler } from "./page/kakao/LoginKakaoHandler.jsx";
+
 import AuthenticationProvider from "./context/AuthenticationProvider.jsx";
 import { BoardMain } from "./page/board/BoardMain.jsx";
 import { RootLayout } from "./page/root/RootLayout.jsx";
@@ -13,6 +12,7 @@ import BoardMap from "./page/board/BoardMap.jsx";
 import { ManagementPage } from "./page/manager/ManagementPage.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { BoardList } from "./page/board/BoardList.jsx";
+
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
 
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
       },
       {
         path: "board/map",
-        element: <BoardMap/>,
+        element: <BoardMap />,
       },
       {
         path: "member/signup",
@@ -49,15 +49,11 @@ const router = createBrowserRouter([
         element: <LoginKakaoHandler />,
       },
       {
-        path: "/loginSuccess",
-        element: <LoginSuccess />,
-      },
-      {
         path: "/memberList",
         element: <ManagementPage />,
       },
       {
-        path: "/list",
+        path: "board/list",
         element: <BoardList />,
       },
     ],
