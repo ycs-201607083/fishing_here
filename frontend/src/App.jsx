@@ -11,7 +11,8 @@ import { RootLayout } from "./page/root/RootLayout.jsx";
 import MemberSignup from "./page/member/memberSignup.jsx";
 import BoardMap from "./page/board/BoardMap.jsx";
 import { ManagementPage } from "./page/manager/ManagementPage.jsx";
-
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { BoardList } from "./page/board/BoardList.jsx";
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
 
@@ -52,8 +53,12 @@ const router = createBrowserRouter([
         element: <LoginSuccess />,
       },
       {
-        path: "/list",
+        path: "/memberList",
         element: <ManagementPage />,
+      },
+      {
+        path: "/list",
+        element: <BoardList />,
       },
     ],
   },
