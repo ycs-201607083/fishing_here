@@ -13,7 +13,7 @@ import {
   Table,
   Text,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import { LuSearch, LuTerminal } from "react-icons/lu";
@@ -119,12 +119,19 @@ export function BoardList() {
       </HStack>
 
       {/* 조회수 상위 5개 데이터 표시 */}
-      <Box mb={8}>
-        <h3>상위 10개 게시물</h3>
+      <Box
+        mb={8}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        p={4} // 스크롤 막힘 방지를 위해 패딩 추가
+      >
+        <h3>인기 게시물 Top 5</h3>
         {/* 조회수가 높은 게시물 카드 형태로 표시 */}
-        <SimpleGrid columns={[1, 2, 3]} gap="40px">
+        <SimpleGrid columns={[1, 2, 3, null, 4, 5]} gap="40px" mt={4}>
           {boardList.slice(0, 10).map((board) => (
-            <Card.Root key={board.number} width="320px">
+            <Card.Root key={board.number} width="250px">
               <Card.Body gap="2">
                 <Image
                   rounded="md"
@@ -146,7 +153,13 @@ export function BoardList() {
                 <Card.Description>{board.content}</Card.Description>
               </Card.Body>
               <Card.Footer justifyContent="flex-end">
-                <Button variant="outline">View</Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleRowClick(board.number)}
+                  key={board.number}
+                >
+                  View
+                </Button>
               </Card.Footer>
             </Card.Root>
           ))}
@@ -155,7 +168,7 @@ export function BoardList() {
 
       {/* 일반 게시물 목록 */}
       {isLoading ? (
-        <Center h="100vh">
+        <Center h="50vh">
           <HStack gap="5">
             <Spinner size="xl" />
           </HStack>
