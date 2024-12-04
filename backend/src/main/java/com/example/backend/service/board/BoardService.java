@@ -18,4 +18,8 @@ public class BoardService {
     public List<Board> getAllBoards(String search, String type, String site) {
         return mapper.findAllBoards(search, type, site);
     }
+
+    public List<Board> getTopBoardsByViews() {
+        return mapper.findTopBoardsByViews();
+    }
 }

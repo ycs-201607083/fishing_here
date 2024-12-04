@@ -31,4 +31,9 @@ public class BoardController {
         return service.getAllBoards(search, type, site);
     }
 
+    @GetMapping("/top-views")
+    public List<Board> getTopBoardsByViews() {
+        return service.getTopBoardsByViews();
+    }
+
 }

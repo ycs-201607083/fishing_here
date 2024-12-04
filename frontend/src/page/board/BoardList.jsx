@@ -37,17 +37,25 @@ export function BoardList() {
   const [type, setType] = useState("all"); // 검색 타입 (전체, 제목, 본문 중 선택)
   // 검색 타입(장소)
   const [site, setSite] = useState("allSite");
+  const [topBoards, setTopBoards] = useState([]);
 
   /*  const navigate = useNavigate();*/ // 네비게이션
 
   useEffect(() => {
     fetchBoardList();
+    fetchTopBoards();
   }, [searchParams, type, site]);
 
-  const fetchBoardList = async () => {
-    setIsLoading(true);
-    setErrorMessage("");
+  const fetchTopBoards = async () => {
+    try {
+      const response = await axios.get("/api/board/top-views"); // 상위 10개 조회수 API 호출
+      setTopBoards(response.data); // 데이터 저장
+    } catch (error) {
+      console.error("상위 게시글 데이터를 가져오는 데 실패했습니다.");
+    }
+  };
 
+  const fetchBoardList = async () => {
     try {
       const response = await axios.get("/api/board/list", {
         params: Object.fromEntries(searchParams.entries()), //**URL의 쿼리스트링을 서버로 전달
@@ -118,7 +126,7 @@ export function BoardList() {
         </IconButton>
       </HStack>
 
-      {/* 조회수 상위 5개 데이터 표시 */}
+      {/* 조회수 상위 3개 데이터 표시 */}
       <Box
         mb={8}
         display="flex"
@@ -127,10 +135,10 @@ export function BoardList() {
         justifyContent="center"
         p={4} // 스크롤 막힘 방지를 위해 패딩 추가
       >
-        <h3>인기 게시물 Top 5</h3>
+        <h3>인기 게시물 Top 3</h3>
         {/* 조회수가 높은 게시물 카드 형태로 표시 */}
-        <SimpleGrid columns={[1, 2, 3, null, 4, 5]} gap="40px" mt={4}>
-          {boardList.slice(0, 10).map((board) => (
+        <SimpleGrid columns={[1, null, 3]} gap="40px" mt={4}>
+          {topBoards.slice(0, 3).map((board) => (
             <Card.Root key={board.number} width="250px">
               <Card.Body gap="2">
                 <Image
@@ -143,7 +151,7 @@ export function BoardList() {
                     {board.site}
                   </Text>
                   <Text fontSize="sm" color="gray.500">
-                    Views: {board.view}
+                    Views: {board.viewCount}
                   </Text>
                 </HStack>
                 <Card.Title mt="2">{board.title}</Card.Title>

@@ -62,4 +62,20 @@ public interface BoardMapper {
     List<Board> findAllBoards(@Param("keyword") String keyword,
                               @Param("type") String type,
                               @Param("site") String site);
+
+
+    @Select("""
+                SELECT
+                    board_number AS number,
+                    board_title AS title,
+                    board_writer AS writer,
+                    board_view_count AS viewCount,
+                    board_date AS date,
+                    board_content AS content,
+                    board_site AS site
+                FROM board
+                ORDER BY board_view_count DESC
+                LIMIT 3
+            """)
+    List<Board> findTopBoardsByViews();
 }
