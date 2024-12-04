@@ -11,6 +11,7 @@ export function Navbar() {
       <Box onClick={() => navigate("/board/list")}>커뮤니티</Box>
       <Box onClick={() => navigate("/member/signup")}>회원가입</Box>
       <Box onClick={() => navigate("member/login")}>로그인</Box>
+      <Box onClick={() => navigate("manager/list")}>회원목록</Box>
     </Flex>
   );
 }
