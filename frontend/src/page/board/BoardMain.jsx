@@ -68,24 +68,7 @@ export function BoardMain() {
   return (
     <Box>
       <MyHeading>메인페이지</MyHeading>
-      <Center>
-        <Flex gap="4" wrap="wrap" justify="center">
-          {categories.map((category) => (
-            <Box
-              key={category.name}
-              {...boxStyle}
-              onClick={() => handleClick(category.name)}
-            >
-              <Image
-                {...tagImageStyle}
-                src={category.src}
-                alt={category.name}
-              />
-              <Text mt="4">{category.name}</Text>
-            </Box>
-          ))}
-        </Flex>
-      </Center>
+
 
       <Center>
         <Box w="40%">
