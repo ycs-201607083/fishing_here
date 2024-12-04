@@ -4,11 +4,11 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { LoginKakaoHandler } from "./page/kakao/LoginKakaoHandler.jsx";
-import LoginSuccess from "./page/kakao/LoginSuccess.jsx";
 import AuthenticationProvider from "./context/AuthenticationProvider.jsx";
 import { BoardMain } from "./page/board/BoardMain.jsx";
 import { RootLayout } from "./page/root/RootLayout.jsx";
 import MemberSignup from "./page/member/memberSignup.jsx";
+import { ManagementPage } from "./page/manager/ManagementPage.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -42,8 +42,8 @@ const router = createBrowserRouter([
         element: <LoginKakaoHandler />,
       },
       {
-        path: "/loginSuccess",
-        element: <LoginSuccess />,
+        path: "/list",
+        element: <ManagementPage />,
       },
     ],
   },
