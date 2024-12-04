@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { LuSearch, LuTerminal } from "react-icons/lu";
 import {
   NativeSelectField,
@@ -37,9 +37,10 @@ export function BoardList() {
   const [type, setType] = useState("all"); // 검색 타입 (전체, 제목, 본문 중 선택)
   // 검색 타입(장소)
   const [site, setSite] = useState("allSite");
+  // 조회수 탑 5개 받기
   const [topBoards, setTopBoards] = useState([]);
 
-  /*  const navigate = useNavigate();*/ // 네비게이션
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchBoardList();
@@ -75,8 +76,12 @@ export function BoardList() {
 
   function handleRowClick(number) {
     console.log(`${number}번 view로 연동하기`);
-    // navigate(`/view/${number}`); //클릭시 네비게이션 연동
+    navigate("board/view/${number}");
   }
+
+  const handleWriteClick = () => {
+    navigate("/board/add");
+  };
 
   return (
     <Box>
@@ -225,6 +230,11 @@ export function BoardList() {
           </Table.Body>
         </Table.Root>
       )}
+      <HStack justifyContent="flex-end" wrap="wrap" gap="6">
+        <Button variant="surface" onClick={handleWriteClick}>
+          게시글 작성
+        </Button>
+      </HStack>
     </Box>
   );
 }
