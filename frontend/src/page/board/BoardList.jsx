@@ -21,6 +21,12 @@ import {
   NativeSelectField,
   NativeSelectRoot,
 } from "../../components/ui/native-select.jsx";
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "../../components/ui/pagination.jsx";
 
 export function BoardList() {
   // 게시판 데이터 상태
@@ -39,6 +45,7 @@ export function BoardList() {
   const [site, setSite] = useState("allSite");
   // 조회수 탑 5개 받기
   const [topBoards, setTopBoards] = useState([]);
+  const [searchPage, setSearchPage] = useSearchParams();
 
   const navigate = useNavigate();
 
@@ -56,10 +63,16 @@ export function BoardList() {
     }
   };
 
+  console.log(searchPage.toString());
+
+  // page 번호
+  const pageParam = searchPage.get("page") ? searchParams.get("page") : "1";
+  const page = Number(pageParam);
+
   const fetchBoardList = async () => {
     try {
       const response = await axios.get("/api/board/list", {
-        params: Object.fromEntries(searchParams.entries()), //**URL의 쿼리스트링을 서버로 전달
+        params: Object.fromEntries(searchPage.entries()), //**URL의 쿼리스트링을 서버로 전달
         //entries() : 키-값 쌍의 반복 가능한 이터레이터
       });
 
@@ -72,6 +85,7 @@ export function BoardList() {
       setIsLoading(false);
     }
   };
+
   console.log(searchParams.get("keyword"));
 
   /*클릭 시 조회수 증가 처리 추가*/
@@ -238,6 +252,15 @@ export function BoardList() {
           </Table.Body>
         </Table.Root>
       )}
+      {/*페이지 네이션*/}
+      <PaginationRoot count={1500} pageSize={10} page={page}>
+        <HStack>
+          <PaginationPrevTrigger />
+          <PaginationItems />
+          <PaginationNextTrigger />
+        </HStack>
+      </PaginationRoot>
+
       <HStack justifyContent="flex-end" wrap="wrap" gap="6">
         <Button variant="surface" onClick={handleWriteClick}>
           게시글 작성

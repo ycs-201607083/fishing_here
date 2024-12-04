@@ -23,9 +23,10 @@ public class BoardController {
     @GetMapping("list")
     public List<Board> searchBoards(@RequestParam(value = "keyword", defaultValue = "") String search,
                                     @RequestParam(value = "type", defaultValue = "all") String type,
-                                    @RequestParam(value = "site", defaultValue = "allSite") String site
+                                    @RequestParam(value = "site", defaultValue = "allSite") String site,
+                                    @RequestParam(value = "page", defaultValue = "1") Integer page
     ) {
-        return service.getAllBoards(search, type, site);
+        return service.getAllBoards(search, type, site, page);
     }
 
     @GetMapping("/top-views")

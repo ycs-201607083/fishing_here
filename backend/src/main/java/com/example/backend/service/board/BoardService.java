@@ -15,8 +15,9 @@ public class BoardService {
 
     private final BoardMapper mapper;
 
-    public List<Board> getAllBoards(String search, String type, String site) {
-        return mapper.findAllBoards(search, type, site);
+    public List<Board> getAllBoards(String search, String type, String site, Integer page) {
+        page = (page - 1) * 10;
+        return mapper.findAllBoards(search, type, site, page);
     }
 
     public List<Board> getTopBoardsByViews() {

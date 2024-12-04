@@ -58,11 +58,13 @@ public interface BoardMapper {
                                   )
                             </if>
                 ORDER BY board_number DESC
-                </script>
+                LIMIT #{offset}, 10        
+                    </script>
             """)
     List<Board> findAllBoards(@Param("keyword") String keyword,
                               @Param("type") String type,
-                              @Param("site") String site);
+                              @Param("site") String site,
+                              Integer offset);
 
 
     @Select("""
