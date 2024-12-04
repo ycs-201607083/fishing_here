@@ -10,6 +10,7 @@ import {
   Input,
   SimpleGrid,
   Spinner,
+  Table,
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -36,6 +37,7 @@ export function BoardList() {
   const [type, setType] = useState("all"); // 검색 타입 (전체, 제목, 본문 중 선택)
   // 검색 타입(장소)
   const [site, setSite] = useState("allSite");
+
   /*  const navigate = useNavigate();*/ // 네비게이션
 
   useEffect(() => {
@@ -72,6 +74,7 @@ export function BoardList() {
     <Box>
       <h3>게시물 목록</h3>
 
+      {/* 검색 필터 */}
       <HStack mb={4} justifyContent="center">
         <NativeSelectRoot width="240px" maxW="120px" W="120px" maxH="50" H="50">
           <NativeSelectField
@@ -114,33 +117,14 @@ export function BoardList() {
           <LuSearch />
         </IconButton>
       </HStack>
-      <Box></Box>
 
-      {isLoading ? (
-        <Center h="100vh">
-          <HStack gap="5">
-            <Spinner size="xl" />
-          </HStack>
-        </Center>
-      ) : errorMessage ? (
-        <Alert title="Alert Title" icon={<LuTerminal />}>
-          데이터를 불러오는 데 실페하였습니다.
-        </Alert>
-      ) : boardList.length === 0 ? ( // ** 검색 결과 없음 조건
-        <Center flexDirection="column" gap={2}>
-          <h2>해당 게시글이 없습니다.</h2>
-          <Box as="p" fontSize="sm" color="gray.600" mt={2} textAlign="center">
-            검색어를 수정하시거나, 다른 조건으로 검색해주세요.
-          </Box>
-        </Center>
-      ) : (
-        <SimpleGrid
-          columns={[1, 2, null, 3, 4, 5]}
-          gap="40px"
-          justifyItems="center"
-        >
-          {boardList.map((board) => (
-            <Card.Root key={board.number} width="320px" mb="4">
+      {/* 조회수 상위 5개 데이터 표시 */}
+      <Box mb={8}>
+        <h3>상위 10개 게시물</h3>
+        {/* 조회수가 높은 게시물 카드 형태로 표시 */}
+        <SimpleGrid columns={[1, 2, 3]} gap="40px">
+          {boardList.slice(0, 10).map((board) => (
+            <Card.Root key={board.number} width="320px">
               <Card.Body gap="2">
                 <Image
                   rounded="md"
@@ -162,17 +146,63 @@ export function BoardList() {
                 <Card.Description>{board.content}</Card.Description>
               </Card.Body>
               <Card.Footer justifyContent="flex-end">
-                <Button
-                  variant="outline"
-                  onClick={() => handleRowClick(board.number)}
-                  key={board.number}
-                >
-                  View
-                </Button>
+                <Button variant="outline">View</Button>
               </Card.Footer>
             </Card.Root>
           ))}
         </SimpleGrid>
+      </Box>
+
+      {/* 일반 게시물 목록 */}
+      {isLoading ? (
+        <Center h="100vh">
+          <HStack gap="5">
+            <Spinner size="xl" />
+          </HStack>
+        </Center>
+      ) : errorMessage ? (
+        <Alert title="Alert Title" icon={<LuTerminal />}>
+          데이터를 불러오는 데 실페하였습니다.
+        </Alert>
+      ) : boardList.length === 0 ? ( // ** 검색 결과 없음 조건
+        <Center flexDirection="column" gap={2}>
+          <h2>해당 게시글이 없습니다.</h2>
+          <Box as="p" fontSize="sm" color="gray.600" mt={2} textAlign="center">
+            검색어를 수정하시거나, 다른 조건으로 검색해주세요.
+          </Box>
+        </Center>
+      ) : (
+        <Table.Root interactive>
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader>번호</Table.ColumnHeader>
+              <Table.ColumnHeader>낚시 장소</Table.ColumnHeader>
+              <Table.ColumnHeader>제목</Table.ColumnHeader>
+              <Table.ColumnHeader>본문</Table.ColumnHeader>
+              <Table.ColumnHeader>작성자</Table.ColumnHeader>
+              <Table.ColumnHeader>조회수</Table.ColumnHeader>
+              <Table.ColumnHeader>작성일시</Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {boardList.map((board) => (
+              <Table.Row
+                key={board.number}
+                onClick={() => handleRowClick(board.number)} // 클릭 이벤트 핸들러 추가
+                cursor="pointer" // 클릭 가능하다는 시각적 표시
+                _hover={{ bg: "gray.100" }}
+              >
+                <Table.Cell>{board.number}</Table.Cell>
+                <Table.Cell>{board.site}</Table.Cell>
+                <Table.Cell>{board.title}</Table.Cell>
+                <Table.Cell>{board.content}</Table.Cell>
+                <Table.Cell>{board.writer}</Table.Cell>
+                <Table.Cell>{board.viewCount}</Table.Cell>
+                <Table.Cell>{board.date}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
       )}
     </Box>
   );
