@@ -1,4 +1,13 @@
-import { Box, Group, HStack, IconButton, Input, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Group,
+  HStack,
+  IconButton,
+  Input,
+  Stack,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Field } from "../ui/field.jsx";
 import { LuSearch } from "react-icons/lu";
@@ -10,6 +19,7 @@ export function KakaoMap() {
   const [keyWord, setKeyWord] = useState(""); //검색어
   const [searchService, setSearchService] = useState(null); //장소검색서비스
   const [marker, setMarker] = useState([]); //마커 관리
+  const [places, setPlaces] = useState([]);
 
   useEffect(() => {
     //지도 초기화
@@ -34,6 +44,7 @@ export function KakaoMap() {
 
   const handleClickButton = () => {
     if (!keyWord || !searchService || !map) {
+      alert("검색어를 입력하세요");
       return;
     }
 
@@ -59,6 +70,8 @@ export function KakaoMap() {
         });
         //지도범위 확장
         map.setBounds(bounds);
+        //검색결과 저장
+        setPlaces(data);
       } else {
         alert("검색결과가 없습니다.");
       }
@@ -70,6 +83,11 @@ export function KakaoMap() {
       handleClickButton();
     }
   };
+
+  function handlePlaceClick(place) {
+    map.setCenter(new kakao.maps.LatLng(place.y, place.x));
+    map.setLevel(4, { anchor: new kakao.maps.LatLng(place.y, place.x) });
+  }
 
   return (
     <HStack
@@ -119,7 +137,32 @@ export function KakaoMap() {
             </IconButton>
           </Group>
         </Field>
-        <Box bgColor="white" w="450px" h="600px" mx="auto"></Box>
+        <Box bgColor="white" w="450px" h="600px" mx="auto" overflowY="scroll">
+          <VStack gap={2} align={"stretch"}>
+            {places.map((place, index) => (
+              <Box
+                key={index}
+                p={4}
+                bgColor="gray.100"
+                borderRadius="md"
+                boxShadow="sm"
+                cursor="pointer"
+                _hover={{ bgColor: "gray.200" }}
+                onClick={() => handlePlaceClick(place)}
+              >
+                <Text fontSize="lg" fontWeight="bold">
+                  {place.place_name}
+                </Text>
+                <Text fontSize="sm">{place.address_name}</Text>
+                {place.phone && (
+                  <Text fontSize="sm" color="gray.600">
+                    전화번호: {place.phone}
+                  </Text>
+                )}
+              </Box>
+            ))}
+          </VStack>
+        </Box>
       </Stack>
       <Box></Box>
     </HStack>
