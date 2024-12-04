@@ -26,6 +26,46 @@ export function KakaoMap() {
     setSearchService(ps);
   }, []);
 
+  function clearMarker() {
+    // 기존 마커 제거
+    marker.forEach((marker) => marker.setMap(null));
+    setMarker([]);
+  }
+
+
+  const handleClickButton = (e) => {
+    if (!keyWord || !searchService || !map) {
+      return;
+    }
+
+    clearMarker();
+
+
+    searchService.keywordSearch(keyWord, (data, status) => {
+      if (status === kakao.maps.services.Status.OK) {
+        const bounds = new kakao.maps.LatLngBounds(); // 검색 결과 범위
+
+        data.forEach((place) => {
+          // 마커 생성 및 지도에 표시
+          const markerPosition = new kakao.maps.LatLng(place.y, place.x);
+          const marker = new kakao.maps.Marker({
+            position: markerPosition,
+            map: map,
+          });
+
+          // 새로운 마커 저장
+          setMarker((prev) => [...prev, marker]);
+
+          // 결과 범위 확장
+          bounds.extend(markerPosition);
+        });
+        //지도범위 확장
+        map.setBounds(bounds);
+      } else {
+        alert("검색결과가 없습니다.")
+      }
+    })
+  };
 
   const handleEnterKey = (e) => {
     if (e.key === "Enter") {
@@ -33,34 +73,11 @@ export function KakaoMap() {
     }
   };
 
-  const handleClickButton = (e) => {
-
-    setSearchService.keywordSerch(keyWord, (data, status) => {
-      if (status === kakao.maps.service.Status.ok) {
-        const bounds = new kakao.maps.LatLngBounds();//검색결과 범위
-
-        data.forEach((e) => {
-          const markerPosition = new kakao.maps.LatLng(e.y, e.x);
-          const markerSetting = new kakao.maps.Marker({
-            position: markerPosition,
-            map: map
-          });
-          setMarker((prev) => [...prev, markerSetting]);
-
-          //결과 범위 확장
-          bounds.extend(markerPosition);
-        })
-        //지도범위 확장
-        map.setBounds(bounds);
-      }
-    })
-  };
-
   return <HStack
     gap={"5"}
     mx="auto"
-    w={{md: "1300px"}}
-    mt="150px"
+    w={{md: "1500px"}}
+    mt="100px"
     bgColor="gray.100"
     borderRadius="md"
     boxShadow="md"
@@ -72,12 +89,13 @@ export function KakaoMap() {
          bgColor="white"
          borderRadius="md"
          boxShadow="md"></Box>
-    <Stack w="300px" h="600px" mx="auto" p={4} borderRadius="md" bgColor="blue.300">
+    <Stack w="500px" h="600px" mx="auto" p={4} borderRadius="md" bgColor="blue.300">
       <Field>
         <Group mx="auto">
           <Input variant="subtle"
                  type="text"
                  placeholder="검색어를 입력하세요"
+                 w="300px"
                  h="38px"
                  value={keyWord} onChange={(e) => setKeyWord(e.target.value)}
                  onKeyDown={handleEnterKey}/>
@@ -86,7 +104,7 @@ export function KakaoMap() {
           </IconButton>
         </Group>
       </Field>
-      <Box bgColor="white" w="260px" h="600px" mx="auto"></Box>
+      <Box bgColor="white" w="450px" h="600px" mx="auto"></Box>
     </Stack>
     <Box>
     </Box>
