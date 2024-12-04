@@ -1,5 +1,6 @@
 package com.example.backend.mapper.member;
 
+import com.example.backend.dto.board.Board;
 import com.example.backend.dto.member.Member;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -38,4 +39,7 @@ public interface MemberMapper {
             WHERE member_id = #{id}
             """)
     Member selectById(String id);
+
+
+
 }

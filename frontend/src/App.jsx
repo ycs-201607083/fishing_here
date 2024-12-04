@@ -1,15 +1,16 @@
 import axios from "axios";
-import {MemberLogin} from "./page/member/MemberLogin.jsx";
+import { MemberLogin } from "./page/member/MemberLogin.jsx";
 import React from "react";
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import {LoginKakaoHandler} from "./page/kakao/LoginKakaoHandler.jsx";
 import LoginSuccess from "./page/kakao/LoginSuccess.jsx";
 import AuthenticationProvider from "./context/AuthenticationProvider.jsx";
-import {BoardMain} from "./page/board/BoardMain.jsx";
-import {RootLayout} from "./page/root/RootLayout.jsx";
+import { BoardMain } from "./page/board/BoardMain.jsx";
+import { RootLayout } from "./page/root/RootLayout.jsx";
 import MemberSignup from "./page/member/memberSignup.jsx";
 import BoardMap from "./page/board/BoardMap.jsx";
+import { ManagementPage } from "./page/manager/ManagementPage.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -24,11 +25,11 @@ axios.interceptors.request.use(function (config) {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout/>,
+    element: <RootLayout />,
     children: [
       {
         index: true,
-        element: <BoardMain/>,
+        element: <BoardMain />,
       },
       {
         path: "board/map",
@@ -36,19 +37,23 @@ const router = createBrowserRouter([
       },
       {
         path: "member/signup",
-        element: <MemberSignup/>,
+        element: <MemberSignup />,
       },
       {
         path: "member/login",
-        element: <MemberLogin/>,
+        element: <MemberLogin />,
       },
       {
         path: "kakao/auth",
-        element: <LoginKakaoHandler/>,
+        element: <LoginKakaoHandler />,
       },
       {
         path: "/loginSuccess",
-        element: <LoginSuccess/>,
+        element: <LoginSuccess />,
+      },
+      {
+        path: "/list",
+        element: <ManagementPage />,
       },
     ],
   },
@@ -58,7 +63,7 @@ function App() {
   return (
     <>
       <AuthenticationProvider>
-        <RouterProvider router={router}/>
+        <RouterProvider router={router} />
       </AuthenticationProvider>
     </>
   );
