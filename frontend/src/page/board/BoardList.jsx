@@ -198,7 +198,7 @@ export function BoardList() {
                 justifyContent="center"
                 p={4}
               >
-                <h3>인기 게시물 Top 3</h3>
+                <h3>조회수 Top 3</h3>
                 {/* 조회수가 높은 게시물 카드 형태로 표시 */}
                 <SimpleGrid columns={[1, null, 3]} gap="40px" mt={4}>
                   {topBoards.slice(0, 3).map((board) => (
@@ -238,7 +238,16 @@ export function BoardList() {
               </Box>
             </div>
             <div>
-              <h3>좋아요 인기 게시글 Top3</h3>
+              <Box
+                mb={8}
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                p={4}
+              >
+                <h3>인기 게시글 Top3</h3>
+              </Box>
             </div>
           </Slider>
         </div>
