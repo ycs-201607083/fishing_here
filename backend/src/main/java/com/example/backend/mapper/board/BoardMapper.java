@@ -89,4 +89,9 @@ public interface BoardMapper {
             WHERE board_number = #{board_number}
             """)
     void updateViewCount(@Param("number") Integer number);
+
+    @Select("""
+            SELECT COUNT(*) FROM board
+            """)
+    Integer countAll();
 }

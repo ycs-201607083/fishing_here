@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -15,9 +16,10 @@ public class BoardService {
 
     private final BoardMapper mapper;
 
-    public List<Board> getAllBoards(String search, String type, String site, Integer page) {
+    public Map<String, Object> getAllBoards(String search, String type, String site, Integer page) {
         page = (page - 1) * 10;
-        return mapper.findAllBoards(search, type, site, page);
+        return Map.of("list", mapper.findAllBoards(search, type, site, page),
+                "count", mapper.countAll());
     }
 
     public List<Board> getTopBoardsByViews() {

@@ -45,7 +45,9 @@ export function BoardList() {
   const [site, setSite] = useState("allSite");
   // 조회수 탑 5개 받기
   const [topBoards, setTopBoards] = useState([]);
+
   const [searchPage, setSearchPage] = useSearchParams();
+  const [count, setCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -84,7 +86,8 @@ export function BoardList() {
       });
 
       console.log(response);
-      setBoardList(response.data);
+      setBoardList(response.data.list);
+      setCount(response.data.count);
     } catch (error) {
       console.error("데이터를 불러오는데 실패했습니다.");
       setErrorMessage("데이터를 불러오는 데 실패하였습니다."); // ** 에러 메시지 추가
@@ -260,24 +263,28 @@ export function BoardList() {
         </Table.Root>
       )}
       {/*페이지 네이션*/}
-      <PaginationRoot
-        onPageChange={handlePageChange}
-        count={1500}
-        pageSize={10}
-        page={page}
-      >
-        <HStack>
-          <PaginationPrevTrigger />
-          <PaginationItems />
-          <PaginationNextTrigger />
-        </HStack>
-      </PaginationRoot>
 
-      <HStack justifyContent="flex-end" wrap="wrap" gap="6">
-        <Button variant="surface" onClick={handleWriteClick}>
-          게시글 작성
-        </Button>
-      </HStack>
+      <Box mt={5} mb={5}>
+        <HStack justifyContent="center" wrap="wrap" gap="6" spacing={10}>
+          {/* 페이지네이션과 버튼을 HStack으로 정렬 */}
+          <PaginationRoot
+            onPageChange={handlePageChange}
+            count={count}
+            pageSize={10}
+            page={page}
+          >
+            <HStack gap="4" justifyContent="center">
+              <PaginationPrevTrigger />
+              <PaginationItems />
+              <PaginationNextTrigger />
+            </HStack>
+          </PaginationRoot>
+
+          <Button variant="surface" onClick={handleWriteClick}>
+            게시글 작성
+          </Button>
+        </HStack>
+      </Box>
     </Box>
   );
 }
