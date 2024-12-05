@@ -65,8 +65,8 @@ public class BoardService {
     }
 
     public boolean validate(Board board) {
-        boolean title = board.getTitle().trim().length() > 0;
-        boolean content = board.getContent().trim().length() > 0;
+        boolean title = !board.getTitle().trim().isEmpty();
+        boolean content = !board.getContent().trim().isEmpty();
 
         return title && content;
     }
@@ -79,6 +79,7 @@ public class BoardService {
                 .map(name -> new BoardFile(name, imageSrcPrefix + "/" + number + "/" + name))
                 .toList();
 
+        board.setFileList(fileSrcList);
         return board;
     }
 }

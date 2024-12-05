@@ -3,7 +3,6 @@ import axios from "axios";
 import {
   Box,
   Card,
-  createListCollection,
   FormatNumber,
   HStack,
   Icon,
@@ -31,13 +30,6 @@ export function BoardAdd() {
   const [progress, setProgress] = useState(false);
   const navigate = useNavigate();
 
-  const kinds = createListCollection({
-    items: [
-      { label: "민물낚시", value: "민물낚시" },
-      { label: "바다낚시", value: "바다낚시" },
-    ],
-  });
-
   console.log(files);
 
   const handleSaveClick = () => {
@@ -61,7 +53,7 @@ export function BoardAdd() {
           type: message.type,
         });
 
-        navigate(`api/board/view/${data.data.id}`);
+        navigate(`/board/view/${data.data.number}`);
       })
       .catch((e) => {
         const message = e.response.data.message;
@@ -88,7 +80,7 @@ export function BoardAdd() {
       invalidOneFileSize = true;
     }
     filesList.push(
-      <Card.Root size={"sm"}>
+      <Card.Root size={"sm"} key={file.name || file.lastModified}>
         <Card.Body>
           <HStack>
             <Text
@@ -100,7 +92,6 @@ export function BoardAdd() {
               <Icon>
                 <CiFileOn />
               </Icon>
-
               {file.name}
             </Text>
             <Text>

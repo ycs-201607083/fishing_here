@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { Box } from "@chakra-ui/react";
+import { Box, Flex, Input, Spinner, Stack, Textarea } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+import { MyHeading } from "../../components/root/MyHeading.jsx";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
+import { Field } from "../../components/ui/field.jsx";
 
 function ImageFileView({ files }) {
   return (
@@ -17,17 +21,51 @@ function ImageFileView({ files }) {
   );
 }
 
-function BoardView(props) {
+export function BoardView() {
   const [board, setBoard] = useState(null);
+  const { number } = useParams();
+  const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
 
   useEffect(() => {
-    axios.get(`api/board/view/${id}`).then((res) => setBoard(res.data));
+    axios
+      .get(`/api/board/view/${number}`)
+      .then((res) => {
+        setBoard(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, []);
+
+  if (board === null) {
+    <Spinner />;
+  }
+
   return (
-    <div>
-      <p>글작성 완료</p>
-      <p>${board}</p>
-    </div>
+    <Box
+      mx={"auto"}
+      w={{
+        md: "500px",
+      }}
+    >
+      <Flex>
+        <MyHeading me={"auto"}>{number} 번 게시물</MyHeading>
+      </Flex>
+      <Stack gap={5}>
+        <Field label="제목" readOnly>
+          <Input value={board.title} />
+        </Field>
+        <Field label="본문" readOnly>
+          <Textarea h={250} value={board.content} />
+        </Field>
+        <Field label="작성자" readOnly>
+          <Input value={board.writer} />
+        </Field>
+        <Field label="낚시 종류" readOnly>
+          <Input value={board.site} />
+        </Field>
+      </Stack>
+    </Box>
   );
 }
 

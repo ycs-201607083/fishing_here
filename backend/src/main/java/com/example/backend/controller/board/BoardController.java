@@ -59,7 +59,7 @@ public class BoardController {
         }
     }
 
-    @GetMapping("board/view/{number}")
+    @GetMapping("view/{number}")
     public Board view(@PathVariable int number) {
         return service.get(number);
     }
