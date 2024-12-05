@@ -5,7 +5,6 @@ import {
   Card,
   FormatNumber,
   HStack,
-  Icon,
   Input,
   Stack,
   Text,
@@ -45,9 +44,6 @@ export function BoardAdd() {
       .then((res) => res.data)
       .then((data) => {
         const message = data.message;
-        console.log(site);
-        console.log(title);
-        console.log(content);
         toaster.create({
           description: message.text,
           type: message.type,
@@ -83,15 +79,13 @@ export function BoardAdd() {
       <Card.Root size={"sm"} key={file.name || file.lastModified}>
         <Card.Body>
           <HStack>
+            <CiFileOn style={{ marginRight: "8px" }} />
             <Text
               css={{ color: file.size > 1024 * 1024 ? "red" : "black" }}
               fontWeight={"bold"}
               me={"auto"}
               truncate
             >
-              <Icon>
-                <CiFileOn />
-              </Icon>
               {file.name}
             </Text>
             <Text>

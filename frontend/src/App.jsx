@@ -17,10 +17,13 @@ import BoardView from "./page/board/BoardView.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
-
+  // const kakaoToken = localStorage.getItem("kakaoToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // else if (kakaoToken) {
+  //   config.headers.Authorization = `Bearer ${kakaoToken}`;
+  // }
 
   return config;
 });
@@ -63,7 +66,7 @@ const router = createBrowserRouter([
         element: <BoardAdd />,
       },
       {
-        path: "board/view/:id",
+        path: "board/view/:number",
         element: <BoardView />,
       },
     ],

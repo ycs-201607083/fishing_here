@@ -44,7 +44,7 @@ public class BoardService {
 
             //파일 업로드
             for (MultipartFile file : files) {
-                String objectKey = "imageFile/" + board.getWriter() + file.getOriginalFilename();
+                String objectKey = board.getWriter() + "/" + file.getOriginalFilename();
                 PutObjectRequest por = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(objectKey)
@@ -58,6 +58,7 @@ public class BoardService {
 
                 //board_file 테이블에 파일명 입력
                 mapper.insertFile(board.getNumber(), file.getOriginalFilename());
+
             }
         }
 
@@ -76,7 +77,7 @@ public class BoardService {
         List<String> fileNameList = mapper.selectFilesByBoardId(number);
         List<BoardFile> fileSrcList = fileNameList
                 .stream()
-                .map(name -> new BoardFile(name, imageSrcPrefix + "/" + number + "/" + name))
+                .map(name -> new BoardFile(name, imageSrcPrefix + "/" + board.getWriter() + "/" + name))
                 .toList();
 
         board.setFileList(fileSrcList);

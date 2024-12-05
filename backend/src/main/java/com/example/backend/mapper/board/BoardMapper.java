@@ -71,20 +71,20 @@ public interface BoardMapper {
 
     @Insert("""
                     INSERT INTO board_file
-                    VALUES (#{boardId}, ${name});
+                    VALUES (#{id}, #{fileName});
             """)
-    void insertFile(Integer boardId, String fileName);
+    void insertFile(Integer id, String fileName);
 
     @Select("""
                         SELECT 
-                board_number number,
-            board_title title, 
-            board_writer writer, 
-            board_date AS date,
-             board_content content,
-              board_site site
-                        FROM board
-                        WHERE board_number = #{number}
+                        board_number number,
+                        board_title title, 
+                        board_writer writer, 
+                        board_date AS date,
+                        board_content content,
+                        board_site site
+                                    FROM board
+                                    WHERE board_number = #{number}
             """)
     Board selectById(int number);
 
