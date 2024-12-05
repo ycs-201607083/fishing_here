@@ -124,7 +124,6 @@ export function KakaoMap() {
       gap={"5"}
       mx="auto"
       w={{ md: "1500px" }}
-      mt="100px"
       bgColor="gray.100"
       borderRadius="md"
       boxShadow="md"
