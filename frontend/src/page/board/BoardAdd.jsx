@@ -121,7 +121,8 @@ export function BoardAdd() {
         </Field>
         <Field label={"본문"}>
           <Textarea
-            h={250}
+            resize={"none"}
+            h={400}
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />

@@ -3,16 +3,29 @@ import axios from "axios";
 import {
   Box,
   Flex,
+  HStack,
   Image,
   Input,
   Spinner,
   Stack,
   Textarea,
 } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { MyHeading } from "../../components/root/MyHeading.jsx";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 import { Field } from "../../components/ui/field.jsx";
+import { Button } from "../../components/ui/button.jsx";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog.jsx";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 function ImageFileView({ files }) {
   return (
@@ -36,6 +49,7 @@ export function BoardView() {
   const [board, setBoard] = useState(null);
   const { number } = useParams();
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -50,8 +64,26 @@ export function BoardView() {
   }, []);
 
   if (board === null) {
-    return <Spinner />;
+    return (
+      <Box>
+        <p>존재하지 않는 페이지 입니다.</p>
+        <Spinner />
+      </Box>
+    );
   }
+
+  const handleDeleteClick = () => {
+    axios
+      .delete(`/api/board/delete/${number}`)
+      .then((res) => res.data)
+      .then((data) => {
+        toaster.create({
+          type: data.message.type,
+          description: data.message.text,
+        });
+        navigate("/board/list");
+      });
+  };
 
   return (
     <Box
@@ -68,7 +100,7 @@ export function BoardView() {
           <Input value={board.title} />
         </Field>
         <Field label="본문" readOnly>
-          <Textarea h={250} value={board.content} />
+          <Textarea resize={"none"} h={400} value={board.content} />
         </Field>
         <ImageFileView files={board.fileList} />
         <Field label="작성자" readOnly>
@@ -80,7 +112,40 @@ export function BoardView() {
         <Field label="작성일시" readOnly>
           <Input value={board.date} />
         </Field>
+
+        {hasAccess(board.writer) && (
+          <HStack>
+            <Button
+              colorPalette={"cyan"}
+              onClick={() => navigate(`/board/edit/${board.number}`)}
+            >
+              수정
+            </Button>
+            <DialogRoot>
+              <DialogTrigger asChild>
+                <Button colorPalette={"red"}>삭제</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>삭제 확인</DialogTitle>
+                </DialogHeader>
+                <DialogBody>
+                  <p>{number}번 게시물을 삭제 할까요?</p>
+                </DialogBody>
+                <DialogFooter>
+                  <DialogActionTrigger>
+                    <Button variant={"outline"}>취소</Button>
+                  </DialogActionTrigger>
+                  <Button colorPalette={"red"} onClick={handleDeleteClick}>
+                    삭제
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </DialogRoot>
+          </HStack>
+        )}
       </Stack>
+      <hr />
     </Box>
   );
 }
