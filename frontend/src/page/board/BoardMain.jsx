@@ -1,8 +1,9 @@
-import { Box, Center, Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Center, Image, Text } from "@chakra-ui/react";
 import { MyHeading } from "../../components/root/MyHeading.jsx";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import { useEffect, useState } from "react";
 
 function NexArrow(props) {
   const { className, style, onClick } = props;
@@ -27,6 +28,16 @@ function PrevArrow(props) {
 }
 
 export function BoardMain() {
+  const [cityName, setCityName] = useState("");
+  const appKey = import.meta.env.VITE_WEATHER_API_KEY;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${appKey}`;
+
+  useEffect(() => {
+    setCityName("seoul");
+  }, []);
+
+  console.log(cityName);
+
   const categories = [
     { name: "가전제품", src: "src/components/Image/가전제품.jpg" },
     { name: "생활용품", src: "src/components/Image/생활용품.jpg" },
@@ -68,7 +79,6 @@ export function BoardMain() {
   return (
     <Box>
       <MyHeading>메인페이지</MyHeading>
-
 
       <Center>
         <Box w="40%">

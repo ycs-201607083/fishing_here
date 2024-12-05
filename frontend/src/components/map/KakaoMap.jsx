@@ -47,6 +47,7 @@ export function KakaoMap() {
 
   const handleClickButton = () => {
     if (!keyWord || !searchService || !map) {
+      alert("검색어를 입력하세요");
       return;
     }
 
