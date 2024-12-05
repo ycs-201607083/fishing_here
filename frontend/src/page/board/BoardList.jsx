@@ -264,7 +264,7 @@ export function BoardList() {
             데이터를 불러오는 데 실페하였습니다.
           </Alert>
         ) : boardList.length === 0 ? ( // ** 검색 결과 없음 조건
-          <Center flexDirection="column" gap={2}>
+          <Center flexDirection="column" gap={2} mt="35px">
             <h2>해당 게시글이 없습니다.</h2>
             <Box
               as="p"
@@ -314,7 +314,7 @@ export function BoardList() {
         <Box mt={5} mb={5}>
           <HStack spacing={10} justifyContent="space-between">
             {/* 페이지네이션 중앙 정렬 */}
-            <HStack gap="4" justifyContent="center" flex="1">
+            <HStack gap="4" justifyContent="center" flex="1" ml="150px">
               <PaginationRoot
                 onPageChange={handlePageChange}
                 count={count}
