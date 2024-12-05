@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   Center,
+  Flex,
   HStack,
   IconButton,
   Image,
@@ -265,24 +266,27 @@ export function BoardList() {
       {/*페이지 네이션*/}
 
       <Box mt={5} mb={5}>
-        <HStack justifyContent="center" wrap="wrap" gap="6" spacing={10}>
-          {/* 페이지네이션과 버튼을 HStack으로 정렬 */}
-          <PaginationRoot
-            onPageChange={handlePageChange}
-            count={count}
-            pageSize={10}
-            page={page}
-          >
-            <HStack gap="4" justifyContent="center">
+        <HStack spacing={10} justifyContent="space-between">
+          {/* 페이지네이션 중앙 정렬 */}
+          <HStack gap="4" justifyContent="center" flex="1">
+            <PaginationRoot
+              onPageChange={handlePageChange}
+              count={count}
+              pageSize={10}
+              page={page}
+            >
               <PaginationPrevTrigger />
               <PaginationItems />
               <PaginationNextTrigger />
-            </HStack>
-          </PaginationRoot>
+            </PaginationRoot>
+          </HStack>
 
-          <Button variant="surface" onClick={handleWriteClick}>
-            게시글 작성
-          </Button>
+          {/* 버튼 왼쪽 끝에 정렬 */}
+          <Flex justifyContent="flex-start" mr="115px">
+            <Button variant="surface" onClick={handleWriteClick}>
+              게시글 작성
+            </Button>
+          </Flex>
         </HStack>
       </Box>
     </Box>
