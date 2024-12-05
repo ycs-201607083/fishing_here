@@ -1,9 +1,10 @@
-import { Box, Center, Image, Text } from "@chakra-ui/react";
-import { MyHeading } from "../../components/root/MyHeading.jsx";
+import { Box, Center, Image, Input, Text } from "@chakra-ui/react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { useEffect, useState } from "react";
+import { toaster } from "../../components/ui/toaster.jsx";
+import cityMap from "../../components/data/cityMap.json";
 
 function NexArrow(props) {
   const { className, style, onClick } = props;
@@ -28,15 +29,17 @@ function PrevArrow(props) {
 }
 
 export function BoardMain() {
-  const [cityName, setCityName] = useState("");
+  const [cityName, setCityName] = useState("서울");
+  const [weather, setWeather] = useState(null);
   const appKey = import.meta.env.VITE_WEATHER_API_KEY;
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${appKey}`;
 
   useEffect(() => {
-    setCityName("seoul");
+    SearchWeatherByCity(cityName);
   }, []);
 
-  console.log(cityName);
+  const getEnglishCityName = (koreanCityName) => {
+    return cityMap[koreanCityName] || koreanCityName;
+  };
 
   const categories = [
     { name: "가전제품", src: "src/components/Image/가전제품.jpg" },
@@ -58,27 +61,51 @@ export function BoardMain() {
     prevArrow: <PrevArrow />,
   };
 
-  const boxStyle = {
-    w: "150px",
-    h: "150px",
-    bgColor: "white",
-    textAlign: "center",
-    cursor: "pointer",
-  };
-
-  const tagImageStyle = {
-    mx: "auto",
-    w: "100px",
-    h: "100px",
-  };
-
   function handleClick(category) {
     console.log(`${category} 클릭`);
   }
 
+  const SearchWeatherByCity = async (city) => {
+    try {
+      const engCityName = getEnglishCityName(city);
+
+      const url = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${engCityName}&appid=${appKey}&lang=kr&unit=metric`,
+      );
+
+      if (!url.ok) {
+        toaster.create({
+          type: "error",
+          description: "제대로된 도시명을 입력하세요",
+        });
+      }
+    } catch (e) {
+      toaster.create({
+        type: "error",
+        description: "제대로된 도시명을 입력하세요",
+      });
+      setWeather(null);
+    }
+  };
+
+  const HandleInputCity = (e) => {
+    if (e.key === "Enter") {
+      SearchWeatherByCity(cityName);
+    }
+  };
+
   return (
     <Box>
-      <MyHeading>메인페이지</MyHeading>
+      <Center>
+        <Input
+          w={"40%"}
+          value={cityName}
+          textAlign="center"
+          fontSize={"25px"}
+          onChange={(e) => setCityName(e.target.value)}
+          onKeyDown={HandleInputCity}
+        />
+      </Center>
 
       <Center>
         <Box w="40%">
