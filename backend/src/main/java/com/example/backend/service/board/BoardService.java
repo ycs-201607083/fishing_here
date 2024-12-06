@@ -17,6 +17,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -32,8 +33,18 @@ public class BoardService {
     @Value("${bucket.name}")
     String bucketName;
 
-    public List<Board> getAllBoards(String search, String type, String site) {
-        return mapper.findAllBoards(search, type, site);
+    public Map<String, Object> getAllBoards(String search, String type, String site, Integer page) {
+        page = (page - 1) * 10;
+        return Map.of("list", mapper.findAllBoards(search, type, site, page),
+                "count", mapper.countAll());
+    }
+
+    public List<Board> getTopBoardsByViews() {
+        return mapper.findTopBoardsByViews();
+    }
+
+    public void increaseViewCount(Integer number) {
+        mapper.updateViewCount(number);
     }
 
     public boolean add(Board board, MultipartFile[] files, Authentication auth) {

@@ -55,11 +55,41 @@ public interface BoardMapper {
                                   )
                             </if>
                 ORDER BY board_number DESC
-                </script>
+                LIMIT #{offset}, 10        
+                    </script>
             """)
     List<Board> findAllBoards(@Param("keyword") String keyword,
                               @Param("type") String type,
-                              @Param("site") String site);
+                              @Param("site") String site,
+                              Integer offset);
+
+    @Select("""
+                SELECT
+                    board_number AS number,
+                    board_title AS title,
+                    board_writer AS writer,
+                    board_view_count AS viewCount,
+                    board_date AS date,
+                    board_content AS content,
+                    board_site AS site
+                FROM board
+                ORDER BY board_view_count DESC
+                LIMIT 3
+            """)
+    List<Board> findTopBoardsByViews();
+
+
+    @Update("""
+            UPDATE board
+            SET board_view_count = board_view_count + 1
+            WHERE board_number = #{board_number}
+            """)
+    void updateViewCount(@Param("number") Integer number);
+
+    @Select("""
+            SELECT COUNT(*) FROM board
+            """)
+    Integer countAll();
 
     @Insert("""
                     INSERT INTO board

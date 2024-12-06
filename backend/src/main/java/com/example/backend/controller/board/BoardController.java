@@ -3,17 +3,19 @@ package com.example.backend.controller.board;
 import com.example.backend.dto.board.Board;
 import com.example.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/board")
 @RequiredArgsConstructor
@@ -28,13 +30,23 @@ public class BoardController {
     }
 
     @GetMapping("list")
-    public List<Board> searchBoards(@RequestParam(value = "keyword", defaultValue = "") String search,
-                                    @RequestParam(value = "type", defaultValue = "all") String type,
-                                    @RequestParam(value = "site", defaultValue = "allSite") String site
+    public Map<String, Object> searchBoards(@RequestParam(value = "keyword", defaultValue = "") String search,
+                                            @RequestParam(value = "type", defaultValue = "all") String type,
+                                            @RequestParam(value = "site", defaultValue = "allSite") String site,
+                                            @RequestParam(value = "page", defaultValue = "1") Integer page
     ) {
-        return service.getAllBoards(search, type, site);
+        return service.getAllBoards(search, type, site, page);
     }
 
+    @GetMapping("/top-views")
+    public List<Board> getTopBoardsByViews() {
+        return service.getTopBoardsByViews();
+    }
+
+    @PostMapping("/view/{number}")
+    public void increaseViewCount(@PathVariable Integer number) {
+        service.increaseViewCount(number);
+    }
     @PostMapping("add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> add(
@@ -86,5 +98,5 @@ public class BoardController {
                             , "text", "삭제 권한이 없습니다.")));
         }
     }
-}
 
+}
