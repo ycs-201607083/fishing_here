@@ -21,6 +21,7 @@ import {
   NativeSelectRoot,
 } from "../../components/ui/native-select.jsx";
 import { Switch } from "../../components/ui/switch";
+import { KakaoMap } from "../../components/map/KakaoMap.jsx";
 
 export function BoardAdd() {
   const [title, setTitle] = useState("");
@@ -31,8 +32,15 @@ export function BoardAdd() {
   const navigate = useNavigate();
   const [checkedSwitch, setCheckedSwitch] = useState(false);
 
+  const handleToggle = (event) => {
+    const checked = event.target.checked;
+    setCheckedSwitch(checked);
+  };
+
   const handleBackClick = () => {
-    navigate("/board/list");
+    if (confirm("입력한 정보는 저장되지 않습니다.\n게시판으로 이동 할까요?")) {
+      navigate("/board/list");
+    }
   };
 
   const handleSaveClick = () => {
@@ -77,7 +85,6 @@ export function BoardAdd() {
     content.trim().length > 0 &&
     site
   );
-
   // files 의 파일명을 component 리스트로 만들기
   const filesList = [];
   let sumOfFileSize = 0;
@@ -176,12 +183,13 @@ export function BoardAdd() {
         <Stack>
           <Switch
             checked={checkedSwitch}
-            onCheckedChange={(e) => setCheckedSwitch(e.checked)}
+            onChange={handleToggle}
             colorPalette={"blue"}
           >
-            {console.log("switchCheck", checkedSwitch)}
-            자신의 명당을 지도로 표시할까요?
+            자신의 명당을 맵으로 공유하기
           </Switch>
+
+          {checkedSwitch && <KakaoMap />}
         </Stack>
         <Stack direction={"row"} mb={4}>
           <Box>
