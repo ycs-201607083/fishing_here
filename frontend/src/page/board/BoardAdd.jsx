@@ -20,6 +20,7 @@ import {
   NativeSelectField,
   NativeSelectRoot,
 } from "../../components/ui/native-select.jsx";
+import { Switch } from "../../components/ui/switch";
 
 export function BoardAdd() {
   const [title, setTitle] = useState("");
@@ -28,7 +29,11 @@ export function BoardAdd() {
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState(false);
   const navigate = useNavigate();
-  const [switchOn, setSwitchOn] = useState(false);
+  const [checkedSwitch, setCheckedSwitch] = useState(false);
+
+  const handleBackClick = () => {
+    navigate("/board/list");
+  };
 
   const handleSaveClick = () => {
     setProgress(true);
@@ -118,13 +123,17 @@ export function BoardAdd() {
     <Box
       mx={"auto"}
       w={{
-        md: "500px",
+        md: "80%",
       }}
     >
       <MyHeading>게시물 작성</MyHeading>
       <Stack gap={5}>
         <Field label={"제목"}>
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+          <Input
+            w={"100%"}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </Field>
         <Field label={"본문"}>
           <Textarea
@@ -164,15 +173,33 @@ export function BoardAdd() {
           </Field>
           <Box my={7}>{filesList}</Box>
         </Box>
-        <Box>
-          <Button
-            disabled={disabled}
-            loading={progress}
-            onClick={handleSaveClick}
+        <Stack>
+          <Switch
+            checked={checkedSwitch}
+            onCheckedChange={(e) => setCheckedSwitch(e.checked)}
+            colorPalette={"blue"}
           >
-            저장
-          </Button>
-        </Box>
+            {console.log("switchCheck", checkedSwitch)}
+            자신의 명당을 지도로 표시할까요?
+          </Switch>
+        </Stack>
+        <Stack direction={"row"} mb={4}>
+          <Box>
+            <Button
+              w={100}
+              disabled={disabled}
+              loading={progress}
+              onClick={handleSaveClick}
+            >
+              저장
+            </Button>
+          </Box>
+          <Box>
+            <Button w={100} onClick={handleBackClick}>
+              돌아가기
+            </Button>
+          </Box>
+        </Stack>
       </Stack>
     </Box>
   );
