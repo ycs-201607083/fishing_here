@@ -1,10 +1,10 @@
-import { Box, Center, Image, Input, Text } from "@chakra-ui/react";
+import { Box, Center, Input, Stack } from "@chakra-ui/react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
 import { useEffect, useState } from "react";
 import { toaster } from "../../components/ui/toaster.jsx";
-import cityMap from "../../components/data/cityMap.json";
+import weatherCityMapFromKr from "../../components/data/weatherCityMapFromKr.json";
+import { WeatherCard } from "../../components/root/WeatherCard.jsx";
 
 function NexArrow(props) {
   const { className, style, onClick } = props;
@@ -38,7 +38,7 @@ export function BoardMain() {
   }, []);
 
   const getEnglishCityName = (koreanCityName) => {
-    return cityMap[koreanCityName] || koreanCityName;
+    return weatherCityMapFromKr[koreanCityName] || koreanCityName;
   };
 
   const categories = [
@@ -70,18 +70,19 @@ export function BoardMain() {
     try {
       const engCityName = getEnglishCityName(city);
 
-      const url = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${engCityName}&appid=${appKey}&lang=kr&unit=metric`,
-      );
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${engCityName}&appid=${appKey}&lang=kr&unit=metric`;
 
-      if (!url.ok) {
+      const response = await fetch(url);
+
+      if (!response.ok) {
         toaster.create({
           type: "error",
           description: "제대로된 도시명을 입력하세요",
         });
-        const data = await url.json();
-        setWeather(data);
+        return;
       }
+      const data = await response.json();
+      setWeather(data);
     } catch (e) {
       toaster.create({
         type: "error",
@@ -100,39 +101,41 @@ export function BoardMain() {
   return (
     <Box>
       <Center>
-        <Input
-          w={"40%"}
-          value={cityName}
-          textAlign="center"
-          fontSize={"25px"}
-          onChange={(e) => setCityName(e.target.value)}
-          onKeyDown={HandleInputCity}
-        />
+        <Stack w={"30%"}>
+          <Input
+            value={cityName}
+            textAlign="center"
+            fontSize={"25px"}
+            onChange={(e) => setCityName(e.target.value)}
+            onKeyDown={HandleInputCity}
+          />
+          {weather && <WeatherCard weather={weather} />}
+        </Stack>
       </Center>
 
-      <Center>
-        <Box w="40%">
-          <Slider {...sliderSettings}>
-            {categories.map((category) => (
-              <Box
-                key={category.name}
-                textAlign="center"
-                cursor="pointer"
-                onClick={() => handleClick(category.name)}
-              >
-                <Image
-                  mx="auto"
-                  w="100px"
-                  h="100px"
-                  src={category.src}
-                  alt={category.name}
-                />
-                <Text mt="4">{category.name}</Text>
-              </Box>
-            ))}
-          </Slider>
-        </Box>
-      </Center>
+      {/*<Center>*/}
+      {/*  <Box w="40%">*/}
+      {/*    <Slider {...sliderSettings}>*/}
+      {/*      {categories.map((category) => (*/}
+      {/*        <Box*/}
+      {/*          key={category.name}*/}
+      {/*          textAlign="center"*/}
+      {/*          cursor="pointer"*/}
+      {/*          onClick={() => handleClick(category.name)}*/}
+      {/*        >*/}
+      {/*          <Image*/}
+      {/*            mx="auto"*/}
+      {/*            w="100px"*/}
+      {/*            h="100px"*/}
+      {/*            src={category.src}*/}
+      {/*            alt={category.name}*/}
+      {/*          />*/}
+      {/*          <Text mt="4">{category.name}</Text>*/}
+      {/*        </Box>*/}
+      {/*      ))}*/}
+      {/*    </Slider>*/}
+      {/*  </Box>*/}
+      {/*</Center>*/}
     </Box>
   );
 }
