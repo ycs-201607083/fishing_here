@@ -65,6 +65,7 @@ export function BoardMain() {
     console.log(`${category} 클릭`);
   }
 
+  // 날씨 초기화
   const SearchWeatherByCity = async (city) => {
     try {
       const engCityName = getEnglishCityName(city);
@@ -78,6 +79,8 @@ export function BoardMain() {
           type: "error",
           description: "제대로된 도시명을 입력하세요",
         });
+        const data = await url.json();
+        setWeather(data);
       }
     } catch (e) {
       toaster.create({
