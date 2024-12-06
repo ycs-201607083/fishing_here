@@ -1,10 +1,12 @@
-import { Box, Center, Input, Stack } from "@chakra-ui/react";
+import { Box, IconButton, Image, Input, Stack, Text } from "@chakra-ui/react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toaster } from "../../components/ui/toaster.jsx";
 import weatherCityMapFromKr from "../../components/data/weatherCityMapFromKr.json";
 import { WeatherCard } from "../../components/root/WeatherCard.jsx";
+import Slider from "react-slick";
+import { IoIosArrowUp } from "react-icons/io";
 
 function NexArrow(props) {
   const { className, style, onClick } = props;
@@ -29,13 +31,13 @@ function PrevArrow(props) {
 }
 
 export function BoardMain() {
-  const [cityName, setCityName] = useState("서울");
+  const [cityName, setCityName] = useState("");
   const [weather, setWeather] = useState(null);
   const appKey = import.meta.env.VITE_WEATHER_API_KEY;
 
-  useEffect(() => {
-    SearchWeatherByCity(cityName);
-  }, []);
+  // useEffect(() => {
+  //   SearchWeatherByCity(cityName);
+  // }, []);
 
   const getEnglishCityName = (koreanCityName) => {
     return weatherCityMapFromKr[koreanCityName] || koreanCityName;
@@ -99,44 +101,56 @@ export function BoardMain() {
   };
 
   return (
-    <Box>
-      <Center>
-        <Stack w={"30%"}>
+    <Box display="flex" flexDirection="column" alignItems="center">
+      <Box
+        boxShadow="lg"
+        bg="blue.200"
+        maxWidth="400px"
+        borderRadius="lg"
+        p="5"
+        zIndex={2}
+        position={"Fixed"}
+      >
+        <Stack>
           <Input
+            variant="subtle"
             value={cityName}
             textAlign="center"
             fontSize={"25px"}
-            placeHolder={"도시명을 입력하세요"}
+            placeholder={"도시명을 입력하세요"}
             onChange={(e) => setCityName(e.target.value)}
             onKeyDown={HandleInputCity}
           />
           {weather && <WeatherCard weather={weather} />}
+          {weather && (
+            <IconButton onClick={() => setWeather(null)}>
+              <IoIosArrowUp />
+            </IconButton>
+          )}
         </Stack>
-      </Center>
+      </Box>
 
-      {/*<Center>*/}
-      {/*  <Box w="40%">*/}
-      {/*    <Slider {...sliderSettings}>*/}
-      {/*      {categories.map((category) => (*/}
-      {/*        <Box*/}
-      {/*          key={category.name}*/}
-      {/*          textAlign="center"*/}
-      {/*          cursor="pointer"*/}
-      {/*          onClick={() => handleClick(category.name)}*/}
-      {/*        >*/}
-      {/*          <Image*/}
-      {/*            mx="auto"*/}
-      {/*            w="100px"*/}
-      {/*            h="100px"*/}
-      {/*            src={category.src}*/}
-      {/*            alt={category.name}*/}
-      {/*          />*/}
-      {/*          <Text mt="4">{category.name}</Text>*/}
-      {/*        </Box>*/}
-      {/*      ))}*/}
-      {/*    </Slider>*/}
-      {/*  </Box>*/}
-      {/*</Center>*/}
+      <Box w="40%" mt={"200px"} zIndex={1}>
+        <Slider {...sliderSettings}>
+          {categories.map((category) => (
+            <Box
+              key={category.name}
+              textAlign="center"
+              cursor="pointer"
+              onClick={() => handleClick(category.name)}
+            >
+              <Image
+                mx="auto"
+                w="100px"
+                h="100px"
+                src={category.src}
+                alt={category.name}
+              />
+              <Text mt="4">{category.name}</Text>
+            </Box>
+          ))}
+        </Slider>
+      </Box>
     </Box>
   );
 }

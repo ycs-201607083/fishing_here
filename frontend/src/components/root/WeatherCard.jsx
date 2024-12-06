@@ -1,4 +1,4 @@
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box, Heading, Image, Text } from "@chakra-ui/react";
 import { weatherDescriptions } from "../data/WeatherDescriptions.jsx";
 
 export const WeatherCard = ({ weather }) => {
@@ -11,22 +11,15 @@ export const WeatherCard = ({ weather }) => {
 
   //날씨코드 번역
   const transWeather = getWeather(weatherDetails[0].id);
-  const a = weatherDetails[0].icon;
+  const wIcon = weatherDetails[0].icon;
+  const wIconUrl = `https://openweathermap.org/img/wn/${wIcon}@2x.png`;
 
   return (
-    <Box
-      borderWidth="1px"
-      borderRadius="lg"
-      p="6"
-      boxShadow="lg"
-      bg="blue.50"
-      textAlign="center"
-      maxWidth="300px"
-      mx="auto"
-    >
+    <Box p="6" textAlign="center">
       <Heading size="lg" mb="4">
         {name}
       </Heading>
+      <Image mx={"auto"} src={wIconUrl} />
       <Text> {transWeather}</Text>
       <Text fontSize="2xl" fontWeight="bold">
         {Math.round(main.temp - 273.15)}°C
