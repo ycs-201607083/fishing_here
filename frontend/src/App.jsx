@@ -12,13 +12,18 @@ import BoardMap from "./page/board/BoardMap.jsx";
 import { ManagementPage } from "./page/manager/ManagementPage.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { BoardList } from "./page/board/BoardList.jsx";
+import { BoardAdd } from "./page/board/BoardAdd.jsx";
+import BoardView from "./page/board/BoardView.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
-
+  // const kakaoToken = localStorage.getItem("kakaoToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // else if (kakaoToken) {
+  //   config.headers.Authorization = `Bearer ${kakaoToken}`;
+  // }
 
   return config;
 });
@@ -49,12 +54,20 @@ const router = createBrowserRouter([
         element: <LoginKakaoHandler />,
       },
       {
-        path: "/memberList",
+        path: "/manager/List",
         element: <ManagementPage />,
       },
       {
         path: "board/list",
         element: <BoardList />,
+      },
+      {
+        path: "board/add",
+        element: <BoardAdd />,
+      },
+      {
+        path: "board/view/:number",
+        element: <BoardView />,
       },
     ],
   },

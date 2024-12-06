@@ -1,10 +1,7 @@
 package com.example.backend.mapper.board;
 
 import com.example.backend.dto.board.Board;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -66,7 +63,6 @@ public interface BoardMapper {
                               @Param("site") String site,
                               Integer offset);
 
-
     @Select("""
                 SELECT
                     board_number AS number,
@@ -94,4 +90,45 @@ public interface BoardMapper {
             SELECT COUNT(*) FROM board
             """)
     Integer countAll();
+
+    @Insert("""
+                    INSERT INTO board
+                    (board_title, board_content, board_writer, board_site)
+                    VALUES (#{title}, #{content}, #{writer}, #{site})
+            """)
+    @Options(keyProperty = "number", useGeneratedKeys = true)
+    int insert(Board board);
+
+    @Insert("""
+                    INSERT INTO board_file
+                    VALUES (#{id}, #{fileName});
+            """)
+    void insertFile(Integer id, String fileName);
+
+    @Select("""
+                        SELECT 
+                        board_number number,
+                        board_title title, 
+                        board_writer writer, 
+                        board_date AS date,
+                        board_content content,
+                        board_site site
+                                    FROM board
+                                    WHERE board_number = #{number}
+            """)
+    Board selectById(int number);
+
+    @Select("""
+            SELECT name 
+            FROM board_file
+            WHERE board_id = #{number}
+            """)
+    List<String> selectFilesByBoardId(int number);
+
+    @Delete("""
+                    DELETE
+                    FROM board
+                    WHERE board_number = #{number}
+            """)
+    int deleteById(int number);
 }

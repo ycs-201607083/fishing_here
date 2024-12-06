@@ -9,7 +9,7 @@ export function ManagementPage() {
   const [boardList, setBoardList] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get("/api/list")
+    axios.get("/api/manager/list")
       .then((res) => {
         const {members, boards} = res.data
         setMemberList(members);
@@ -17,8 +17,6 @@ export function ManagementPage() {
       })
       .catch((e) => {
         console.log(e)
-      })
-      .finally(() => {
         console.log("error")
       })
   }, []);
@@ -32,6 +30,7 @@ export function ManagementPage() {
   if (!memberList || memberList.length === 0) {
     return <h3>회원 목록이 존재하지 않습니다.</h3>;
   }
+
   return (
       <Flex
         wrap="wrap" // 공간이 부족할 때 다음 줄로 넘어감
@@ -46,8 +45,6 @@ export function ManagementPage() {
           w="100%"
           h="100%"
           overflow="auto" // 스크롤 활성화
-          border="1px solid"
-          borderColor="gray.300"
           p="4"
         >
           <TableRoot interactive>
@@ -60,17 +57,25 @@ export function ManagementPage() {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {memberList.map((member) => (
-                <Table.Row
-                  omClick={() => handleRowClick(member.id)}
-                  key={member.id}
-                >
-                  <Table.Cell>{member.id}</Table.Cell>
-                  <Table.Cell>{member.email}</Table.Cell>
-                  <Table.Cell>{member.inserted}</Table.Cell>
-                  <Table.Cell>{member.point}점</Table.Cell>
+              {memberList.length > 0 ? (
+                memberList.map((member) => (
+                  <Table.Row
+                    onClick={() => handleRowClick(member.id)}
+                    key={member.id}
+                  >
+                    <Table.Cell>{member.id}</Table.Cell>
+                    <Table.Cell>{member.email}</Table.Cell>
+                    <Table.Cell>{member.inserted}</Table.Cell>
+                    <Table.Cell>{member.point}점</Table.Cell>
+                  </Table.Row>
+                ))
+              ) : (
+                <Table.Row>
+                  <Table.Cell colSpan={4} style={{textAlign: "center"}}>
+                    <p>회원이 등록되지 않았습니다.</p>
+                  </Table.Cell>
                 </Table.Row>
-              ))}
+              )}
             </Table.Body>
           </TableRoot>
         </Box>
@@ -78,12 +83,11 @@ export function ManagementPage() {
 
         <Flex direction="column" w="100%" h="40%">
           <MyHeading>게시글 목록</MyHeading>
+
           <Box
             w="100%"
             h="100%"
             overflow="auto" // 스크롤 활성화
-            border="1px solid"
-            borderColor="gray.300"
             p="4"
           >
             <TableRoot interactive>
@@ -92,19 +96,31 @@ export function ManagementPage() {
                   <Table.ColumnHeader>게시글 번호</Table.ColumnHeader>
                   <Table.ColumnHeader>제목</Table.ColumnHeader>
                   <Table.ColumnHeader>작성자</Table.ColumnHeader>
+                  <Table.ColumnHeader>작성일자</Table.ColumnHeader>
+                  <Table.ColumnHeader>낚시종류</Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {boardList.map((board) => (
-                  <Table.Row
-                    omClick={() => handleRowClick(member.id)}
-                    key={board.number}
-                  >
-                    <Table.Cell>{board.number}</Table.Cell>
-                    <Table.Cell>{board.title}</Table.Cell>
-                    <Table.Cell>{board.writer}</Table.Cell>
+                {boardList.length > 0 ? (
+                  boardList.map((board) => (
+                    <Table.Row
+                      onClick={() => handleRowClick(board.number)}
+                      key={board.number}
+                    >
+                      <Table.Cell>{board.number}</Table.Cell>
+                      <Table.Cell>{board.title}</Table.Cell>
+                      <Table.Cell>{board.writer}</Table.Cell>
+                      <Table.Cell>{board.date}</Table.Cell>
+                      <Table.Cell>{board.site}</Table.Cell>
+                    </Table.Row>
+                ))
+                ): (
+                  <Table.Row>
+                    <Table.Cell colSpan={5} style={{ textAlign: "center" }}>
+                      <p>게시글이 등록되지 않았습니다.</p>
+                    </Table.Cell>
                   </Table.Row>
-                ))}
+                )}
               </Table.Body>
             </TableRoot>
           </Box>

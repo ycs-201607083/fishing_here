@@ -18,7 +18,7 @@ public interface ManagerMapper {
     List<Member> selectMemberAll();
 
     @Select("""
-                    SELECT board_number number, board_title title, board_writer writer
+                    SELECT board_number number, board_title title, board_writer writer, board_date date, board_site site
                     from board
                     ORDER BY board_number;
             """)

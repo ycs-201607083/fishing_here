@@ -13,44 +13,12 @@ export function MemberLogin(props) {
   const authentication = useContext(AuthenticationContext);
   const REST_API_KEY = import.meta.env.VITE_KAKAO_LOGIN_API_KEY;
   const REDIRECT_URI = import.meta.env.VITE_KAKAO_LOGIN_REDIRECT_URL;
-  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
   const navigate = useNavigate();
+  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
-  const handleLogin = () => {
+   const handleLogin = () => {
     window.location.href = kakaoURL;
-  };
-
-  /* const url = new URL(window.location.href);
-   const code = url.searchParams.get("code");
-   useEffect(() => {
-     axios.get(`${REDIRECT_URI}kakaoLogin${code}`).then((r) => {
-       console.log(r.data);
-       localStorage.setItem("name", r.data.user_name);
-
-       navigate("/member/login");
-     });
-   }, []);
-
- useEffect(() => {
-   try {
-     const code = new URL(window.location.href).searchParams.get("code");
-     console.log("code : " + code);
-     if (code) {
-       axios
-         .get(`http://localhost:5173/auth?code=${code}`)
-         .then((response) => {
-           console.log("Success:", response.data);
-         })
-         .catch((error) => {
-           console.error("Error:", error);
-         });
-     } else {
-       console.error("No code parameter found in URL");
-     }
-   } catch (err) {
-     console.error("Unexpected error in AuthHandler:", err);
-   }
- }, []);*/
+  }
 
   function handleLoginClick() {
     axios
@@ -77,6 +45,7 @@ export function MemberLogin(props) {
       })
       .finally();
   }
+
 
   return (
     <Box>
