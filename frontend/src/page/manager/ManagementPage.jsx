@@ -9,22 +9,27 @@ export function ManagementPage() {
   const [boardList, setBoardList] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get("/api/manager/list")
+    axios
+      .get("/api/manager/list")
       .then((res) => {
-        const {members, boards} = res.data
+        const { members, boards } = res.data;
         setMemberList(members);
         setBoardList(boards);
       })
       .catch((e) => {
-        console.log(e)
-        console.log("error")
-      })
+        console.log(e);
+        console.log("error");
+      });
   }, []);
 
-  //테이블 행 클릭 시 회원정보 보기로 이동
-  function handleRowClick(id) {
-    navigate(`/member/${id}`);
-    console.log("id = ", id);
+  //회원 테이블 행 클릭 시 회원정보 보기로 이동
+  function handleMemberClick(id) {
+    navigate(`/member/view/${id}`);
+  }
+
+  //게시글 테이블 행 클릭 시 게시글 보기로 이동
+  function handleContentClick(id) {
+    navigate(`/board/view/${id}`);
   }
 
   if (!memberList || memberList.length === 0) {
@@ -32,15 +37,15 @@ export function ManagementPage() {
   }
 
   return (
-      <Flex
-        wrap="wrap" // 공간이 부족할 때 다음 줄로 넘어감
-        p="4" // 패딩
-        bg="gray.100"
-        w={"100%"}
-        h={"90vh"}>
-
-        <Flex direction="column" w="100%" h="40%">
-          <MyHeading>회원 목록</MyHeading>
+    <Flex
+      wrap="wrap" // 공간이 부족할 때 다음 줄로 넘어감
+      p="4" // 패딩
+      bg="gray.100"
+      w={"100%"}
+      h={"90vh"}
+    >
+      <Flex direction="column" w="100%" h="40%">
+        <MyHeading>회원 목록</MyHeading>
         <Box
           w="100%"
           h="100%"
@@ -60,7 +65,7 @@ export function ManagementPage() {
               {memberList.length > 0 ? (
                 memberList.map((member) => (
                   <Table.Row
-                    onClick={() => handleRowClick(member.id)}
+                    onClick={() => handleMemberClick(member.id)}
                     key={member.id}
                   >
                     <Table.Cell>{member.id}</Table.Cell>
@@ -71,7 +76,7 @@ export function ManagementPage() {
                 ))
               ) : (
                 <Table.Row>
-                  <Table.Cell colSpan={4} style={{textAlign: "center"}}>
+                  <Table.Cell colSpan={4} style={{ textAlign: "center" }}>
                     <p>회원이 등록되지 않았습니다.</p>
                   </Table.Cell>
                 </Table.Row>
@@ -79,53 +84,52 @@ export function ManagementPage() {
             </Table.Body>
           </TableRoot>
         </Box>
-        </Flex>
-
-        <Flex direction="column" w="100%" h="40%">
-          <MyHeading>게시글 목록</MyHeading>
-
-          <Box
-            w="100%"
-            h="100%"
-            overflow="auto" // 스크롤 활성화
-            p="4"
-          >
-            <TableRoot interactive>
-              <Table.Header>
-                <Table.Row>
-                  <Table.ColumnHeader>게시글 번호</Table.ColumnHeader>
-                  <Table.ColumnHeader>제목</Table.ColumnHeader>
-                  <Table.ColumnHeader>작성자</Table.ColumnHeader>
-                  <Table.ColumnHeader>작성일자</Table.ColumnHeader>
-                  <Table.ColumnHeader>낚시종류</Table.ColumnHeader>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {boardList.length > 0 ? (
-                  boardList.map((board) => (
-                    <Table.Row
-                      onClick={() => handleRowClick(board.number)}
-                      key={board.number}
-                    >
-                      <Table.Cell>{board.number}</Table.Cell>
-                      <Table.Cell>{board.title}</Table.Cell>
-                      <Table.Cell>{board.writer}</Table.Cell>
-                      <Table.Cell>{board.date}</Table.Cell>
-                      <Table.Cell>{board.site}</Table.Cell>
-                    </Table.Row>
-                ))
-                ): (
-                  <Table.Row>
-                    <Table.Cell colSpan={5} style={{ textAlign: "center" }}>
-                      <p>게시글이 등록되지 않았습니다.</p>
-                    </Table.Cell>
-                  </Table.Row>
-                )}
-              </Table.Body>
-            </TableRoot>
-          </Box>
-        </Flex>
       </Flex>
 
+      <Flex direction="column" w="100%" h="40%">
+        <MyHeading>게시글 목록</MyHeading>
+
+        <Box
+          w="100%"
+          h="100%"
+          overflow="auto" // 스크롤 활성화
+          p="4"
+        >
+          <TableRoot interactive>
+            <Table.Header>
+              <Table.Row>
+                <Table.ColumnHeader>게시글 번호</Table.ColumnHeader>
+                <Table.ColumnHeader>제목</Table.ColumnHeader>
+                <Table.ColumnHeader>작성자</Table.ColumnHeader>
+                <Table.ColumnHeader>작성일자</Table.ColumnHeader>
+                <Table.ColumnHeader>낚시종류</Table.ColumnHeader>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {boardList.length > 0 ? (
+                boardList.map((board) => (
+                  <Table.Row
+                    onClick={() => handleContentClick(board.number)}
+                    key={board.number}
+                  >
+                    <Table.Cell>{board.number}</Table.Cell>
+                    <Table.Cell>{board.title}</Table.Cell>
+                    <Table.Cell>{board.writer}</Table.Cell>
+                    <Table.Cell>{board.date}</Table.Cell>
+                    <Table.Cell>{board.site}</Table.Cell>
+                  </Table.Row>
+                ))
+              ) : (
+                <Table.Row>
+                  <Table.Cell colSpan={5} style={{ textAlign: "center" }}>
+                    <p>게시글이 등록되지 않았습니다.</p>
+                  </Table.Cell>
+                </Table.Row>
+              )}
+            </Table.Body>
+          </TableRoot>
+        </Box>
+      </Flex>
+    </Flex>
   );
 }
