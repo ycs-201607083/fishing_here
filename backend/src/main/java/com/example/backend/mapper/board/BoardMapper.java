@@ -1,9 +1,7 @@
 package com.example.backend.mapper.board;
 
 import com.example.backend.dto.board.Board;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -62,4 +60,45 @@ public interface BoardMapper {
     List<Board> findAllBoards(@Param("keyword") String keyword,
                               @Param("type") String type,
                               @Param("site") String site);
+
+    @Insert("""
+                    INSERT INTO board
+                    (board_title, board_content, board_writer, board_site)
+                    VALUES (#{title}, #{content}, #{writer}, #{site})
+            """)
+    @Options(keyProperty = "number", useGeneratedKeys = true)
+    int insert(Board board);
+
+    @Insert("""
+                    INSERT INTO board_file
+                    VALUES (#{id}, #{fileName});
+            """)
+    void insertFile(Integer id, String fileName);
+
+    @Select("""
+                        SELECT 
+                        board_number number,
+                        board_title title, 
+                        board_writer writer, 
+                        board_date AS date,
+                        board_content content,
+                        board_site site
+                                    FROM board
+                                    WHERE board_number = #{number}
+            """)
+    Board selectById(int number);
+
+    @Select("""
+            SELECT name 
+            FROM board_file
+            WHERE board_id = #{number}
+            """)
+    List<String> selectFilesByBoardId(int number);
+
+    @Delete("""
+                    DELETE
+                    FROM board
+                    WHERE board_number = #{number}
+            """)
+    int deleteById(int number);
 }
