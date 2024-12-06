@@ -77,7 +77,7 @@ export function BoardMain() {
       if (!response.ok) {
         toaster.create({
           type: "error",
-          description: "제대로된 도시명을 입력하세요",
+          description: "제대로된 도시명, 시를 붙여 입력하세요",
         });
         return;
       }
@@ -86,7 +86,7 @@ export function BoardMain() {
     } catch (e) {
       toaster.create({
         type: "error",
-        description: "제대로된 도시명을 입력하세요",
+        description: "제대로된 도시명, 시를 붙여 입력하세요",
       });
       setWeather(null);
     }
@@ -106,6 +106,7 @@ export function BoardMain() {
             value={cityName}
             textAlign="center"
             fontSize={"25px"}
+            placeHolder={"도시명을 입력하세요"}
             onChange={(e) => setCityName(e.target.value)}
             onKeyDown={HandleInputCity}
           />

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Center, Flex, Spacer, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Image, Spacer, Text } from "@chakra-ui/react";
 import { useContext } from "react";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
@@ -28,8 +28,9 @@ export function Navbar() {
         onClick={() => navigate("/")}
         fontFamily={"SANGJU Gotgam"}
       >
-        자리요
+        <Image src={"src/components/Image/타이틀.png"}></Image>
       </Center>
+
       <Flex p={4} justify="center" bgColor={"blue.500"} w="100%">
         <Spacer />
         <Flex gap={10}>
@@ -38,7 +39,11 @@ export function Navbar() {
         </Flex>
         <Spacer />
         <Flex gap={5}>
-          {isAdmin && <NavItem hideBelow={"sm"} onClick={() => navigate("manager/list")}>회원관리</NavItem>}
+          {isAdmin && (
+            <NavItem hideBelow={"sm"} onClick={() => navigate("manager/list")}>
+              회원관리
+            </NavItem>
+          )}
           {isAuthenticated || (
             <NavItem onClick={() => navigate("/member/signup")}>
               회원가입
