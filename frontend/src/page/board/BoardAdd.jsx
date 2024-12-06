@@ -32,17 +32,20 @@ export function BoardAdd() {
   const navigate = useNavigate();
   const [checkedSwitch, setCheckedSwitch] = useState(false);
 
-  const handleToggle = (event) => {
+  //스위치 true 일때 카카오맵 열기
+  const handleKakaoMapChecked = (event) => {
     const checked = event.target.checked;
     setCheckedSwitch(checked);
   };
 
+  //뒤로가기 버튼 눌렀을때 alert 띄우기
   const handleBackClick = () => {
     if (confirm("입력한 정보는 저장되지 않습니다.\n게시판으로 이동 할까요?")) {
       navigate("/board/list");
     }
   };
 
+  //게시글 정보 저장
   const handleSaveClick = () => {
     setProgress(true);
 
@@ -120,6 +123,7 @@ export function BoardAdd() {
     );
   }
 
+  //파일의 용량이 크다면 true, true일때 저장안됨
   let fileInputInvalid = false;
 
   if (sumOfFileSize > 10 * 1024 * 1024 || invalidOneFileSize) {
@@ -183,12 +187,13 @@ export function BoardAdd() {
         <Stack>
           <Switch
             checked={checkedSwitch}
-            onChange={handleToggle}
+            onChange={handleKakaoMapChecked}
             colorPalette={"blue"}
           >
             자신의 명당을 맵으로 공유하기
           </Switch>
 
+          {/* 지도 */}
           {checkedSwitch && <KakaoMap />}
         </Stack>
         <Stack direction={"row"} mb={4}>
