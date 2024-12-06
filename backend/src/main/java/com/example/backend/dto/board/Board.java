@@ -2,7 +2,7 @@ package com.example.backend.dto.board;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class Board {
@@ -11,6 +11,8 @@ public class Board {
     private String content;
     private String writer;
     private Integer viewCount;
-    private LocalDateTime date;
+    private String date;
     private String site;//민물낚시, 바다낚시
+
+    private List<BoardFile> fileList;
 }

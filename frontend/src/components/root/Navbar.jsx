@@ -38,7 +38,7 @@ export function Navbar() {
         </Flex>
         <Spacer />
         <Flex gap={5}>
-          {isAdmin && <NavItem hideBelow={"sm"}>회원관리</NavItem>}
+          {isAdmin && <NavItem hideBelow={"sm"} onClick={() => navigate("manager/list")}>회원관리</NavItem>}
           {isAuthenticated || (
             <NavItem onClick={() => navigate("/member/signup")}>
               회원가입
