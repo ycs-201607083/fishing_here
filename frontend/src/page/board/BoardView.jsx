@@ -37,7 +37,7 @@ function ImageFileView({ files }) {
           alt={file.name || "uploaded image"}
           my={3}
           border="1px solid black"
-          boxSize="300px" // 원하는 크기로 설정
+          boxSize="500px" // 원하는 크기로 설정
           objectFit="cover" // 이미지의 표시 방법
         />
       ))}

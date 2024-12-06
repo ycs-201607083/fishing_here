@@ -28,8 +28,7 @@ export function BoardAdd() {
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState(false);
   const navigate = useNavigate();
-
-  console.log(files);
+  const [switchOn, setSwitchOn] = useState(false);
 
   const handleSaveClick = () => {
     setProgress(true);
@@ -49,6 +48,10 @@ export function BoardAdd() {
           type: message.type,
         });
 
+        if (site === "seaSite") {
+        } else {
+        }
+
         navigate(`/board/view/${data.data.number}`);
       })
       .catch((e) => {
@@ -64,7 +67,11 @@ export function BoardAdd() {
       });
   };
 
-  const disabled = !(title.trim().length > 0 && content.trim().length > 0);
+  const disabled = !(
+    title.trim().length > 0 &&
+    content.trim().length > 0 &&
+    site
+  );
 
   // files 의 파일명을 component 리스트로 만들기
   const filesList = [];
@@ -130,12 +137,14 @@ export function BoardAdd() {
 
         <NativeSelectRoot size={"sm"}>
           <NativeSelectField
-            placeholder={"민물/바다"}
+            placeholder={"낚시 종류를 선택 해주세요."}
             value={site}
-            onChange={(e) => setSite(e.target.value)}
+            onChange={(e) => {
+              setSite(e.target.value);
+            }}
           >
-            <option value={"seaSite"}>바다낚시</option>
-            <option value={"riverSite"}>민물낚시</option>
+            <option value={"민물낚시"}>바다낚시</option>
+            <option value={"바다낚시"}>민물낚시</option>
           </NativeSelectField>
         </NativeSelectRoot>
 
