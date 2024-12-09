@@ -13,17 +13,26 @@ import { useState } from "react";
 import { toaster } from "../../components/ui/toaster.jsx";
 import weatherCityMapFromKr from "../../components/data/weatherCityMapFromKr.json";
 import { WeatherCard } from "../../components/root/WeatherCard.jsx";
-import Slider from "react-slick";
-import { IoIosArrowUp } from "react-icons/io";
+import {
+  IoIosArrowBack,
+  IoIosArrowForward,
+  IoIosArrowUp,
+} from "react-icons/io";
 
 import "../../components/css/WeatherApp.css";
+import Slider from "react-slick";
 
 function NexArrow(props) {
-  const { className, style, onClick } = props;
+  const { className, style, onClick, isNext } = props;
   return (
     <div
       className={className}
-      style={{ ...style, display: "block", backgroundColor: "green" }}
+      style={{
+        ...style,
+        display: "block",
+        backgroundColor: "gray",
+        borderRadius: "50%",
+      }}
       onClick={onClick}
     />
   );
@@ -34,11 +43,34 @@ function PrevArrow(props) {
   return (
     <div
       className={className}
-      style={{ ...style, display: "block", background: "green" }}
+      style={{
+        ...style,
+        display: "block",
+        backgroundColor: "gray",
+        borderRadius: "50%",
+      }}
       onClick={onClick}
     />
   );
 }
+
+const CustomArrow = ({ className, style, onClick, isNext }) => (
+  <Box
+    as="div"
+    className={className}
+    onClick={onClick}
+    style={{
+      ...style,
+      display: "block",
+      fontSize: "30px", // 크기 조정
+      color: "blue", // 색상 조정
+      zIndex: 1,
+      [isNext ? "right" : "left"]: "20px", // 위치 조정
+    }}
+  >
+    {isNext ? <IoIosArrowForward /> : <IoIosArrowBack />}
+  </Box>
+);
 
 export function BoardMain() {
   const [cityName, setCityName] = useState("");
@@ -64,14 +96,14 @@ export function BoardMain() {
   ];
 
   const sliderSettings = {
-    arrows: true,
     dots: true,
     infinite: true,
     speed: 700,
     slidesToShow: 4,
     slidesToScroll: 2,
-    nextArrow: <NexArrow />,
-    prevArrow: <PrevArrow />,
+    arrow: false,
+    nextArrow: <CustomArrow isNext={true} />,
+    prevArrow: <CustomArrow isNext={false} />,
   };
 
   function handleClick(category) {
@@ -152,19 +184,18 @@ export function BoardMain() {
         </Stack>
       </Box>
 
-      <Box w="40%" mt={"200px"} zIndex={1}>
+      <Box w="70%" mt={"200px"} zIndex={1} bg={"blue.200"} p={"2"}>
         <Slider {...sliderSettings}>
           {categories.map((category) => (
             <Box
               key={category.name}
               textAlign="center"
-              cursor="pointer"
               onClick={() => handleClick(category.name)}
             >
               <Image
                 mx="auto"
-                w="100px"
-                h="100px"
+                w="200px"
+                h="200px"
                 src={category.src}
                 alt={category.name}
               />
