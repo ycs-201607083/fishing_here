@@ -7,7 +7,7 @@ import {
   PaginationNextTrigger,
   PaginationPrevTrigger,
   PaginationRoot,
-} from "../../components/ui/pagination.jsx";
+} from "../../components/ui/pagination";
 
 export function BoardAnnouncement(props) {
   const [anList, setAnList] = useState([]);
