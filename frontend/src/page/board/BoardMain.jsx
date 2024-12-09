@@ -13,11 +13,7 @@ import { useState } from "react";
 import { toaster } from "../../components/ui/toaster.jsx";
 import weatherCityMapFromKr from "../../components/data/weatherCityMapFromKr.json";
 import { WeatherCard } from "../../components/root/WeatherCard.jsx";
-import {
-  IoIosArrowBack,
-  IoIosArrowForward,
-  IoIosArrowUp,
-} from "react-icons/io";
+import { IoIosArrowUp } from "react-icons/io";
 
 import "../../components/css/WeatherApp.css";
 import Slider from "react-slick";
@@ -61,14 +57,11 @@ const CustomArrow = ({ className, style, onClick, isNext }) => (
     onClick={onClick}
     style={{
       ...style,
-      display: "block",
-      fontSize: "30px", // 크기 조정
-      color: "blue", // 색상 조정
       zIndex: 1,
       [isNext ? "right" : "left"]: "20px", // 위치 조정
     }}
   >
-    {isNext ? <IoIosArrowForward /> : <IoIosArrowBack />}
+    {" "}
   </Box>
 );
 
@@ -101,7 +94,7 @@ export function BoardMain() {
     speed: 700,
     slidesToShow: 4,
     slidesToScroll: 2,
-    arrow: false,
+
     nextArrow: <CustomArrow isNext={true} />,
     prevArrow: <CustomArrow isNext={false} />,
   };
