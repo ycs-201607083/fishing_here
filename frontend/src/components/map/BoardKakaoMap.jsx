@@ -3,12 +3,14 @@ import { Box, Button, HStack, Input } from "@chakra-ui/react";
 import { Field } from "../ui/field.jsx";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import { scrollDown } from "../../page/board/BoardAdd.jsx";
+import { useAddress } from "../../context/AddressContext.jsx";
 
 function BoardKakaoMap(props) {
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState([]); // 마커 관리
   const [address, setAddress] = useState(""); //검색된 주소 상태 관리
   const [isOpen, setIsOpen] = useState(false);
+  const addressContext = useAddress();
 
   // 1) 카카오맵 불러오기
   useEffect(() => {
@@ -52,6 +54,7 @@ function BoardKakaoMap(props) {
               marker.setMap(map);
               //주소 상태 업데이트
               setAddress(addr);
+              addressContext.setAddress(addr);
               // 클릭한 위치 주소를 가져온다.
               console.log("설정한 주소 = ", addr);
             }
