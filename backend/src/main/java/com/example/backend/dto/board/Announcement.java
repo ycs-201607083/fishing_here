@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Announcement {
-    private Integer number;
+    private Integer id;
     private String title;
     private String writer;
 }

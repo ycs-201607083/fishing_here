@@ -120,6 +120,7 @@ public class BoardService {
 
     public Map<String, Object> getAnnouncement(Integer page) {
 
-        return Map.of("list", mapper.getAnnouncement((page - 1) * 10), "count", mapper.getAnnouncementCount());
+        return Map.of("list", mapper.getAnnouncement((page - 1) * 10),
+                "count", mapper.getAnnouncementCount());
     }
 }

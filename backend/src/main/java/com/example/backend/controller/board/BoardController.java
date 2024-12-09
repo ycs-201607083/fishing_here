@@ -1,5 +1,6 @@
 package com.example.backend.controller.board;
 
+import com.example.backend.dto.board.Announcement;
 import com.example.backend.dto.board.Board;
 import com.example.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,11 @@ public class BoardController {
     public Map<String, Object> announcement(@RequestParam(value = "page", defaultValue = "1") Integer page) {
 
         return service.getAnnouncement(page);
+    }
+
+    @GetMapping("annAdd")
+    public ResponseEntity<Map<String, Object>> announcementAdd(@RequestParam Announcement announcement) {
+        return null;
     }
 
 

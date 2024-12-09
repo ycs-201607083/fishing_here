@@ -133,9 +133,9 @@ public interface BoardMapper {
     int deleteById(int number);
 
     @Select("""
-            SELECT *
+            SELECT id,title,writer,inserted
             FROM announcement
-            ORDER BY number desc
+            ORDER BY id desc
             LIMIT #{offset},10;
             """)
     List<String> getAnnouncement(Integer offset);
