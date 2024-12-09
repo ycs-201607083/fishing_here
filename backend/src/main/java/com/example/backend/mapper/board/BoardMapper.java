@@ -131,4 +131,11 @@ public interface BoardMapper {
                     WHERE board_number = #{number}
             """)
     int deleteById(int number);
+
+    @Insert("""
+                        INSERT INTO fishing_addr
+                        (addr_number, addr_name)
+            VALUES (#{number}, #{name})
+            """)
+    int insertAddress(Integer number, String name);
 }

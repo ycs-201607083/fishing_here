@@ -102,6 +102,8 @@ export function BoardView() {
         <Field label="본문" readOnly>
           <Textarea resize={"none"} h={400} value={board.content} />
         </Field>
+
+        {/*포토*/}
         <ImageFileView files={board.fileList} />
         <Field label="작성자" readOnly>
           <Input value={board.writer} />

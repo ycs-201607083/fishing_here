@@ -41,8 +41,6 @@ export function KakaoMap() {
     // 기존 마커 제거
     markers.forEach((marker) => marker.setMap(null));
     infoWindows.forEach((infoWindow) => infoWindow.close());
-
-    // 상태 초기화
     setMarkers([]);
     setInfoWindows([]);
   }

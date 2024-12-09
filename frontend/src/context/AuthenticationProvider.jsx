@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
 // step 1 : context 만들기
-export const AuthenticationContext = createContext(null);
+export const AuthenticationContext = createContext("");
 
 function AuthenticationProvider({ children }) {
   const [userToken, setUserToken] = useState({});

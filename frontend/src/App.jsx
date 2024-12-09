@@ -1,6 +1,6 @@
 import axios from "axios";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { LoginKakaoHandler } from "./page/kakao/LoginKakaoHandler.jsx";
 
@@ -14,6 +14,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardAdd } from "./page/board/BoardAdd.jsx";
 import BoardView from "./page/board/BoardView.jsx";
+import { AddressProvider, useAddress } from "./context/AddressContext.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -74,12 +75,19 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const { address } = useAddress();
+
+  useEffect(() => {
+    if (address) {
+      console.log("주소가 변경되었습니다 app:", address); // address 값이 변경될 때마다 실행됨
+    }
+  }, [address]); // address 값이 변경될 때마다 실행됩니다.
   return (
-    <>
-      <AuthenticationProvider>
+    <AuthenticationProvider>
+      <AddressProvider>
         <RouterProvider router={router} />
-      </AuthenticationProvider>
-    </>
+      </AddressProvider>
+    </AuthenticationProvider>
   );
 }
 

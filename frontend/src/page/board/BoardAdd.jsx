@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
@@ -20,8 +20,22 @@ import {
   NativeSelectField,
   NativeSelectRoot,
 } from "../../components/ui/native-select.jsx";
+import BoardKakaoMap from "../../components/map/BoardKakaoMap.jsx";
 import { Switch } from "../../components/ui/switch";
-import { KakaoMap } from "../../components/map/KakaoMap.jsx";
+import { useAddress } from "../../context/AddressContext.jsx";
+
+export function scrollDown(isTrue) {
+  useEffect(() => {
+    if (isTrue) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth", // 부드럽게 스크롤되도록
+        });
+      }, 300);
+    }
+  }, [isTrue]);
+}
 
 export function BoardAdd() {
   const [title, setTitle] = useState("");
@@ -31,6 +45,12 @@ export function BoardAdd() {
   const [progress, setProgress] = useState(false);
   const navigate = useNavigate();
   const [checkedSwitch, setCheckedSwitch] = useState(false);
+
+  const { address } = useAddress();
+
+  useEffect(() => {
+    console.log("주소가 변경되었습니다 add:", address);
+  }, [address]); // address 값이 변경될 때마다 실행됨
 
   //스위치 true 일때 카카오맵 열기
   const handleKakaoMapChecked = (event) => {
@@ -48,6 +68,7 @@ export function BoardAdd() {
   //게시글 정보 저장
   const handleSaveClick = () => {
     setProgress(true);
+    console.log("넘어온 주소?", address);
 
     axios
       .postForm("/api/board/add", {
@@ -55,6 +76,7 @@ export function BoardAdd() {
         content,
         site,
         files,
+        address,
       })
       .then((res) => res.data)
       .then((data) => {
@@ -130,6 +152,8 @@ export function BoardAdd() {
     fileInputInvalid = true;
   }
 
+  scrollDown(checkedSwitch);
+
   return (
     <Box
       mx={"auto"}
@@ -192,15 +216,14 @@ export function BoardAdd() {
           >
             자신의 명당을 맵으로 공유하기
           </Switch>
-
-          {/* 지도 */}
-          {checkedSwitch && <KakaoMap />}
+          {checkedSwitch && <BoardKakaoMap />}
         </Stack>
         <Stack direction={"row"} mb={4}>
           <Box>
             <Button
               w={100}
               disabled={disabled}
+              colorPalette={"blue"}
               loading={progress}
               onClick={handleSaveClick}
             >

@@ -51,6 +51,7 @@ public class BoardService {
         board.setWriter(auth.getName());
 
         int cnt = mapper.insert(board);
+        /* mapper.insertAddress(board.getNumber(), address.getName());*/
 
         if (files != null && files.length > 0) {
 
@@ -70,7 +71,6 @@ public class BoardService {
 
                 //board_file 테이블에 파일명 입력
                 mapper.insertFile(board.getNumber(), file.getOriginalFilename());
-
             }
         }
 
