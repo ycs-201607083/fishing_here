@@ -131,4 +131,18 @@ public interface BoardMapper {
                     WHERE board_number = #{number}
             """)
     int deleteById(int number);
+
+    @Select("""
+            SELECT *
+            FROM announcement
+            ORDER BY number desc
+            LIMIT #{offset},10;
+            """)
+    List<String> getAnnouncement(Integer offset);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM announcement
+            """)
+    int getAnnouncementCount();
 }

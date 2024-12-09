@@ -34,6 +34,9 @@ export function Navbar() {
       <Flex p={4} justify="center" bgColor={"blue.500"} w="100%">
         <Spacer />
         <Flex gap={10}>
+          <NavItem onClick={() => navigate("/board/announcement")}>
+            공지사항
+          </NavItem>
           <NavItem onClick={() => navigate("/board/map")}>낚시터찾기</NavItem>
           <NavItem onClick={() => navigate("/board/list")}>커뮤니티</NavItem>
         </Flex>

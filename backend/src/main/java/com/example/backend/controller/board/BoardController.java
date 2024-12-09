@@ -6,10 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,10 +20,15 @@ public class BoardController {
     final BoardService service;
 
     @GetMapping("boardMain")
-    public List<String> boardMain() {
-
-        return null;
+    public void boardMain() {
     }
+
+    @GetMapping("announcement")
+    public Map<String, Object> announcement(@RequestParam(value = "page", defaultValue = "1") Integer page) {
+
+        return service.getAnnouncement(page);
+    }
+
 
     @GetMapping("list")
     public Map<String, Object> searchBoards(@RequestParam(value = "keyword", defaultValue = "") String search,
@@ -47,6 +48,7 @@ public class BoardController {
     public void increaseViewCount(@PathVariable Integer number) {
         service.increaseViewCount(number);
     }
+
     @PostMapping("add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> add(

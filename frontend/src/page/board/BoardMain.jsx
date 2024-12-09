@@ -18,38 +18,6 @@ import { IoIosArrowUp } from "react-icons/io";
 import "../../components/css/WeatherApp.css";
 import Slider from "react-slick";
 
-function NexArrow(props) {
-  const { className, style, onClick, isNext } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: "block",
-        backgroundColor: "gray",
-        borderRadius: "50%",
-      }}
-      onClick={onClick}
-    />
-  );
-}
-
-function PrevArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: "block",
-        backgroundColor: "gray",
-        borderRadius: "50%",
-      }}
-      onClick={onClick}
-    />
-  );
-}
-
 const CustomArrow = ({ className, style, onClick, isNext }) => (
   <Box
     as="div"
@@ -92,8 +60,8 @@ export function BoardMain() {
     dots: true,
     infinite: true,
     speed: 700,
-    slidesToShow: 4,
-    slidesToScroll: 2,
+    slidesToShow: 1,
+    slidesToScroll: 1,
 
     nextArrow: <CustomArrow isNext={true} />,
     prevArrow: <CustomArrow isNext={false} />,

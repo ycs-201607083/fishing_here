@@ -24,9 +24,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final BoardMapper mapper;
     final S3Client s3;
-
+    private final BoardMapper mapper;
     @Value("${image.src.prefix}")
     String imageSrcPrefix;
 
@@ -117,5 +116,10 @@ public class BoardService {
 
         int cnt = mapper.deleteById(number);
         return cnt == 1;
+    }
+
+    public Map<String, Object> getAnnouncement(Integer page) {
+
+        return Map.of("list", mapper.getAnnouncement((page - 1) * 10), "count", mapper.getAnnouncementCount());
     }
 }
