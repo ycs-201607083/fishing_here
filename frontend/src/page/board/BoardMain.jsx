@@ -1,4 +1,12 @@
-import { Box, IconButton, Image, Input, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  IconButton,
+  Image,
+  Input,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useState } from "react";
@@ -7,6 +15,8 @@ import weatherCityMapFromKr from "../../components/data/weatherCityMapFromKr.jso
 import { WeatherCard } from "../../components/root/WeatherCard.jsx";
 import Slider from "react-slick";
 import { IoIosArrowUp } from "react-icons/io";
+
+import "../../components/css/WeatherApp.css";
 
 function NexArrow(props) {
   const { className, style, onClick } = props;
@@ -33,6 +43,7 @@ function PrevArrow(props) {
 export function BoardMain() {
   const [cityName, setCityName] = useState("");
   const [weather, setWeather] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
   const appKey = import.meta.env.VITE_WEATHER_API_KEY;
 
   // useEffect(() => {
@@ -85,6 +96,7 @@ export function BoardMain() {
       }
       const data = await response.json();
       setWeather(data);
+      setIsOpen(true);
     } catch (e) {
       toaster.create({
         type: "error",
@@ -100,6 +112,11 @@ export function BoardMain() {
     }
   };
 
+  function handleButtonClose() {
+    setIsOpen(false);
+    setTimeout(() => setWeather(null), 2000);
+  }
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       <Box
@@ -108,9 +125,11 @@ export function BoardMain() {
         maxWidth="400px"
         borderRadius="lg"
         p="5"
+        pt="2"
         zIndex={2}
         position={"Fixed"}
       >
+        <Heading>Weather</Heading>
         <Stack>
           <Input
             variant="subtle"
@@ -121,12 +140,15 @@ export function BoardMain() {
             onChange={(e) => setCityName(e.target.value)}
             onKeyDown={HandleInputCity}
           />
-          {weather && <WeatherCard weather={weather} />}
-          {weather && (
-            <IconButton onClick={() => setWeather(null)}>
+
+          <div className={`weatherContainer ${isOpen ? "open" : "closed"}`}>
+            {weather && <WeatherCard weather={weather} />}
+
+            <IconButton w={"100%"} onClick={handleButtonClose}>
+              {/*<IconButton onClick={() => setWeather(null)}>*/}
               <IoIosArrowUp />
             </IconButton>
-          )}
+          </div>
         </Stack>
       </Box>
 
