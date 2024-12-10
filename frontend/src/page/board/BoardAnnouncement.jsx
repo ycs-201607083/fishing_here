@@ -46,7 +46,7 @@ export function BoardAnnouncement() {
 
   function handlePageChange(e) {
     console.log(e.page);
-    const nextSearchParam = URLSearchParams(searchParams);
+    const nextSearchParam = new URLSearchParams(searchParams);
     nextSearchParam.set("page", e.page);
     setSearchParams(nextSearchParam);
   }
@@ -61,9 +61,9 @@ export function BoardAnnouncement() {
 
   return (
     <VStack>
-      <Table.Root interactive size="sm" mx={"auto"} striped w="70%">
+      <Table.Root size="sm" mx={"auto"} w="70%" interactive>
         <Table.Header>
-          <Table.Row>
+          <Table.Row bg="blue.100">
             <Table.ColumnHeader w="15%" whiteSpace={"nowrap"}>
               번호
             </Table.ColumnHeader>

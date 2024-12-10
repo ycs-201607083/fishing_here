@@ -1,9 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Box, Input, Spinner, Textarea } from "@chakra-ui/react";
-import { MyHeading } from "../../components/root/MyHeading.jsx";
-import { Field } from "../../components/ui/field.jsx";
+import {
+  Box,
+  Flex,
+  Heading,
+  Spacer,
+  Spinner,
+  Text,
+  Textarea,
+} from "@chakra-ui/react";
+
+const flushedInputStyles = {
+  _focus: {
+    borderColor: "gray.200",
+    boxShadow: "none",
+  },
+};
 
 export function BoardAnnouncementView() {
   const { id } = useParams();
@@ -19,15 +32,35 @@ export function BoardAnnouncementView() {
     return <Spinner />;
   }
 
+  const inputTheme = {
+    _focus: {
+      borderColor: "gray.200",
+      boxShadow: "none",
+      outline: "none",
+    },
+  };
+
   return (
-    <Box>
-      <MyHeading>게시글 수정</MyHeading>
-      <Field label="제목">
-        <Input value={annView.title} />
-      </Field>
-      <Field label="본문">
-        <Textarea value={annView.title} />
-      </Field>
+    <Box mx={"auto"} w={"50%"}>
+      <Heading fontSize={"30px"} pb={5} color={"blue.800"}>
+        공지사항
+      </Heading>
+      <hr />
+      <Text fontWeight={"bold"} fontSize={"20px"} pt={10} pb={5}>
+        {annView.title}
+      </Text>
+      <Flex pb={30}>
+        <Text>작성자 : {annView.writer}</Text>
+        <Spacer />
+        <Text>작성일 : {annView.inserted}</Text>
+      </Flex>
+      <Textarea
+        readOnly
+        resize="none"
+        css={inputTheme}
+        h="200px"
+        value={annView.content}
+      />
     </Box>
   );
 }

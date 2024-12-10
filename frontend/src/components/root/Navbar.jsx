@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Center, Flex, Image, Spacer, Text } from "@chakra-ui/react";
 import { useContext } from "react";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
+import mainTitle from "/src/components/Image/mainTitle.png";
 
 function NavItem({ children, ...rest }) {
   return (
@@ -26,9 +27,8 @@ export function Navbar() {
         h={"100px"}
         w={"100%"}
         onClick={() => navigate("/")}
-        fontFamily={"SANGJU Gotgam"}
       >
-        <Image src={"src/components/Image/타이틀.png"}></Image>
+        <Image src={mainTitle} />
       </Center>
 
       <Flex p={4} justify="center" bgColor={"blue.500"} w="100%">
