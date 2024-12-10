@@ -90,7 +90,7 @@ function BoardKakaoMap(props) {
         marker.setMap(map); // 마커를 지도에 다시 추가
 
         setAddress(address); // Context에 주소 저장
-        console.log("주소 설정됨:", address);
+        addressContext.setAddress(address);
       } else {
         console.error("주소를 좌표로 변환할 수 없습니다.");
       }

@@ -76,11 +76,12 @@ export function BoardAdd() {
         content,
         site,
         files,
-        address,
+        addressName: address,
       })
       .then((res) => res.data)
       .then((data) => {
         const message = data.message;
+        console.log("넘어간 주소 = ", address);
         toaster.create({
           description: message.text,
           type: message.type,

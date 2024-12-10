@@ -67,6 +67,7 @@ export function BoardView() {
     return (
       <Box>
         <p>존재하지 않는 페이지 입니다.</p>
+        <p>메인 페이지로 넘어갑니다..</p>
         <Spinner />
       </Box>
     );

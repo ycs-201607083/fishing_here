@@ -133,9 +133,9 @@ public interface BoardMapper {
     int deleteById(int number);
 
     @Insert("""
-                        INSERT INTO fishing_addr
-                        (addr_number, addr_name)
-            VALUES (#{number}, #{name})
+                INSERT INTO fishing_addr
+                ( addr_name)
+                VALUES (#{addressName})
             """)
-    int insertAddress(Integer number, String name);
+    void insertKakaoAddr(String addressName);
 }

@@ -1,6 +1,7 @@
 package com.example.backend.controller.board;
 
 import com.example.backend.dto.board.Board;
+import com.example.backend.dto.board.KakaoMapAddress;
 import com.example.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -49,9 +50,13 @@ public class BoardController {
     public ResponseEntity<Map<String, Object>> add(
             Board board,
             @RequestParam(value = "files[]", required = false) MultipartFile[] files,
-            Authentication authentication) {
+            Authentication authentication,
+            KakaoMapAddress addr) {
+
+        service.insertAddress(addr.getAddressName());
 
         if (service.validate(board)) {
+
             if (service.add(board, files, authentication)) {
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
@@ -64,8 +69,9 @@ public class BoardController {
             }
         } else {
             return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning",
-                    "text", "제목이나 본문이 비어있을 수 없습니다.")));
+                    "text", "제목이나 본문이 비어 있을 수 없습니다.")));
         }
+
     }
 
     @GetMapping("view/{number}")
