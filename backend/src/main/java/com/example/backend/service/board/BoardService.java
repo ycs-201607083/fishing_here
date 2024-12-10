@@ -51,7 +51,6 @@ public class BoardService {
         board.setWriter(auth.getName());
 
         int cnt = mapper.insert(board);
-        /* mapper.insertAddress(board.getNumber(), address.getName());*/
 
         if (files != null && files.length > 0) {
 
@@ -117,5 +116,11 @@ public class BoardService {
 
         int cnt = mapper.deleteById(number);
         return cnt == 1;
+    }
+
+
+    public void insertAddress(String addressName) {
+
+        mapper.insertKakaoAddr(addressName);
     }
 }
