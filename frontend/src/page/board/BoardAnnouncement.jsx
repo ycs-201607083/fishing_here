@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Center, HStack, Table, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -9,12 +9,17 @@ import {
   PaginationRoot,
 } from "../../components/ui/pagination";
 import { Button } from "../../components/ui/button.jsx";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
 export function BoardAnnouncement() {
   const [anList, setAnList] = useState([]);
   const [count, setCount] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  const { id, kakaoId, isAdmin, isAuthenticated, logout } = useContext(
+    AuthenticationContext,
+  );
 
   //페이지 번호얻기
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
@@ -50,9 +55,13 @@ export function BoardAnnouncement() {
     navigate("/board/annAdd");
   };
 
+  function handleRowClick(id) {
+    navigate(`/board/viewAnn/${id}`);
+  }
+
   return (
     <VStack>
-      <Table.Root size="sm" mx={"auto"} striped w="70%">
+      <Table.Root interactive size="sm" mx={"auto"} striped w="70%">
         <Table.Header>
           <Table.Row>
             <Table.ColumnHeader w="15%" whiteSpace={"nowrap"}>
@@ -71,7 +80,7 @@ export function BoardAnnouncement() {
         </Table.Header>
         <Table.Body>
           {anList.map((board) => (
-            <Table.Row>
+            <Table.Row key={board.id} onClick={() => handleRowClick(board.id)}>
               <Table.Cell whiteSpace={"nowrap"}>{board.id}</Table.Cell>
               <Table.Cell whiteSpace={"nowrap"}>{board.title}</Table.Cell>
               <Table.Cell whiteSpace={"nowrap"}>{board.writer}</Table.Cell>
@@ -81,7 +90,7 @@ export function BoardAnnouncement() {
         </Table.Body>
       </Table.Root>
       <Box ml={"60%"}>
-        <Button onClick={handleWriteContent}>글쓰기</Button>
+        {isAdmin && <Button onClick={handleWriteContent}>글쓰기</Button>}
       </Box>
       <Center>
         <PaginationRoot

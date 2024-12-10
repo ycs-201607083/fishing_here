@@ -155,4 +155,11 @@ public interface BoardMapper {
             """)
     @Options(keyProperty = "id", useGeneratedKeys = true)
     int insertAnn(Announcement announcement);
+
+    @Select("""
+            SELECT *
+            FROM announcement
+            WHERE id = #{id}
+            """)
+    Announcement selectByAnnId(int id);
 }

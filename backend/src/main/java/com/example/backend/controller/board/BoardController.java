@@ -26,8 +26,12 @@ public class BoardController {
 
     @GetMapping("announcement")
     public Map<String, Object> announcement(@RequestParam(value = "page", defaultValue = "1") Integer page) {
-
         return service.listAnnouncement(page);
+    }
+
+    @GetMapping("viewAnn/{id}")
+    public Announcement announcementView(@PathVariable int id) {
+        return service.getAnnView(id);
     }
 
     @PostMapping("annAdd")

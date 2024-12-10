@@ -16,6 +16,7 @@ import { BoardAdd } from "./page/board/BoardAdd.jsx";
 import BoardView from "./page/board/BoardView.jsx";
 import BoardAnnouncement from "./page/board/BoardAnnouncement.jsx";
 import BoardAnnouncementAdd from "./page/board/BoardAnnouncementAdd.jsx";
+import BoardAnnouncementView from "./page/board/BoardAnnouncementView.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "board/annAdd",
         element: <BoardAnnouncementAdd />,
+      },
+      {
+        path: "board/viewAnn/:id",
+        element: <BoardAnnouncementView />,
       },
       {
         path: "board/map",

@@ -132,4 +132,9 @@ public class BoardService {
 
         return cnt == 1;
     }
+
+    public Announcement getAnnView(int id) {
+        System.out.println("id = " + id);
+        return mapper.selectByAnnId(id);
+    }
 }
