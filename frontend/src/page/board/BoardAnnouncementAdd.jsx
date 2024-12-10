@@ -9,12 +9,11 @@ import { toaster } from "../../components/ui/toaster.jsx";
 export function BoardAnnouncementAdd() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [writer, setWriter] = useState("");
   const navigate = useNavigate();
 
   const handleSaveButton = () => {
     axios
-      .post("/api/board/annAdd", { title, content, writer })
+      .post("/api/board/annAdd", { title, content })
       .then((res) => res.data)
       .then((data) => {
         const message = data.message;
@@ -42,9 +41,6 @@ export function BoardAnnouncementAdd() {
           placeholder="내용을 입력해 주세요"
           onChange={(e) => setContent(e.target.value)}
         />
-      </Field>
-      <Field label="작성자">
-        <Input value={writer} onChange={(e) => setWriter(e.target.value)} />
       </Field>
       <Button onClick={handleSaveButton}>저장</Button>
     </Box>

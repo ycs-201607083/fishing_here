@@ -125,7 +125,9 @@ public class BoardService {
                 "count", mapper.getAnnouncementCount());
     }
 
-    public boolean addAnn(Announcement announcement) {
+    public boolean addAnn(Announcement announcement, Authentication auth) {
+        announcement.setWriter(auth.getName());
+
         int cnt = mapper.insertAnn(announcement);
 
         return cnt == 1;

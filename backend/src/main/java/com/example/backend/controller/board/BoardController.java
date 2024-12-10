@@ -31,8 +31,10 @@ public class BoardController {
     }
 
     @PostMapping("annAdd")
-    public ResponseEntity<Map<String, Object>> announcementAdd(@RequestBody Announcement announcement) {
-        if (service.addAnn(announcement)) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> announcementAdd(@RequestBody Announcement announcement,
+                                                               Authentication auth) {
+        if (service.addAnn(announcement, auth)) {
             return ResponseEntity.ok().body(
                     Map.of("message",
                             Map.of("type", "success", "text", announcement.getId() + "번 게시글이 등록되었습니다.")));
