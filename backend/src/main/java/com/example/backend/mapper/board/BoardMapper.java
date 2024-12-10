@@ -1,5 +1,6 @@
 package com.example.backend.mapper.board;
 
+import com.example.backend.dto.board.Announcement;
 import com.example.backend.dto.board.Board;
 import org.apache.ibatis.annotations.*;
 
@@ -132,17 +133,26 @@ public interface BoardMapper {
             """)
     int deleteById(int number);
 
-    @Select("""
-            SELECT id,title,writer,inserted
-            FROM announcement
-            ORDER BY id desc
-            LIMIT #{offset},10;
-            """)
-    List<String> getAnnouncement(Integer offset);
 
     @Select("""
             SELECT COUNT(*)
             FROM announcement
             """)
     int getAnnouncementCount();
+
+    @Select("""
+            SELECT id,title,writer,inserted
+            FROM announcement
+            ORDER BY id desc
+            LIMIT #{offset},10;
+            """)
+    List<Announcement> selectAnnouncement(Integer offset);
+
+    @Insert("""
+            INSERT INTO announcement
+            (title,content,writer)
+            VALUES(#{title},#{content},#{writer})
+            """)
+    @Options(keyProperty = "id", useGeneratedKeys = true)
+    int insertAnn(Announcement announcement);
 }

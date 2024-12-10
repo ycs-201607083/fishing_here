@@ -25,7 +25,7 @@ export function BoardAnnouncement() {
     const controller = new AbortController();
     axios
       .get("/api/board/announcement", {
-        params: setSearchParams,
+        params: searchParams,
         signal: controller.signal,
       })
       .then((res) => res.data)
@@ -55,19 +55,27 @@ export function BoardAnnouncement() {
       <Table.Root size="sm" mx={"auto"} striped w="70%">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader w="15%">번호</Table.ColumnHeader>
-            <Table.ColumnHeader>제목</Table.ColumnHeader>
-            <Table.ColumnHeader>작성자</Table.ColumnHeader>
-            <Table.ColumnHeader textAlign={"end"}>날짜</Table.ColumnHeader>
+            <Table.ColumnHeader w="15%" whiteSpace={"nowrap"}>
+              번호
+            </Table.ColumnHeader>
+            <Table.ColumnHeader w="40%" whiteSpace={"nowrap"}>
+              제목
+            </Table.ColumnHeader>
+            <Table.ColumnHeader w="5%" whiteSpace={"nowrap"}>
+              작성자
+            </Table.ColumnHeader>
+            <Table.ColumnHeader w="10%" whiteSpace={"nowrap"}>
+              작성일
+            </Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {anList.map((board) => (
             <Table.Row>
-              <Table.Cell>{board.id}</Table.Cell>
-              <Table.Cell>{board.title}</Table.Cell>
-              <Table.Cell>{board.witer}</Table.Cell>
-              <Table.Cell>{board.inserted}</Table.Cell>
+              <Table.Cell whiteSpace={"nowrap"}>{board.id}</Table.Cell>
+              <Table.Cell whiteSpace={"nowrap"}>{board.title}</Table.Cell>
+              <Table.Cell whiteSpace={"nowrap"}>{board.writer}</Table.Cell>
+              <Table.Cell whiteSpace={"nowrap"}>{board.inserted}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
@@ -77,7 +85,7 @@ export function BoardAnnouncement() {
       </Box>
       <Center>
         <PaginationRoot
-          onPageChage={handlePageChange}
+          onPageChange={handlePageChange}
           count={count}
           pageSize={10}
           page={page}

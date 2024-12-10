@@ -27,12 +27,20 @@ public class BoardController {
     @GetMapping("announcement")
     public Map<String, Object> announcement(@RequestParam(value = "page", defaultValue = "1") Integer page) {
 
-        return service.getAnnouncement(page);
+        return service.listAnnouncement(page);
     }
 
-    @GetMapping("annAdd")
-    public ResponseEntity<Map<String, Object>> announcementAdd(@RequestParam Announcement announcement) {
-        return null;
+    @PostMapping("annAdd")
+    public ResponseEntity<Map<String, Object>> announcementAdd(@RequestBody Announcement announcement) {
+        if (service.addAnn(announcement)) {
+            return ResponseEntity.ok().body(
+                    Map.of("message",
+                            Map.of("type", "success", "text", announcement.getId() + "번 게시글이 등록되었습니다.")));
+        } else {
+            return ResponseEntity.internalServerError().body(
+                    Map.of("message",
+                            Map.of("type", "warning", "text", "등록되지 않았습니다..")));
+        }
     }
 
 

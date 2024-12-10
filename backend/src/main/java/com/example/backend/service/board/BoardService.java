@@ -1,5 +1,6 @@
 package com.example.backend.service.board;
 
+import com.example.backend.dto.board.Announcement;
 import com.example.backend.dto.board.Board;
 import com.example.backend.dto.board.BoardFile;
 import com.example.backend.mapper.board.BoardMapper;
@@ -118,9 +119,15 @@ public class BoardService {
         return cnt == 1;
     }
 
-    public Map<String, Object> getAnnouncement(Integer page) {
+    public Map<String, Object> listAnnouncement(Integer page) {
 
-        return Map.of("list", mapper.getAnnouncement((page - 1) * 10),
+        return Map.of("list", mapper.selectAnnouncement((page - 1) * 10),
                 "count", mapper.getAnnouncementCount());
+    }
+
+    public boolean addAnn(Announcement announcement) {
+        int cnt = mapper.insertAnn(announcement);
+
+        return cnt == 1;
     }
 }
