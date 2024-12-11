@@ -53,11 +53,9 @@ public class BoardController {
             Authentication authentication,
             KakaoMapAddress addr) {
 
-        service.insertAddress(addr.getAddressName());
-
         if (service.validate(board)) {
-
             if (service.add(board, files, authentication)) {
+                service.insertAddress(addr.getAddressName(), addr.getAddressLng(), addr.getAddressLat(), board.getNumber());
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
                                         "text", board.getNumber() + "번 게시물이 등록 되었습니다."),
@@ -76,7 +74,9 @@ public class BoardController {
 
     @GetMapping("view/{number}")
     public Board view(@PathVariable int number) {
-        return service.get(number);
+        Board board = service.get(number);
+        System.out.println("Board returned from service: " + board);  // 로그 추가
+        return board;
     }
 
     @DeleteMapping("delete/{number}")

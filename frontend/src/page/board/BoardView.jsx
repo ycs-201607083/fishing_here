@@ -8,6 +8,7 @@ import {
   Input,
   Spinner,
   Stack,
+  Text,
   Textarea,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -50,17 +51,41 @@ export function BoardView() {
   const { number } = useParams();
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
   const navigate = useNavigate();
+  const [map, setMap] = useState(null);
+  const [marker, setMarker] = useState([]);
 
   useEffect(() => {
     axios
       .get(`/api/board/view/${number}`)
       .then((res) => {
-        console.log("res.data?=", res.data);
+        console.log(res.data);
         setBoard(res.data);
       })
       .catch((e) => {
         console.log(e);
       });
+  }, [number]);
+
+  // 1) 카카오맵 불러오기
+  useEffect(() => {
+    setTimeout(() => {
+      window.kakao.maps.load(() => {
+        const container = document.getElementById("map");
+        const options = {
+          center: new kakao.maps.LatLng(
+            board.kakaoAdress.addressLat,
+            board.kakaoAdress.addressLng,
+          ),
+          level: 3,
+        };
+        //카카오맵 생성
+        const mapInstance = new window.kakao.maps.Map(container, options);
+        setMap(mapInstance);
+        // 초기 마커 생성
+        const markerInstance = new window.kakao.maps.Marker();
+        setMarker(markerInstance);
+      });
+    }, 300);
   }, []);
 
   if (board === null) {
@@ -90,7 +115,7 @@ export function BoardView() {
     <Box
       mx={"auto"}
       w={{
-        md: "500px",
+        md: "80%",
       }}
     >
       <Flex>
@@ -100,12 +125,30 @@ export function BoardView() {
         <Field label="제목" readOnly>
           <Input value={board.title} />
         </Field>
-        <Field label="본문" readOnly>
+        <Field label="내용" readOnly>
           <Textarea resize={"none"} h={400} value={board.content} />
         </Field>
 
         {/*포토*/}
         <ImageFileView files={board.fileList} />
+
+        {/*카카오맵*/}
+
+        {board?.kakaoAddress ? (
+          <Field>
+            <Text>{board.kakaoAddress.addressName}</Text>
+            <Box
+              bg={"bg"}
+              shadow={"md"}
+              borderRadius={"md"}
+              borderWidth="2px"
+              borderColor="black"
+              style={{ width: "100%", height: "400px" }}
+              id="map"
+            ></Box>
+          </Field>
+        ) : null}
+
         <Field label="작성자" readOnly>
           <Input value={board.writer} />
         </Field>

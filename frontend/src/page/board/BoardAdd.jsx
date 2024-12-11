@@ -46,10 +46,12 @@ export function BoardAdd() {
   const navigate = useNavigate();
   const [checkedSwitch, setCheckedSwitch] = useState(false);
 
-  const { address } = useAddress();
+  const { address, lng, lat } = useAddress();
 
   useEffect(() => {
-    console.log("주소가 변경되었습니다 add:", address);
+    console.log("주소가 변경되었습니다 context:", address);
+    console.log("경도가 변경되었습니다 context:", lat);
+    console.log("위도가 변경되었습니다 context:", lng);
   }, [address]); // address 값이 변경될 때마다 실행됨
 
   //스위치 true 일때 카카오맵 열기
@@ -69,6 +71,8 @@ export function BoardAdd() {
   const handleSaveClick = () => {
     setProgress(true);
     console.log("넘어온 주소?", address);
+    console.log("넘어온 주소?", lng);
+    console.log("넘어온 주소?", lat);
 
     axios
       .postForm("/api/board/add", {
@@ -77,6 +81,8 @@ export function BoardAdd() {
         site,
         files,
         addressName: address,
+        addressLng: lng,
+        addressLat: lat,
       })
       .then((res) => res.data)
       .then((data) => {

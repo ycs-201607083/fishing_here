@@ -2,6 +2,7 @@ package com.example.backend.service.board;
 
 import com.example.backend.dto.board.Board;
 import com.example.backend.dto.board.BoardFile;
+import com.example.backend.dto.board.KakaoMapAddress;
 import com.example.backend.mapper.board.BoardMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,13 +86,17 @@ public class BoardService {
 
     public Board get(int number) {
         Board board = mapper.selectById(number);
+        KakaoMapAddress kakaoAddress = mapper.getKakaoAddress(number);
+        board.setKakaoAddress(kakaoAddress);
+
         List<String> fileNameList = mapper.selectFilesByBoardId(number);
         List<BoardFile> fileSrcList = fileNameList
                 .stream()
                 .map(name -> new BoardFile(name, imageSrcPrefix + "/" + board.getWriter() + "/" + name))
                 .toList();
-
         board.setFileList(fileSrcList);
+        System.out.println("board item name = " + board);
+        System.out.println("KakaoMapAddress fetched: " + kakaoAddress);
         return board;
     }
 
@@ -119,8 +124,9 @@ public class BoardService {
     }
 
 
-    public void insertAddress(String addressName) {
-
-        mapper.insertKakaoAddr(addressName);
+    public void insertAddress(String addressName, Double addressLng, Double addressLat, int boardNumber) {
+        mapper.insertKakaoAddr(addressName, addressLng, addressLat, boardNumber);
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.backend.mapper.board;
 
 import com.example.backend.dto.board.Board;
+import com.example.backend.dto.board.KakaoMapAddress;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -134,8 +135,15 @@ public interface BoardMapper {
 
     @Insert("""
                 INSERT INTO fishing_addr
-                ( addr_name)
-                VALUES (#{addressName})
+                ( addr_name, addr_lng, addr_lat, board_number)
+                VALUES (#{addressName}, #{addressLng}, #{addressLat}, #{boardNumber})
             """)
-    void insertKakaoAddr(String addressName);
+    void insertKakaoAddr(String addressName, Double addressLng, Double addressLat, int boardNumber);
+
+    @Select("""
+                   SELECT addr_name addressName, addr_lng addressLng, addr_lat addressLat
+                   FROM fishing_addr
+                   WHERE board_number = #{number}
+            """)
+    KakaoMapAddress getKakaoAddress(int number);
 }

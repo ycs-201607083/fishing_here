@@ -55,8 +55,9 @@ function BoardKakaoMap(props) {
               //주소 상태 업데이트
               setAddress(addr);
               addressContext.setAddress(addr);
+              addressContext.setLng(mouseEvent.latLng.getLng());
+              addressContext.setLat(mouseEvent.latLng.getLat());
               // 클릭한 위치 주소를 가져온다.
-              console.log("설정한 주소 = ", addr);
             }
           },
         );
@@ -91,6 +92,8 @@ function BoardKakaoMap(props) {
 
         setAddress(address); // Context에 주소 저장
         addressContext.setAddress(address);
+        addressContext.setLng(result[0].y);
+        addressContext.setLat(result[0].x);
       } else {
         console.error("주소를 좌표로 변환할 수 없습니다.");
       }

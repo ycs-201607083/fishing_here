@@ -5,12 +5,16 @@ const AddressContext = createContext("");
 
 // Context Provider 정의
 export const AddressProvider = ({ children }) => {
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState(null);
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
   console.log("ContextAddress. address\n", address);
   console.log("ContextAddress. SETADDRESS\n", setAddress);
 
   return (
-    <AddressContext.Provider value={{ address, setAddress }}>
+    <AddressContext.Provider
+      value={{ address, setAddress, lat, setLat, lng, setLng }}
+    >
       {children}
     </AddressContext.Provider>
   );
