@@ -17,6 +17,7 @@ import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +57,7 @@ public class BoardService {
 
             //파일 업로드
             for (MultipartFile file : files) {
+                System.out.println("file = " + Arrays.toString(files));
                 String objectKey = board.getWriter() + "/" + file.getOriginalFilename();
                 PutObjectRequest por = PutObjectRequest.builder()
                         .bucket(bucketName)
@@ -125,16 +127,35 @@ public class BoardService {
                 "count", mapper.getAnnouncementCount());
     }
 
-    public boolean addAnn(Announcement announcement, Authentication auth) {
+    public boolean addAnn(Announcement announcement, Authentication auth, MultipartFile[] files) {
         announcement.setWriter(auth.getName());
 
         int cnt = mapper.insertAnn(announcement);
+
+        if (files != null && files.length > 0) {
+            for (MultipartFile file : files) {
+                String objectKey = "prj241126/" + announcement.getWriter() + "/" + file.getOriginalFilename();
+                PutObjectRequest por = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(objectKey)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
+                try {
+                    s3.putObject(por, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                //file 테이블에 파일명 입력
+                mapper.insertAnnFile(announcement.getId(), file.getOriginalFilename());
+            }
+        }
 
         return cnt == 1;
     }
 
     public Announcement getAnnView(int id) {
-        System.out.println("id = " + id);
-        return mapper.selectByAnnId(id);
+        Announcement announcement = mapper.selectByAnnId(id);
+        return announcement;
     }
 }

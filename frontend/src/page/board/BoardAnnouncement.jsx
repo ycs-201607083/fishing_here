@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Center, HStack, Table, VStack } from "@chakra-ui/react";
+import { Box, Center, Heading, HStack, Stack, Table } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
@@ -60,8 +60,12 @@ export function BoardAnnouncement() {
   }
 
   return (
-    <VStack>
-      <Table.Root size="sm" mx={"auto"} w="70%" interactive>
+    <Stack w="70%" mx={"auto"}>
+      <Heading fontSize={"30px"} pb={5} color={"blue.800"}>
+        공지사항
+      </Heading>
+      <hr />
+      <Table.Root size="sm" interactive>
         <Table.Header>
           <Table.Row bg="blue.100">
             <Table.ColumnHeader w="15%" whiteSpace={"nowrap"}>
@@ -89,7 +93,7 @@ export function BoardAnnouncement() {
           ))}
         </Table.Body>
       </Table.Root>
-      <Box ml={"60%"}>
+      <Box ml={"auto"}>
         {isAdmin && <Button onClick={handleWriteContent}>글쓰기</Button>}
       </Box>
       <Center>
@@ -107,7 +111,7 @@ export function BoardAnnouncement() {
           </HStack>
         </PaginationRoot>
       </Center>
-    </VStack>
+    </Stack>
   );
 }
 

@@ -36,12 +36,17 @@ public class BoardController {
 
     @PostMapping("annAdd")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, Object>> announcementAdd(@RequestBody Announcement announcement,
-                                                               Authentication auth) {
-        if (service.addAnn(announcement, auth)) {
+    public ResponseEntity<Map<String, Object>> announcementAdd(
+            Announcement announcement,
+            @RequestParam(value = "files[]", required = false) MultipartFile[] files,
+            Authentication auth) {
+
+        if (service.addAnn(announcement, auth, files)) {
+            System.out.println("announcement = " + announcement);
             return ResponseEntity.ok().body(
                     Map.of("message",
-                            Map.of("type", "success", "text", announcement.getId() + "번 게시글이 등록되었습니다.")));
+                            Map.of("type", "success", "text", announcement.getId() + "번 게시글이 등록되었습니다."),
+                            "data", announcement));
         } else {
             return ResponseEntity.internalServerError().body(
                     Map.of("message",

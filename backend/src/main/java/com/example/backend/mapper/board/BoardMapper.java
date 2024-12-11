@@ -162,4 +162,10 @@ public interface BoardMapper {
             WHERE id = #{id}
             """)
     Announcement selectByAnnId(int id);
+
+    @Insert("""
+            INSERT INTO ann_file
+            VALUES (#{id},#{fileName})
+            """)
+    int insertAnnFile(Integer id, String fileName);
 }

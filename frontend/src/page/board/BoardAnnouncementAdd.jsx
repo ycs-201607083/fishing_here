@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Input, Textarea } from "@chakra-ui/react";
+import { Box, Card, HStack, Input, Text, Textarea } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
@@ -9,23 +9,67 @@ import { toaster } from "../../components/ui/toaster.jsx";
 export function BoardAnnouncementAdd() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [files, setFiles] = useState([]);
+  const [progress, setProgress] = useState(false);
   const navigate = useNavigate();
 
   const handleSaveButton = () => {
+    setProgress(true);
+
     axios
-      .post("/api/board/annAdd", { title, content })
+      .postForm("/api/board/annAdd", { title, content, files })
       .then((res) => res.data)
       .then((data) => {
         const message = data.message;
+        const id = data.data.id;
+        console.log(id);
         toaster.create({ type: message.type, description: message.text });
-        navigate(`/board/announcement`);
+        navigate(`/board/viewAnn/${id}`);
       })
       .catch((e) => {
+        console.log(e);
         const message = e.response.message;
         toaster.create({ type: message.type, description: message.text });
-      });
+      })
+      .finally(() => setProgress(false));
   };
 
+  //files 의 파일명 component 리스트로 만들기
+  const fileList = [];
+  let sumOfFileSize = 0;
+  let invalidOneFileSize = false; // 1MB 넘는지 체크
+
+  for (const file of files) {
+    sumOfFileSize += file.size;
+    if (file.size > 1024 * 1024) {
+      invalidOneFileSize = true;
+    }
+
+    fileList.push(
+      <Card.Root size={"sm"} key={file.name || file.lastModified}>
+        <Card.Body>
+          <HStack>
+            <Text
+              css={{ color: file.size > 1024 * 1024 ? "red" : "black" }}
+              fontWeight={"bold"}
+              me={"auto"}
+              truncate
+            >
+              {file.name}
+            </Text>
+            <Text>{Math.floor(file.size / 1024)} KB</Text>
+          </HStack>
+        </Card.Body>
+      </Card.Root>,
+    );
+  }
+
+  //파일 용량체크
+  let filedInputInvalid = false;
+  if (sumOfFileSize > 10 * 1024 * 1024 || invalidOneFileSize) {
+    filedInputInvalid = true;
+  }
+  const disabled = !(title.trim().length > 0 && content.trim().length > 0);
   return (
     <Box>
       <Field label="제목">
@@ -42,7 +86,26 @@ export function BoardAnnouncementAdd() {
           onChange={(e) => setContent(e.target.value)}
         />
       </Field>
-      <Button onClick={handleSaveButton}>저장</Button>
+      <Field
+        label={"파일"}
+        helperText={"총 10MB, 한 파일은 1MB 이내로 선택하세요."}
+        errorText={"선택된 파일의 용량이 초과되었습니다."}
+        invalid={filedInputInvalid}
+      >
+        <Box>
+          <input
+            type={"file"}
+            onChange={(e) => setFiles(e.target.files)}
+            accept={"image/*"}
+            multiple
+          />
+        </Box>
+        <Box>{fileList}</Box>
+      </Field>
+      <Box my={7}></Box>
+      <Button disabled={disabled} loading={progress} onClick={handleSaveButton}>
+        저장
+      </Button>
     </Box>
   );
 }
