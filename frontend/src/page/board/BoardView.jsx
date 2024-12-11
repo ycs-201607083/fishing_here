@@ -53,7 +53,6 @@ export function BoardView() {
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
   const navigate = useNavigate();
   const [map, setMap] = useState(null);
-  const [marker, setMarker] = useState([]);
   const [addr, setAddr] = useState(null);
   const [lati, setLat] = useState(null);
   const [lngi, setLng] = useState(null);
@@ -77,26 +76,34 @@ export function BoardView() {
     setLat(lat);
   }, [addr, lati, lngi]);
 
-  // 카카오맵 불러오기
-  setTimeout(() => {
+  useEffect(() => {
+    if (!board || !board.kakaoAddress) return; // board가 로드되기 전에 실행되지 않도록
+
+    const { addressLat, addressLng } = board.kakaoAddress;
+
+    // 카카오맵 불러오기
     window.kakao.maps.load(() => {
       const container = document.getElementById("map");
-      const lat = board.kakaoAddress.addressLat;
-      const lng = board.kakaoAddress.addressLng;
       const options = {
-        center: new kakao.maps.LatLng(lat, lng),
+        center: new kakao.maps.LatLng(addressLat, addressLng),
         level: 3,
-        draggable: false, // 지도 드래그 비활성화
-        zoomable: false, // 줌 비활성화
+        draggable: false,
+        zoomable: false,
       };
-      //카카오맵 생성
+
       const mapInstance = new window.kakao.maps.Map(container, options);
       setMap(mapInstance);
-      // 초기 마커 생성
-      const markerInstance = new window.kakao.maps.Marker();
-      setMarker(markerInstance);
+
+      const markerPosition = new window.kakao.maps.LatLng(
+        addressLat,
+        addressLng,
+      );
+      const marker = new window.kakao.maps.Marker({
+        position: markerPosition,
+      });
+      marker.setMap(mapInstance);
     });
-  }, 300);
+  }, [board]); // board가 변경될 때마다 실행
 
   if (board === null) {
     return (
