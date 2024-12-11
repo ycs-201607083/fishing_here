@@ -85,6 +85,7 @@ export function MemberEdit() {
     return <Spinner />;
   }
 
+  //이메일 정규식
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
@@ -100,6 +101,15 @@ export function MemberEdit() {
       setEmailMessage("올바른 이메일 형식입니다.");
     }
   };
+
+  //전화번호 정규식
+  function regPhoneNumber(e) {
+    const result = e.target.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
+      .replace(/(-{1,2})$/g, "");
+    setPhone(result);
+  }
 
   return (
     <Box>
@@ -123,8 +133,8 @@ export function MemberEdit() {
             {emailMessage}
           </Span>
         </Field>
-        <Field label={"번호"}>
-          <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
+        <Field label={"전화번호"}>
+          <Input value={phone} onChange={regPhoneNumber} variant="subtle" />
         </Field>
         <Field readOnly label={"생일"}>
           <Input readOnly value={member.birth} style={{ color: "gray" }} />
