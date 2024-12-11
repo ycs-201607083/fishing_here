@@ -1,6 +1,5 @@
 package com.example.backend.service.member;
 
-import com.example.backend.dto.board.Board;
 import com.example.backend.dto.member.Member;
 import com.example.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +53,22 @@ public class MemberService {
         }
 
         return null;
+    }
+
+    public Member get(String id) {
+        return mapper.infoId(id);
+    }
+
+    public boolean remove(Member member) {
+        int cnt = 0;
+        // 기존 암호와 비교
+        Member db = mapper.selectById(member.getId());
+        if (db != null) {
+            if (db.getPassword().equals(member.getPassword())) {
+                cnt = mapper.deleteById(member.getId());
+            }
+        }
+        return cnt == 1;
+
     }
 }
