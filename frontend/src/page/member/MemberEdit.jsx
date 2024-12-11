@@ -1,6 +1,6 @@
-import { Box, Button, Input, Spinner, Stack } from "@chakra-ui/react";
+import { Box, Button, Input, Span, Spinner, Stack } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
 import {
@@ -30,6 +30,10 @@ export function MemberEdit() {
   // 조건 만족시 open
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  // 이메일 오류 상태
+  const [emailError, setEmailError] = useState(false);
+  // 이메일 메시지 상태
+  const [emailMessage, setEmailMessage] = useState("");
 
   useEffect(() => {
     axios.get(`/api/member/${id}`).then((res) => {
@@ -81,6 +85,22 @@ export function MemberEdit() {
     return <Spinner />;
   }
 
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+
+    const emailRegex =
+      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{3}$/i;
+
+    if (!emailRegex.test(value)) {
+      setEmailError(false);
+      setEmailMessage("유효하지 않은 이메일 형식입니다");
+    } else {
+      setEmailError(true);
+      setEmailMessage("올바른 이메일 형식입니다.");
+    }
+  };
+
   return (
     <Box>
       <h3>회원 정보</h3>
@@ -98,7 +118,10 @@ export function MemberEdit() {
           <Input readOnly style={{ color: "gray" }} value={member.name} />
         </Field>
         <Field label={"이메일"}>
-          <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input value={email} onChange={handleEmailChange} />
+          <Span style={{ color: emailError ? "green" : "red" }}>
+            {emailMessage}
+          </Span>
         </Field>
         <Field label={"번호"}>
           <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
