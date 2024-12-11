@@ -1,4 +1,12 @@
-import { Box, Button, Input, Span, Spinner, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Group,
+  Input,
+  Span,
+  Spinner,
+  Stack,
+} from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -14,6 +22,7 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import DaumPostcodeEmbed from "react-daum-postcode";
 
 export function MemberEdit() {
   const { id } = useParams();
@@ -27,13 +36,16 @@ export function MemberEdit() {
   const [email, setEmail] = useState("");
   // 수정시 비밀번호 수정
   const [oldPassword, setOldPassword] = useState("");
-  // 조건 만족시 open
+  // 유효성 만족시 open
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   // 이메일 오류 상태
   const [emailError, setEmailError] = useState(false);
   // 이메일 메시지 상태
   const [emailMessage, setEmailMessage] = useState("");
+
+  //우편번호 api
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     axios.get(`/api/member/${id}`).then((res) => {
@@ -111,6 +123,26 @@ export function MemberEdit() {
     setPhone(result);
   }
 
+  // 우편 api
+  const handleApi = () => {
+    setIsOpen(true);
+  };
+  const handleComplete = (e) => {
+    const { address, zonecode } = e;
+    setPost(zonecode); // 선택된 우편번호 저장
+    setAddress(address); // 선택된 상세주소 저장
+  };
+  const handleClose = (e) => {
+    if (e === "FORCE_CLOSE") {
+      setIsOpen(false);
+    } else if (e === "COMPLETE_CLOSE") {
+      setIsOpen(false);
+    }
+  };
+  const handleButtonClose = () => {
+    setIsOpen(false);
+  };
+
   return (
     <Box>
       <h3>회원 정보</h3>
@@ -125,31 +157,76 @@ export function MemberEdit() {
           />
         </Field>
         <Field readOnly label={"이름"}>
-          <Input readOnly style={{ color: "gray" }} value={member.name} />
+          <Input
+            readOnly
+            style={{ color: "gray" }}
+            value={member.name}
+            maxW="550px"
+          />
         </Field>
         <Field label={"이메일"}>
-          <Input value={email} onChange={handleEmailChange} />
+          <Input value={email} onChange={handleEmailChange} maxW="550px" />
           <Span style={{ color: emailError ? "green" : "red" }}>
             {emailMessage}
           </Span>
         </Field>
         <Field label={"전화번호"}>
-          <Input value={phone} onChange={regPhoneNumber} variant="subtle" />
+          <Input
+            value={phone}
+            onChange={regPhoneNumber}
+            variant="subtle"
+            maxW="550px"
+          />
         </Field>
         <Field readOnly label={"생일"}>
-          <Input readOnly value={member.birth} style={{ color: "gray" }} />
+          <Input
+            readOnly
+            value={member.birth}
+            style={{ color: "gray" }}
+            maxW="550px"
+          />
         </Field>
-        <Field label={"우편번호"}>
-          <Input readOnly value={member.post} />
-        </Field>
-        <Field label={"주소"}>
-          <Input readOnly value={member.address} />
-        </Field>
+        <Box>
+          <Field label={"우편번호"}>
+            <Group>
+              <Input
+                value={post}
+                readOnly
+                onChange={(e) => setPost(e.target.value)}
+                variant="subtle"
+                maxW="550px"
+              />
+              <Button onClick={handleApi}>우편번호 찾기</Button>
+            </Group>
+          </Field>
+
+          <Field label={"상세주소"}>
+            <Input
+              value={address}
+              readOnly
+              onChange={(e) => setAddress(e.target.value)}
+              variant="subtle"
+              maxW="550px"
+            />
+          </Field>
+          {isOpen && (
+            <Field mt="5">
+              <DaumPostcodeEmbed
+                onComplete={handleComplete}
+                onClose={handleClose}
+              />
+              <Button onClick={handleButtonClose} w={{ md: "100%" }}>
+                닫기
+              </Button>
+            </Field>
+          )}
+        </Box>
         <Field readOnly label={"가입일시"}>
           <Input
             defaultValue={member.id}
             style={{ color: "gray" }}
             value={member.inserted}
+            maxW="550px"
           />
         </Field>
         <Box>
