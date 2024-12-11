@@ -77,6 +77,7 @@ export function BoardView() {
   }, [addr, lati, lngi]);
 
   useEffect(() => {
+    console.log("board.kakaoAddress:", board?.kakaoAddress);
     if (!board || !board.kakaoAddress) return; // board가 로드되기 전에 실행되지 않도록
 
     const { addressLat, addressLng } = board.kakaoAddress;
@@ -94,6 +95,11 @@ export function BoardView() {
       const mapInstance = new window.kakao.maps.Map(container, options);
       setMap(mapInstance);
 
+      // 지도 중심 강제 이동
+      const newCenter = new kakao.maps.LatLng(addressLat, addressLng);
+      mapInstance.panTo(newCenter);
+
+      //마커생성
       const markerPosition = new window.kakao.maps.LatLng(
         addressLat,
         addressLng,

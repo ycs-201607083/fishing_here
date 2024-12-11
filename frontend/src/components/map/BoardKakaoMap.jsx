@@ -85,11 +85,6 @@ function BoardKakaoMap(props) {
         // 지도 위치 이동
         map.panTo(currentPos);
 
-        // 기존 마커 제거 후 새로운 마커로 위치 업데이트
-        marker.setMap(null); // 기존 마커를 제거
-        marker.setPosition(currentPos); // 새로운 마커 위치 설정
-        marker.setMap(map); // 마커를 지도에 다시 추가
-
         setAddress(address); // Context에 주소 저장
         addressContext.setAddress(address);
         addressContext.setLng(result[0].y);
