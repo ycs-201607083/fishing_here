@@ -5,6 +5,7 @@ import {
   Box,
   Flex,
   Heading,
+  Image,
   Spacer,
   Spinner,
   Text,
@@ -13,12 +14,21 @@ import {
 import { FaArrowLeft } from "react-icons/fa6";
 import { Button } from "../../components/ui/button.jsx";
 
-const flushedInputStyles = {
-  _focus: {
-    borderColor: "gray.200",
-    boxShadow: "none",
-  },
-};
+function ImageFileView({ files }) {
+  return (
+    <Box>
+      {files.map((file) => (
+        <Image
+          key={file.name}
+          src={file.src}
+          alt={file.name || "첨부 이미지"}
+          maxW={"500px"}
+          mx={"auto"}
+        />
+      ))}
+    </Box>
+  );
+}
 
 export function BoardAnnouncementView() {
   const { id } = useParams();
@@ -41,11 +51,13 @@ export function BoardAnnouncementView() {
     },
   };
 
-  const onClickPrev = () => {
+  const handleClickPrev = () => {
     navigate("/board/announcement");
   };
+  const handleEditClick = () => {};
+  const handleDelClick = () => {};
   return (
-    <Box mx={"auto"} w={"70%"}>
+    <Box mx={"auto"} w={"60%"}>
       <Heading fontSize={"30px"} pb={5} color={"blue.800"}>
         공지사항
       </Heading>
@@ -58,6 +70,8 @@ export function BoardAnnouncementView() {
         <Spacer />
         <Text>작성일 : {annView.inserted}</Text>
       </Flex>
+      <hr />
+      <ImageFileView files={annView.fileList} />
       <Textarea
         readOnly
         resize="none"
@@ -65,9 +79,22 @@ export function BoardAnnouncementView() {
         h="200px"
         value={annView.content}
       />
-      <Button onClick={onClickPrev}>
-        <FaArrowLeft />
-      </Button>
+      <Flex>
+        <Button onClick={handleClickPrev}>
+          <FaArrowLeft />
+        </Button>
+        <Spacer />
+        <Button
+          colorPalette={"blue"}
+          variant={"ghost"}
+          onClick={handleEditClick}
+        >
+          수정
+        </Button>
+        <Button colorPalette={"red"} variant={"ghost"} onClick={handleDelClick}>
+          삭제
+        </Button>
+      </Flex>
     </Box>
   );
 }

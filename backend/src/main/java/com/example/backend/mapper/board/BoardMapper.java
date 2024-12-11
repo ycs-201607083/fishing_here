@@ -168,4 +168,11 @@ public interface BoardMapper {
             VALUES (#{id},#{fileName})
             """)
     int insertAnnFile(Integer id, String fileName);
+
+    @Select("""
+            SELECT name
+            FROM ann_file
+            WHERE id= #{id}
+            """)
+    List<String> selectFilesByAnnId(int id);
 }

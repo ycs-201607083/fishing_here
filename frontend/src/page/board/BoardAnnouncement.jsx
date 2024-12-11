@@ -68,13 +68,21 @@ export function BoardAnnouncement() {
       <Table.Root size="sm" interactive>
         <Table.Header>
           <Table.Row bg="blue.100">
-            <Table.ColumnHeader w="15%" whiteSpace={"nowrap"}>
+            <Table.ColumnHeader
+              w="10%"
+              whiteSpace={"nowrap"}
+              textAlign={"center"}
+            >
               번호
             </Table.ColumnHeader>
-            <Table.ColumnHeader w="40%" whiteSpace={"nowrap"}>
+            <Table.ColumnHeader w="30%" whiteSpace={"nowrap"}>
               제목
             </Table.ColumnHeader>
-            <Table.ColumnHeader w="5%" whiteSpace={"nowrap"}>
+            <Table.ColumnHeader
+              w="15%"
+              whiteSpace={"nowrap"}
+              textAlign={"center"}
+            >
               작성자
             </Table.ColumnHeader>
             <Table.ColumnHeader w="10%" whiteSpace={"nowrap"}>
@@ -85,9 +93,13 @@ export function BoardAnnouncement() {
         <Table.Body>
           {anList.map((board) => (
             <Table.Row key={board.id} onClick={() => handleRowClick(board.id)}>
-              <Table.Cell whiteSpace={"nowrap"}>{board.id}</Table.Cell>
+              <Table.Cell whiteSpace={"nowrap"} textAlign={"center"}>
+                {board.id}
+              </Table.Cell>
               <Table.Cell whiteSpace={"nowrap"}>{board.title}</Table.Cell>
-              <Table.Cell whiteSpace={"nowrap"}>{board.writer}</Table.Cell>
+              <Table.Cell whiteSpace={"nowrap"} textAlign={"center"}>
+                {board.writer}
+              </Table.Cell>
               <Table.Cell whiteSpace={"nowrap"}>{board.inserted}</Table.Cell>
             </Table.Row>
           ))}

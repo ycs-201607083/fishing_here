@@ -1,5 +1,6 @@
 package com.example.backend.service.board;
 
+import com.example.backend.dto.board.AnnFile;
 import com.example.backend.dto.board.Announcement;
 import com.example.backend.dto.board.Board;
 import com.example.backend.dto.board.BoardFile;
@@ -134,7 +135,7 @@ public class BoardService {
 
         if (files != null && files.length > 0) {
             for (MultipartFile file : files) {
-                String objectKey = "prj241126/" + announcement.getWriter() + "/" + file.getOriginalFilename();
+                String objectKey = "prj241126/" + announcement.getId() + "/" + file.getOriginalFilename();
                 PutObjectRequest por = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(objectKey)
@@ -156,6 +157,10 @@ public class BoardService {
 
     public Announcement getAnnView(int id) {
         Announcement announcement = mapper.selectByAnnId(id);
+        List<String> fileNameList = mapper.selectFilesByAnnId(id);
+        List<AnnFile> fileSrcList = fileNameList.stream()
+                .map(name -> new AnnFile(name, imageSrcPrefix + "/" + id + "/" + name)).toList();
+        announcement.setFileList(fileSrcList);
         return announcement;
     }
 

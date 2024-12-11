@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Box, Card, HStack, Input, Text, Textarea } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  HStack,
+  Input,
+  Stack,
+  Text,
+  Textarea,
+} from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import axios from "axios";
@@ -72,36 +80,39 @@ export function BoardAnnouncementAdd() {
   const disabled = !(title.trim().length > 0 && content.trim().length > 0);
   return (
     <Box maxW={"70%"} mx={"auto"}>
-      <Field label="제목">
-        <Input
-          value={title}
-          placeholder="제목을 입력해 주세요"
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </Field>
-      <Field label="본문">
-        <Textarea
-          value={content}
-          placeholder="내용을 입력해 주세요"
-          onChange={(e) => setContent(e.target.value)}
-        />
-      </Field>
-      <Field
-        label={"파일"}
-        helperText={"총 10MB, 한 파일은 1MB 이내로 선택하세요."}
-        errorText={"선택된 파일의 용량이 초과되었습니다."}
-        invalid={filedInputInvalid}
-      >
-        <Box>
-          <input
-            type={"file"}
-            onChange={(e) => setFiles(e.target.files)}
-            accept={"image/*"}
-            multiple
+      <Stack gap={5}>
+        <Field label="제목">
+          <Input
+            value={title}
+            placeholder="제목을 입력해 주세요"
+            onChange={(e) => setTitle(e.target.value)}
           />
-        </Box>
-        <Box>{fileList}</Box>
-      </Field>
+        </Field>
+        <Field label="본문">
+          <Textarea
+            value={content}
+            placeholder="내용을 입력해 주세요"
+            h={"300px"}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </Field>
+        <Field
+          label={"파일"}
+          helperText={"총 10MB, 한 파일은 1MB 이내로 선택하세요."}
+          errorText={"선택된 파일의 용량이 초과되었습니다."}
+          invalid={filedInputInvalid}
+        >
+          <Box>
+            <input
+              type={"file"}
+              onChange={(e) => setFiles(e.target.files)}
+              accept={"image/*"}
+              multiple
+            />
+          </Box>
+          <Box>{fileList}</Box>
+        </Field>
+      </Stack>
       <Box my={7}></Box>
       <Button disabled={disabled} loading={progress} onClick={handleSaveButton}>
         저장
