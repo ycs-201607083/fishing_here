@@ -22,7 +22,7 @@ function ImageFileView({ files }) {
           key={file.name}
           src={file.src}
           alt={file.name || "첨부 이미지"}
-          maxW={"500px"}
+          maxW={"80%"}
           mx={"auto"}
         />
       ))}
