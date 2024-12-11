@@ -46,7 +46,7 @@ export function BoardAdd() {
   const navigate = useNavigate();
   const [checkedSwitch, setCheckedSwitch] = useState(false);
 
-  const { address, lng, lat } = useAddress();
+  const { address, lng, lat, setAddress, setLng, setLat } = useAddress();
 
   useEffect(() => {
     console.log("주소가 변경되었습니다 context:", address);
@@ -92,11 +92,6 @@ export function BoardAdd() {
           description: message.text,
           type: message.type,
         });
-
-        if (site === "seaSite") {
-        } else {
-        }
-
         navigate(`/board/view/${data.data.number}`);
       })
       .catch((e) => {
@@ -160,6 +155,12 @@ export function BoardAdd() {
   }
 
   scrollDown(checkedSwitch);
+
+  if (checkedSwitch === false) {
+    setAddress(null);
+    setLat(null);
+    setLng(null);
+  }
 
   return (
     <Box
