@@ -14,6 +14,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardAdd } from "./page/board/BoardAdd.jsx";
 import BoardView from "./page/board/BoardView.jsx";
+import { MemberInfo } from "./page/member/MemberInfo.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
       {
         path: "board/view/:number",
         element: <BoardView />,
+      },
+      {
+        path: "member/:id",
+        element: <MemberInfo />,
       },
     ],
   },
