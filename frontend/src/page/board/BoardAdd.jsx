@@ -23,6 +23,8 @@ import {
 import BoardKakaoMap from "../../components/map/BoardKakaoMap.jsx";
 import { Switch } from "../../components/ui/switch";
 import { useAddress } from "../../context/AddressContext.jsx";
+import { LuInfo } from "react-icons/lu";
+import { ToggleTip } from "../../components/ui/toggle-tip";
 
 export function scrollDown(isTrue) {
   useEffect(() => {
@@ -45,6 +47,17 @@ export function BoardAdd() {
   const [progress, setProgress] = useState(false);
   const navigate = useNavigate();
   const [checkedSwitch, setCheckedSwitch] = useState(false);
+  const toggleContent = (
+    <>
+      1. 지도의 검색기능으로 이동할 주소를 입력해주세요.
+      <br />
+      <br />
+      2. 지도가 이동 후 원하는 곳을 마우스로 클릭하여 위치를 지정해주세요.
+      <br />
+      <br />
+      3. 지정이 완료 되었다면 저장을 눌러 나의 명당을 사람들에게 알려주세요!
+    </>
+  );
 
   const { address, lng, lat, setAddress, setLng, setLat } = useAddress();
 
@@ -216,16 +229,23 @@ export function BoardAdd() {
           </Field>
           <Box my={7}>{filesList}</Box>
         </Box>
-        <Stack>
+        <Stack direction={"row"}>
           <Switch
             checked={checkedSwitch}
             onChange={handleKakaoMapChecked}
             colorPalette={"blue"}
-          >
-            자신의 명당을 맵으로 공유하기
-          </Switch>
-          {checkedSwitch && <BoardKakaoMap />}
+          />
+          <p>
+            자신의 명당 맵으로 공유하기
+            <ToggleTip content={toggleContent}>
+              <Button variant={"ghost"}>
+                <LuInfo />
+              </Button>
+            </ToggleTip>
+          </p>
         </Stack>
+        {checkedSwitch && <BoardKakaoMap />}
+
         <Stack direction={"row"} mb={4}>
           <Box>
             <Button

@@ -89,7 +89,6 @@ export function BoardView() {
         center: new kakao.maps.LatLng(addressLat, addressLng),
         level: 3,
         draggable: false,
-        zoomable: false,
       };
 
       const mapInstance = new window.kakao.maps.Map(container, options);
