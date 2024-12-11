@@ -62,6 +62,11 @@ public class BoardController {
 
     }
 
+    @PutMapping("updateAnn")
+    @PreAuthorize("isAuthenticated()")
+    public void updateAnn() {
+
+    }
 
     @GetMapping("list")
     public Map<String, Object> searchBoards(@RequestParam(value = "keyword", defaultValue = "") String search,

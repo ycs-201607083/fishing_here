@@ -54,8 +54,9 @@ export function BoardAnnouncementView() {
   const handleClickPrev = () => {
     navigate("/board/announcement");
   };
-  const handleEditClick = () => {};
+
   const handleDelClick = () => {};
+
   return (
     <Box mx={"auto"} w={"60%"}>
       <Heading fontSize={"30px"} pb={5} color={"blue.800"}>
@@ -87,7 +88,7 @@ export function BoardAnnouncementView() {
         <Button
           colorPalette={"blue"}
           variant={"ghost"}
-          onClick={handleEditClick}
+          onClick={() => navigate(`/board/edit/${annView.id}`)}
         >
           수정
         </Button>
