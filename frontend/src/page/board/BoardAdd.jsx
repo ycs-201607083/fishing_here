@@ -52,7 +52,7 @@ export function BoardAdd() {
     console.log("주소가 변경되었습니다 context:", address);
     console.log("경도가 변경되었습니다 context:", lat);
     console.log("위도가 변경되었습니다 context:", lng);
-  }, [address]); // address 값이 변경될 때마다 실행됨
+  }, [address, lat, lng]); // address, lng, lat 값이 변경될 때마다 실행됨
 
   //스위치 true 일때 카카오맵 열기
   const handleKakaoMapChecked = (event) => {
