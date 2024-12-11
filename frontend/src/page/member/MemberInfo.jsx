@@ -95,11 +95,13 @@ export function MemberInfo() {
             <DialogTrigger asChild>
               <div>
                 <Stack direction="row" spacing={5} mt={1} mb={5}>
-                  <Button onClick={() => navigate(`/member/edit/${id}`)}>
+                  <Button
+                    colorPalette={"blue"}
+                    onClick={() => navigate(`/member/edit/${id}`)}
+                  >
                     수정
                   </Button>
-
-                  <Button colorScheme={"orange"}>탈퇴</Button>
+                  <Button colorPalette={"orange"}>탈퇴</Button>
                 </Stack>
               </div>
             </DialogTrigger>
