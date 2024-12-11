@@ -1,6 +1,7 @@
 package com.example.backend.controller.member;
 
 import com.example.backend.dto.member.Member;
+import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +73,21 @@ public class MemberController {
             return ResponseEntity.ok(Map.of("message",
                     Map.of("type", "success",
                             "text", "회원정보를 삭제하였습니다.")));
+        } else {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message",
+                            Map.of("type", "warning",
+                                    "text", "정확한 정보를 입력해주세요.")));
+        }
+    }
+
+    @PutMapping("update")
+    public ResponseEntity<Map<String, Object>> update(@RequestBody MemberEdit member) {
+        if (service.update(member)) {
+            //잘됨
+            return ResponseEntity.ok(Map.of("message",
+                    Map.of("type", "success",
+                            "text", "회원정보를 수정하였습니다.")));
         } else {
             return ResponseEntity.badRequest()
                     .body(Map.of("message",

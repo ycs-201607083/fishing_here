@@ -1,6 +1,6 @@
 import { Box, Button, Input, Spinner, Stack } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
 import {
@@ -15,22 +15,43 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 
-export function MemberInfo() {
-  const [member, setMember] = useState(null);
+export function MemberEdit() {
   const { id } = useParams();
+  // 데이터 받기
+  const [member, setMember] = useState(null);
+  // 수정 대상 데이터
   const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [post, setPost] = useState("");
+  const [address, setAddress] = useState("");
+  const [email, setEmail] = useState("");
+  // 수정시 비밀번호 수정
+  const [oldPassword, setOldPassword] = useState("");
+  // 조건 만족시 open
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    //회원정보 얻기
-    axios.get(`/api/member/${id}`).then((res) => setMember(res.data));
+    axios.get(`/api/member/${id}`).then((res) => {
+      setMember(res.data);
+      setPassword(res.data.password);
+      setPost(res.data.post);
+      setPhone(res.data.phone);
+      setAddress(res.data.address);
+      setEmail(res.data.email);
+    });
   }, []);
 
-  function handleDeleteClick() {
+  // 수정 버튼 클릭시 업데이트 + 토스터
+  function handleSaveClick() {
     axios
-      .delete("/api/member/remove", {
-        data: { id, password },
+      .put("/api/member/update", {
+        id: member.id,
+        password,
+        post,
+        address,
+        email,
+        oldPassword,
       })
       .then((res) => {
         const message = res.data.message;
@@ -39,7 +60,7 @@ export function MemberInfo() {
           type: message.type,
           description: message.text,
         });
-        navigate("/member/signup");
+        navigate(`/member/${id}`);
       })
       .catch((e) => {
         const message = e.response.data.message;
@@ -51,35 +72,39 @@ export function MemberInfo() {
       })
       .finally(() => {
         setOpen(false);
-        setPassword("");
+        setOldPassword("");
       });
   }
 
-  if (!member) {
+  //로딩
+  if (member === null) {
     return <Spinner />;
   }
 
   return (
-    <Box px="20px">
+    <Box>
       <h3>회원 정보</h3>
       <Stack gap={5}>
-        <Field label={"아이디"}>
-          <Input readOnly value={member.id} />
+        <Field readOnly label={"아이디"}>
+          <Input readOnly defaultValue={member.id} style={{ color: "gray" }} />
         </Field>
         <Field label={"암호"}>
-          <Input readOnly value={member.password} />
+          <Input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </Field>
-        <Field label={"이름"}>
-          <Input readOnly value={member.name} />
+        <Field readOnly label={"이름"}>
+          <Input readOnly style={{ color: "gray" }} value={member.name} />
         </Field>
         <Field label={"이메일"}>
-          <Input readOnly value={member.email} />
+          <Input value={email} onChange={(e) => setEmail(e.target.value)} />
         </Field>
         <Field label={"번호"}>
-          <Input readOnly value={member.phone} />
+          <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
         </Field>
-        <Field label={"생일"}>
-          <Input readOnly value={member.birth} />
+        <Field readOnly label={"생일"}>
+          <Input readOnly value={member.birth} style={{ color: "gray" }} />
         </Field>
         <Field label={"우편번호"}>
           <Input readOnly value={member.post} />
@@ -87,43 +112,29 @@ export function MemberInfo() {
         <Field label={"주소"}>
           <Input readOnly value={member.address} />
         </Field>
-        <Field label={"가입일시"}>
-          <Input readOnly value={member.inserted} />
+        <Field readOnly label={"가입일시"}>
+          <Input
+            defaultValue={member.id}
+            style={{ color: "gray" }}
+            value={member.inserted}
+          />
         </Field>
         <Box>
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
-              <div>
-                <Stack direction="row" spacing={5} mt={1} mb={5}>
-                  <Button onClick={() => navigate(`/member/edit/${id}`)}>
-                    수정
-                  </Button>
-
-                  <Button colorScheme={"orange"}>탈퇴</Button>
-                </Stack>
-              </div>
+              <Button colorPalette={"blue"}>저장</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>탈퇴확인</DialogTitle>
+                <DialogTitle>회원 정보 변경 확인</DialogTitle>
               </DialogHeader>
               <DialogBody>
-                <p>탈퇴 하시겠습니까?</p>
-                <p
-                  style={{
-                    fontSize: "0.8em",
-                    color: "gray",
-                    marginTop: "0.5em",
-                  }}
-                >
-                  비밀번호 입력 시 탈퇴가 완료됩니다.
-                </p>
                 <Stack gap={5}>
-                  <Field>
+                  <Field label={"기존 암호"}>
                     <Input
-                      placeholder={"비밀번호를 입력해주세요."}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder={"기존 암호를 입력해주세요."}
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
                     />
                   </Field>
                 </Stack>
@@ -132,8 +143,8 @@ export function MemberInfo() {
                 <DialogActionTrigger>
                   <Button variant={"outline"}>취소</Button>
                 </DialogActionTrigger>
-                <Button colorScheme={"orange"} onClick={handleDeleteClick}>
-                  탈퇴
+                <Button colorPalette={"blue"} onClick={handleSaveClick}>
+                  저장
                 </Button>
               </DialogFooter>
             </DialogContent>

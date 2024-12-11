@@ -1,6 +1,7 @@
 package com.example.backend.service.member;
 
 import com.example.backend.dto.member.Member;
+import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -70,5 +71,16 @@ public class MemberService {
         }
         return cnt == 1;
 
+    }
+
+    public boolean update(MemberEdit memberEdit) {
+        int cnt = 0;
+        Member db = mapper.selectById(memberEdit.getId());
+        if (db != null) {
+            if (db.getPassword().equals(memberEdit.getOldPassword())) {
+                cnt = mapper.update(memberEdit);
+            }
+        }
+        return cnt == 1;
     }
 }
