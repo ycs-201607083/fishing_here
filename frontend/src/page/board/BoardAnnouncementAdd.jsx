@@ -71,7 +71,7 @@ export function BoardAnnouncementAdd() {
   }
   const disabled = !(title.trim().length > 0 && content.trim().length > 0);
   return (
-    <Box>
+    <Box maxW={"70%"} mx={"auto"}>
       <Field label="제목">
         <Input
           value={title}

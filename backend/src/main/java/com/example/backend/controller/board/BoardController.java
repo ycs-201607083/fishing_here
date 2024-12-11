@@ -41,17 +41,25 @@ public class BoardController {
             @RequestParam(value = "files[]", required = false) MultipartFile[] files,
             Authentication auth) {
 
-        if (service.addAnn(announcement, auth, files)) {
-            System.out.println("announcement = " + announcement);
-            return ResponseEntity.ok().body(
-                    Map.of("message",
-                            Map.of("type", "success", "text", announcement.getId() + "번 게시글이 등록되었습니다."),
-                            "data", announcement));
+        if (service.validateAnn(announcement)) {
+            if (service.addAnn(announcement, auth, files)) {
+                System.out.println("announcement = " + announcement);
+                return ResponseEntity.ok().body(
+                        Map.of("message",
+                                Map.of("type", "success", "text", announcement.getId() + "번 게시글이 등록되었습니다."),
+                                "data", announcement));
+            } else {
+                return ResponseEntity.internalServerError().body(
+                        Map.of("message",
+                                Map.of("type", "warning", "text", "등록되지 않았습니다..")));
+            }
+
         } else {
-            return ResponseEntity.internalServerError().body(
+            return ResponseEntity.badRequest().body(
                     Map.of("message",
-                            Map.of("type", "warning", "text", "등록되지 않았습니다..")));
+                            Map.of("type", "warning", "text", "제목과 본문을  입력해주세요.")));
         }
+
     }
 
 

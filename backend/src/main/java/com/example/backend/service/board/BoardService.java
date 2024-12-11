@@ -158,4 +158,11 @@ public class BoardService {
         Announcement announcement = mapper.selectByAnnId(id);
         return announcement;
     }
+
+    public boolean validateAnn(Announcement announcement) {
+        boolean title = !announcement.getTitle().trim().isEmpty();
+        boolean content = !announcement.getContent().trim().isEmpty();
+
+        return title && content;
+    }
 }
