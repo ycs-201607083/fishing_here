@@ -1,16 +1,59 @@
 import React, { useEffect, useState } from "react";
-import { Box, Input, Spinner, Stack, Textarea } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Image,
+  Input,
+  Spinner,
+  Stack,
+  Textarea,
+} from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Checkbox } from "../../components/ui/checkbox.jsx";
 
 function ImageView({ files, onRemoveSwitchClick }) {
-  return <Box>{files.map((files) => {})}</Box>;
+  // 체크 상태를 관리할 state 추가
+  const [blurredImages, setBlurredImages] = useState({});
+
+  const handleCheckboxChange = (isChecked, fileName) => {
+    setBlurredImages((prev) => ({
+      ...prev,
+      [fileName]: isChecked, // 이미지의 blur 상태를 업데이트
+    }));
+    onRemoveSwitchClick(isChecked, fileName); // 기존 콜백 호출
+  };
+
+  return (
+    <Box maxW={"70%"} mx={"auto"}>
+      {files.map((file) => (
+        <Flex key={file.name} align="center">
+          <Image
+            src={file.src}
+            w={"30%"}
+            style={{
+              filter: blurredImages[file.name] ? "blur(4px)" : "none", // 흐림 효과 추가
+              transition: "filter 0.3s", // 부드러운 전환 효과
+            }}
+          />
+          <Checkbox
+            invalid
+            pl={3}
+            onChange={(e) => handleCheckboxChange(e.target.checked, file.name)}
+          >
+            삭제
+          </Checkbox>
+        </Flex>
+      ))}
+    </Box>
+  );
 }
 
 export function BoardAnnouncementEdit() {
   const { id } = useParams();
   const [announcement, setAnnouncement] = useState(null);
+  const [removeFiles, setRemoveFiles] = useState([]);
   const [progress, setProgress] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -32,10 +75,18 @@ export function BoardAnnouncementEdit() {
   };
 
   if (loading) {
-    return <Spinner></Spinner>;
+    return <Spinner />;
   }
 
-  let handleSwitchClick;
+  const handleRemoveClick = (checked, fileName) => {
+    if (checked) {
+      setRemoveFiles([...removeFiles, fileName]);
+      console.log(fileName);
+    } else {
+      setRemoveFiles(removeFiles.filter((f) => f !== fileName));
+    }
+  };
+
   return (
     <Box maxW={"70%"} mx={"auto"}>
       <Stack gap={5}>
@@ -48,6 +99,10 @@ export function BoardAnnouncementEdit() {
             }
           />
         </Field>
+        <ImageView
+          files={announcement.fileList}
+          onRemoveSwitchClick={handleRemoveClick}
+        />
         <Field label="본문">
           <Textarea
             value={announcement.content}
@@ -56,11 +111,6 @@ export function BoardAnnouncementEdit() {
             onChange={(e) =>
               setAnnouncement({ ...announcement, content: e.target.value })
             }
-          />
-
-          <ImageView
-            files={announcement.files}
-            onRemoveSwitchClick={handleSwitchClick}
           />
         </Field>
       </Stack>
