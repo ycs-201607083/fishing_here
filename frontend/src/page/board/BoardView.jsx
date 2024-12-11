@@ -27,6 +27,7 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { useAddress } from "../../context/AddressContext.jsx";
 
 function ImageFileView({ files }) {
   return (
@@ -53,6 +54,10 @@ export function BoardView() {
   const navigate = useNavigate();
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState([]);
+  const [addr, setAddr] = useState(null);
+  const [lati, setLat] = useState(null);
+  const [lngi, setLng] = useState(null);
+  const { address, lng, lat } = useAddress();
 
   useEffect(() => {
     axios
@@ -66,27 +71,32 @@ export function BoardView() {
       });
   }, [number]);
 
-  // 1) 카카오맵 불러오기
   useEffect(() => {
-    setTimeout(() => {
-      window.kakao.maps.load(() => {
-        const container = document.getElementById("map");
-        const options = {
-          center: new kakao.maps.LatLng(
-            board.kakaoAdress.addressLat,
-            board.kakaoAdress.addressLng,
-          ),
-          level: 3,
-        };
-        //카카오맵 생성
-        const mapInstance = new window.kakao.maps.Map(container, options);
-        setMap(mapInstance);
-        // 초기 마커 생성
-        const markerInstance = new window.kakao.maps.Marker();
-        setMarker(markerInstance);
-      });
-    }, 300);
-  }, []);
+    setAddr(address);
+    setLng(lng);
+    setLat(lat);
+  }, [addr, lati, lngi]);
+
+  // 카카오맵 불러오기
+  setTimeout(() => {
+    window.kakao.maps.load(() => {
+      const container = document.getElementById("map");
+      const lat = board.kakaoAddress.addressLat;
+      const lng = board.kakaoAddress.addressLng;
+      const options = {
+        center: new kakao.maps.LatLng(lat, lng),
+        level: 3,
+        draggable: false, // 지도 드래그 비활성화
+        zoomable: false, // 줌 비활성화
+      };
+      //카카오맵 생성
+      const mapInstance = new window.kakao.maps.Map(container, options);
+      setMap(mapInstance);
+      // 초기 마커 생성
+      const markerInstance = new window.kakao.maps.Marker();
+      setMarker(markerInstance);
+    });
+  }, 300);
 
   if (board === null) {
     return (
@@ -136,7 +146,7 @@ export function BoardView() {
 
         {board?.kakaoAddress ? (
           <Field>
-            <Text>{board.kakaoAddress.addressName}</Text>
+            <Text>공유 명당 주소 : {board.kakaoAddress.addressName}</Text>
             <Box
               bg={"bg"}
               shadow={"md"}
