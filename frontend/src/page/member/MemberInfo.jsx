@@ -150,7 +150,7 @@ export function MemberInfo() {
               <div>
                 <Box>
                   <Button
-                    colorPalette={"skyblue"}
+                    colorPalette={"blue"}
                     onClick={() => navigate(`/member/edit/${id}`)}
                     mx={"auto"}
                     w={{ md: "100%" }}

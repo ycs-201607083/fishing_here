@@ -154,6 +154,7 @@ export function MemberEdit() {
           <Input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            variant="subtle"
           />
         </Field>
         <Field readOnly label={"이름"}>
@@ -165,7 +166,12 @@ export function MemberEdit() {
           />
         </Field>
         <Field label={"이메일"}>
-          <Input value={email} onChange={handleEmailChange} maxW="550px" />
+          <Input
+            value={email}
+            onChange={handleEmailChange}
+            maxW="550px"
+            variant="subtle"
+          />
           <Span style={{ color: emailError ? "green" : "red" }}>
             {emailMessage}
           </Span>
@@ -232,7 +238,9 @@ export function MemberEdit() {
         <Box>
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
-              <Button colorPalette={"blue"}>저장</Button>
+              <Button colorPalette={"blue"} mx={"auto"} w={{ md: "100%" }}>
+                저장
+              </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -253,9 +261,11 @@ export function MemberEdit() {
                 <DialogActionTrigger>
                   <Button variant={"outline"}>취소</Button>
                 </DialogActionTrigger>
-                <Button colorPalette={"blue"} onClick={handleSaveClick}>
-                  저장
-                </Button>
+                <Box>
+                  <Button colorPalette={"blue"} onClick={handleSaveClick}>
+                    저장
+                  </Button>
+                </Box>
               </DialogFooter>
             </DialogContent>
           </DialogRoot>
