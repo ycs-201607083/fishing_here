@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toaster } from "../../components/ui/toaster.jsx";
 import weatherCityMapFromKr from "../../components/data/weatherCityMapFromKr.json";
 import { WeatherCard } from "../../components/root/WeatherCard.jsx";
@@ -17,6 +17,7 @@ import { IoIosArrowUp } from "react-icons/io";
 
 import "../../components/css/WeatherApp.css";
 import Slider from "react-slick";
+import axios from "axios";
 
 const CustomArrow = ({ className, style, onClick, isNext }) => (
   <Box
@@ -28,20 +29,28 @@ const CustomArrow = ({ className, style, onClick, isNext }) => (
       zIndex: 1,
       [isNext ? "right" : "left"]: "20px", // 위치 조정
     }}
-  >
-    {" "}
-  </Box>
+  ></Box>
 );
 
 export function BoardMain() {
   const [cityName, setCityName] = useState("");
+  const [annList, setAnnList] = useState([]);
   const [weather, setWeather] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const appKey = import.meta.env.VITE_WEATHER_API_KEY;
 
-  // useEffect(() => {
-  //   SearchWeatherByCity(cityName);
-  // }, []);
+  useEffect(() => {
+    axios
+      .get("/api/board/boardMain")
+      .then((res) => res.data)
+      .then((data) => {
+        setAnnList(data.data);
+        console.log(data, "불러옴");
+      })
+      .catch((e) => {
+        console.log(e, "못불러옴");
+      });
+  }, []);
 
   const getEnglishCityName = (koreanCityName) => {
     return weatherCityMapFromKr[koreanCityName] || koreanCityName;

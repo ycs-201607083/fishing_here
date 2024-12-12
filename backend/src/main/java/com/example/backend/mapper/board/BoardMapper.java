@@ -176,6 +176,14 @@ public interface BoardMapper {
             """)
     List<String> selectFilesByAnnId(int id);
 
+    @Select("""
+            SELECT name
+            FROM ann_file
+            WHERE id=#{id}
+            LIMIT 1
+            """)
+    List<String> selectFilesByAnnIdBanner(Integer id);
+
     @Delete("""
             DELETE FROM ann_file
             WHERE id = #{id}
@@ -202,4 +210,13 @@ public interface BoardMapper {
             WHERE id =#{id}
             """)
     int deleteByAnnId(int id);
+
+    @Select("""
+            SELECT id, title
+            FROM announcement
+            ORDER BY inserted DESC
+            LIMIT 5;
+            """)
+    List<Announcement> selectAllAnn();
+
 }

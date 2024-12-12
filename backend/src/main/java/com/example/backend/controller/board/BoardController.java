@@ -21,7 +21,9 @@ public class BoardController {
     final BoardService service;
 
     @GetMapping("boardMain")
-    public void boardMain() {
+    public List<Announcement> boardMain() {
+        return service.mainBanner();
+//        return null;
     }
 
     @GetMapping("announcement")

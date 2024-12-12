@@ -77,7 +77,7 @@ export function BoardAnnouncementEdit() {
   const [uploadFiles, setUploadFiles] = useState([]);
   const [progress, setProgress] = useState(false);
   const [loading, setLoading] = useState(true);
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -105,7 +105,7 @@ export function BoardAnnouncementEdit() {
           type: message.type,
           description: message.text,
         });
-        naviagte(`/board/viewAnn/${id}`);
+        navigate(`/board/viewAnn/${id}`);
       })
       .catch((e) => {
         const message = e.data.message;
@@ -218,7 +218,7 @@ export function BoardAnnouncementEdit() {
         <Box pb={5}>{fileList}</Box>
       </Stack>
       <Flex pb={5}>
-        <Button onClick={() => naviagte(`/board/viewAnn/${id}`)}>
+        <Button onClick={() => navigate(`/board/viewAnn/${id}`)}>
           <FaArrowLeft />
         </Button>
         <Spacer />

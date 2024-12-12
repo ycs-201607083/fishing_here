@@ -6,6 +6,7 @@ import com.example.backend.dto.board.Board;
 import com.example.backend.dto.board.BoardFile;
 import com.example.backend.mapper.board.BoardMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,12 @@ import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -122,10 +125,35 @@ public class BoardService {
         return cnt == 1;
     }
 
+
+    public List<Announcement> mainBanner() {
+        List<Announcement> list = mapper.selectAllAnn();
+        List<Announcement> newList = new ArrayList<>();
+
+        for (Announcement ann : list) {
+            List<String> fileNameList = mapper.selectFilesByAnnIdBanner(ann.getId());
+            List<AnnFile> fileSrcList = fileNameList.stream()
+                    .map(name -> new AnnFile(name, imageSrcPrefix + "/" + ann.getId() + "/" + name)).toList();
+            ann.setFileList(fileSrcList);
+            newList.add(ann);
+        }
+
+        return newList;
+    }
+
     public Map<String, Object> listAnnouncement(Integer page) {
 
         return Map.of("list", mapper.selectAnnouncement((page - 1) * 10),
                 "count", mapper.getAnnouncementCount());
+    }
+
+    public Announcement getAnnView(int id) {
+        Announcement announcement = mapper.selectByAnnId(id);
+        List<String> fileNameList = mapper.selectFilesByAnnId(id);
+        List<AnnFile> fileSrcList = fileNameList.stream()
+                .map(name -> new AnnFile(name, imageSrcPrefix + "/" + id + "/" + name)).toList();
+        announcement.setFileList(fileSrcList);
+        return announcement;
     }
 
     public boolean addAnn(Announcement announcement, Authentication auth, MultipartFile[] files) {
@@ -155,14 +183,6 @@ public class BoardService {
         return cnt == 1;
     }
 
-    public Announcement getAnnView(int id) {
-        Announcement announcement = mapper.selectByAnnId(id);
-        List<String> fileNameList = mapper.selectFilesByAnnId(id);
-        List<AnnFile> fileSrcList = fileNameList.stream()
-                .map(name -> new AnnFile(name, imageSrcPrefix + "/" + id + "/" + name)).toList();
-        announcement.setFileList(fileSrcList);
-        return announcement;
-    }
 
     public boolean validateAnn(Announcement announcement) {
         boolean title = !announcement.getTitle().trim().isEmpty();
@@ -240,4 +260,6 @@ public class BoardService {
 
         return cnt == 1;
     }
+
+
 }

@@ -16,10 +16,7 @@ export function BoardAnnouncement() {
   const [count, setCount] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-
-  const { id, kakaoId, isAdmin, isAuthenticated, logout } = useContext(
-    AuthenticationContext,
-  );
+  const { isAdmin } = useContext(AuthenticationContext);
 
   //페이지 번호얻기
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
