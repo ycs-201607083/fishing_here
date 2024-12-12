@@ -9,7 +9,6 @@ import {
   Spacer,
   Spinner,
   Text,
-  Textarea,
 } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { Button } from "../../components/ui/button.jsx";
@@ -32,6 +31,7 @@ function ImageFileView({ files }) {
     <Box>
       {files.map((file) => (
         <Image
+          p={5}
           key={file.name}
           src={file.src}
           alt={file.name || "첨부 이미지"}
@@ -106,13 +106,7 @@ export function BoardAnnouncementView() {
       </Flex>
       <hr />
       <ImageFileView files={annView.fileList} />
-      <Textarea
-        readOnly
-        resize="none"
-        css={inputTheme}
-        h="200px"
-        value={annView.content}
-      />
+      <Text h="200px">{annView.content}</Text>
       <Flex>
         <Button onClick={handleClickPrev}>
           <FaArrowLeft />

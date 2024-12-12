@@ -178,7 +178,6 @@ export function BoardAnnouncementEdit() {
       <Stack gap={5}>
         <Field label="제목">
           <Input
-            readOnly
             value={announcement.title}
             placeholder="제목을 입력해 주세요"
             onChange={(e) =>

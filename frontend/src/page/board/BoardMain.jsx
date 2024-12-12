@@ -18,6 +18,7 @@ import { IoIosArrowUp } from "react-icons/io";
 import "../../components/css/WeatherApp.css";
 import Slider from "react-slick";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const CustomArrow = ({ className, style, onClick, isNext }) => (
   <Box
@@ -37,6 +38,7 @@ export function BoardMain() {
   const [annList, setAnnList] = useState([]);
   const [weather, setWeather] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const appKey = import.meta.env.VITE_WEATHER_API_KEY;
 
   useEffect(() => {
@@ -60,16 +62,18 @@ export function BoardMain() {
     dots: true,
     infinite: true,
     speed: 700,
-    slidesToShow: 1,
+    slidesToShow: 3,
+    autoplay: true,
+    autoplaySpeed: 4000,
     slidesToScroll: 1,
 
     nextArrow: <CustomArrow isNext={true} />,
     prevArrow: <CustomArrow isNext={false} />,
   };
 
-  function handleClick(category) {
-    console.log(`${category} 클릭`);
-  }
+  const handleClick = (id) => {
+    navigate(`/board/viewAnn/${id}`);
+  };
 
   // 날씨 초기화
   const SearchWeatherByCity = async (city) => {
@@ -111,16 +115,21 @@ export function BoardMain() {
   }
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center">
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      position="relative"
+    >
       <Box
+        w={"500px"}
         boxShadow="lg"
         bg="blue.200"
-        maxWidth="400px"
         borderRadius="lg"
         p="5"
         pt="2"
         zIndex={2}
-        position={"Fixed"}
+        position="absolute"
       >
         <Heading>Weather</Heading>
         <Stack>
@@ -128,7 +137,7 @@ export function BoardMain() {
             variant="subtle"
             value={cityName}
             textAlign="center"
-            fontSize={"25px"}
+            fontSize={"20px"}
             placeholder={"도시명을 입력하세요"}
             onChange={(e) => setCityName(e.target.value)}
             onKeyDown={HandleInputCity}
@@ -145,16 +154,18 @@ export function BoardMain() {
         </Stack>
       </Box>
 
-      <Box w="30%" mt={"150px"} zIndex={1} bg={"blue.200"} p={"2"}>
+      <Box w="60%" mt={"150px"} zIndex={1} p={"2"}>
         <Slider {...sliderSettings}>
           {annList.map((ann) => (
             <Box key={ann.id} textAlign="center">
               <Image
+                pl={5}
                 h={"500px"}
                 mx="auto"
+                objectFit="fill"
                 src={ann.fileList[0].src}
                 alt={ann.name}
-                onClick={() => handleClick(ann.title)}
+                onClick={() => handleClick(ann.id)}
               />
               <Text mt="4">{ann.title}</Text>
             </Box>
