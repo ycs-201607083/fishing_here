@@ -44,7 +44,7 @@ export function BoardMain() {
       .get("/api/board/boardMain")
       .then((res) => res.data)
       .then((data) => {
-        setAnnList(data.data);
+        setAnnList(data);
         console.log(data, "불러옴");
       })
       .catch((e) => {
@@ -55,15 +55,6 @@ export function BoardMain() {
   const getEnglishCityName = (koreanCityName) => {
     return weatherCityMapFromKr[koreanCityName] || koreanCityName;
   };
-
-  const categories = [
-    { name: "가전제품", src: "src/components/Image/가전제품.jpg" },
-    { name: "생활용품", src: "src/components/Image/생활용품.jpg" },
-    { name: "학용품", src: "src/components/Image/학용품.jpg" },
-    { name: "의류", src: "src/components/Image/의류.jpg" },
-    { name: "스포츠용품", src: "src/components/Image/스포츠용품.jpg" },
-    { name: "도서", src: "src/components/Image/도서.jpg" },
-  ];
 
   const sliderSettings = {
     dots: true,
@@ -154,22 +145,18 @@ export function BoardMain() {
         </Stack>
       </Box>
 
-      <Box w="70%" mt={"200px"} zIndex={1} bg={"blue.200"} p={"2"}>
+      <Box w="30%" mt={"150px"} zIndex={1} bg={"blue.200"} p={"2"}>
         <Slider {...sliderSettings}>
-          {categories.map((category) => (
-            <Box
-              key={category.name}
-              textAlign="center"
-              onClick={() => handleClick(category.name)}
-            >
+          {annList.map((ann) => (
+            <Box key={ann.id} textAlign="center">
               <Image
+                h={"500px"}
                 mx="auto"
-                w="200px"
-                h="200px"
-                src={category.src}
-                alt={category.name}
+                src={ann.fileList[0].src}
+                alt={ann.name}
+                onClick={() => handleClick(ann.title)}
               />
-              <Text mt="4">{category.name}</Text>
+              <Text mt="4">{ann.title}</Text>
             </Box>
           ))}
         </Slider>
