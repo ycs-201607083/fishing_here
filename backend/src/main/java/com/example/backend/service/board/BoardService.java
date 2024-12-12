@@ -215,4 +215,29 @@ public class BoardService {
 
         return cnt == 1;
     }
+
+    public boolean removeAnn(int id) {
+        //게시물 지우기전에
+        //첨부파일 지우기
+
+        //실제 파일(s3) 지우기
+        //현재파일명 얻어오기
+        List<String> fileName = mapper.selectFilesByAnnId(id);
+        //서버에서 파일 지우기
+        for (String file : fileName) {
+            String key = "prj241126/" + id + "/" + file;
+            DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+            s3.deleteObject(dor);
+        }
+
+        //db 에서 지우기
+        mapper.deleteFileByAnnId(id);
+        //게시글 지우기
+        int cnt = mapper.deleteByAnnId(id);
+
+        return cnt == 1;
+    }
 }

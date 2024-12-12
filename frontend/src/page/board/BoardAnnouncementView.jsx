@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
@@ -13,6 +13,19 @@ import {
 } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { Button } from "../../components/ui/button.jsx";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 function ImageFileView({ files }) {
   return (
@@ -32,6 +45,7 @@ function ImageFileView({ files }) {
 
 export function BoardAnnouncementView() {
   const { id } = useParams();
+  const { hasAccess, isAdmin } = useContext(AuthenticationContext);
   const [annView, setAnnView] = useState(null);
   const navigate = useNavigate();
 
@@ -55,7 +69,26 @@ export function BoardAnnouncementView() {
     navigate("/board/announcement");
   };
 
-  const handleDelClick = () => {};
+  const handleDelClick = () => {
+    axios
+      .delete(`/api/board/deleteAnn/${annView.id}`)
+      .then((res) => res.data)
+      .then((data) => {
+        const message = data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+        navigate("/board/announcement");
+      })
+      .catch((e) => {
+        const message = e.data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+      });
+  };
 
   return (
     <Box mx={"auto"} w={"60%"}>
@@ -85,20 +118,53 @@ export function BoardAnnouncementView() {
           <FaArrowLeft />
         </Button>
         <Spacer />
-        <Button
-          colorPalette={"blue"}
-          variant={"ghost"}
-          onClick={() => navigate(`/board/edit/${annView.id}`)}
-        >
-          <Text fontSize={"18px"} fontWeight={"bold"}>
-            수정
-          </Text>
-        </Button>
-        <Button colorPalette={"red"} variant={"ghost"} onClick={handleDelClick}>
-          <Text fontSize={"18px"} fontWeight={"bold"}>
-            삭제
-          </Text>
-        </Button>
+
+        {hasAccess(annView.writer) && (
+          <Button
+            colorPalette={"blue"}
+            variant={"ghost"}
+            onClick={() => navigate(`/board/edit/${annView.id}`)}
+          >
+            <Text fontSize={"18px"} fontWeight={"bold"}>
+              수정
+            </Text>
+          </Button>
+        )}
+
+        {(hasAccess(annView.writer) || isAdmin) && (
+          <DialogRoot placement={"bottom"} role="alertdialog">
+            <DialogTrigger asChild>
+              <Button colorPalette={"red"} variant={"ghost"}>
+                <Text fontSize={"18px"} fontWeight={"bold"}>
+                  삭제
+                </Text>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>삭제 확인</DialogTitle>
+              </DialogHeader>
+              <DialogBody>
+                <Text>삭제하시겠습니까?</Text>
+              </DialogBody>
+              <DialogFooter>
+                <DialogActionTrigger asChild>
+                  <Button colorPalette={"blue"}>
+                    <Text fontSize={"18px"}>취소</Text>
+                  </Button>
+                </DialogActionTrigger>
+                <Button
+                  colorPalette={"red"}
+                  variant={"outline"}
+                  onClick={handleDelClick}
+                >
+                  <Text fontSize={"18px"}>삭제</Text>
+                </Button>
+              </DialogFooter>
+              <DialogCloseTrigger />
+            </DialogContent>
+          </DialogRoot>
+        )}
       </Flex>
     </Box>
   );

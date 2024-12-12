@@ -190,4 +190,16 @@ public interface BoardMapper {
             WHERE id =#{id}
             """)
     int updateAnn(Announcement announcement);
+
+    @Delete("""
+            DELETE FROM ann_file
+            WHERE id = #{id}
+            """)
+    int deleteFileByAnnId(int id);
+
+    @Delete("""
+            DELETE FROM announcement
+            WHERE id =#{id}
+            """)
+    int deleteByAnnId(int id);
 }

@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
+  Card,
   Flex,
+  HStack,
   Image,
   Input,
   Spacer,
@@ -130,6 +132,47 @@ export function BoardAnnouncementEdit() {
     }
   };
 
+  const disabled = !(
+    announcement.title.trim().length > 0 &&
+    announcement.content.trim().length > 0
+  );
+
+  //files 의 파일명 component 리스트로 만들기
+  const fileList = [];
+  let sumOfFileSize = 0;
+  let invalidOneFileSize = false; // 1MB 넘는지 체크
+
+  for (const file of uploadFiles) {
+    sumOfFileSize += file.size;
+    if (file.size > 1024 * 1024) {
+      invalidOneFileSize = true;
+    }
+
+    fileList.push(
+      <Card.Root size={"sm"} maxW={"40%"} key={file.name || file.lastModified}>
+        <Card.Body>
+          <HStack>
+            <Text
+              css={{ color: file.size > 1024 * 1024 ? "red" : "black" }}
+              fontWeight={"bold"}
+              me={"auto"}
+              truncate
+            >
+              {file.name}
+            </Text>
+            <Text>{Math.floor(file.size / 1024)} KB</Text>
+          </HStack>
+        </Card.Body>
+      </Card.Root>,
+    );
+  }
+
+  //파일 용량체크
+  let filedInputInvalid = false;
+  if (sumOfFileSize > 10 * 1024 * 1024 || invalidOneFileSize) {
+    filedInputInvalid = true;
+  }
+
   return (
     <Box maxW={"70%"} mx={"auto"}>
       <Stack gap={5}>
@@ -158,7 +201,12 @@ export function BoardAnnouncementEdit() {
           />
         </Field>
         <Box>
-          <Field label={"추가 파일 선택"}>
+          <Field
+            label={"추가 파일 선택"}
+            helperText={"총 10MB, 한 파일은 1MB 이내로 선택하세요."}
+            errorText={"선택된 파일의 용량이 초과되었습니다."}
+            invalid={filedInputInvalid}
+          >
             <input
               type={"file"}
               multiple
@@ -167,13 +215,7 @@ export function BoardAnnouncementEdit() {
             />
           </Field>
         </Box>
-        <Box pb={5}>
-          {Array.from(uploadFiles).map((file) => (
-            <li key={file.name}>
-              {file.name}({Math.floor(file.size / 1024)}kb)
-            </li>
-          ))}
-        </Box>
+        <Box pb={5}>{fileList}</Box>
       </Stack>
       <Flex pb={5}>
         <Button onClick={() => naviagte(`/board/viewAnn/${id}`)}>
@@ -184,7 +226,11 @@ export function BoardAnnouncementEdit() {
         {hasAccess(announcement.writer) && (
           <DialogRoot placement={"bottom"} role="alertdialog">
             <DialogTrigger asChild>
-              <Button colorPalette={"blue"} variant={"ghost"}>
+              <Button
+                colorPalette={"blue"}
+                variant={"ghost"}
+                disabled={disabled}
+              >
                 <Text fontSize={"18px"} fontWeight={"bold"}>
                   저장
                 </Text>

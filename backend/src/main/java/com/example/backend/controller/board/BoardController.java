@@ -94,6 +94,27 @@ public class BoardController {
         }
     }
 
+    @DeleteMapping("deleteAnn/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> deleteAnn(@PathVariable int id, Authentication auth) {
+        if (service.hasAccessAnn(id, auth)) {
+            if (service.removeAnn(id)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                "text", id + "번 게시물이 삭제 되었습니다.")));
+
+            } else {
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "error",
+                                "text", "게시물이 삭제 되지 않았습니다.")));
+            }
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "권한이 없습니다.")));
+        }
+    }
+
     @GetMapping("list")
     public Map<String, Object> searchBoards(@RequestParam(value = "keyword", defaultValue = "") String search,
                                             @RequestParam(value = "type", defaultValue = "all") String type,
