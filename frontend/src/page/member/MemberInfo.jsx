@@ -160,6 +160,16 @@ export function MemberInfo() {
                 </Box>
                 <Box>
                   <Button
+                    colorPalette={"blue"}
+                    onClick={() => navigate(`/board/written/${id}`)}
+                    mx={"auto"}
+                    w={{ md: "100%" }}
+                  >
+                    내 작성글
+                  </Button>
+                </Box>
+                <Box>
+                  <Button
                     colorPalette={"orange"}
                     mx={"auto"}
                     w={{ md: "100%" }}

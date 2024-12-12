@@ -16,6 +16,7 @@ import { BoardAdd } from "./page/board/BoardAdd.jsx";
 import BoardView from "./page/board/BoardView.jsx";
 import { MemberInfo } from "./page/member/MemberInfo.jsx";
 import { MemberEdit } from "./page/member/MemberEdit.jsx";
+import { BoardWritten } from "./page/board/BoardWritten.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
       {
         path: "member/edit/:id",
         element: <MemberEdit />,
+      },
+      {
+        path: "board/written/:id",
+        element: <BoardWritten />,
       },
     ],
   },
