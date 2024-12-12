@@ -186,7 +186,7 @@ export function BoardView() {
           <HStack>
             <Button
               colorPalette={"cyan"}
-              onClick={() => navigate(`/board/edit/${board.number}`)}
+              onClick={() => navigate(`/board/edit/${number}`)}
             >
               수정
             </Button>

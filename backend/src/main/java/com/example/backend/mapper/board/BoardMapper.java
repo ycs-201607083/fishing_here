@@ -146,4 +146,18 @@ public interface BoardMapper {
                    WHERE board_number = #{number}
             """)
     KakaoMapAddress getKakaoAddress(int number);
+
+    @Delete("""
+                    DELETE FROM board_file
+                    WHERE board_id = #{number}
+                    AND name = #{name}
+            """)
+    void deleteFileByBoardIdAndName(Integer number, String file);
+
+    @Update("""
+                    UPDATE board
+                    SET board_title = #{title}, board_content = #{content}
+                    WHERE number=#{number}
+            """)
+    int update(Board board);
 }
