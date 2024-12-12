@@ -55,7 +55,6 @@ export function Navbar() {
           {isAuthenticated && (
             <NavItem
               onClick={() => {
-                logout();
                 navigate(`/member/${id}`);
               }}
             >
