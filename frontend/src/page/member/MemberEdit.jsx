@@ -144,9 +144,9 @@ export function MemberEdit() {
   };
 
   return (
-    <Box>
+    <Box px="20px" mx={"auto"} w={{ md: "500px" }}>
       <h3>회원 정보</h3>
-      <Stack gap={5}>
+      <Stack gap={5} p="5" bg="blue.200">
         <Field readOnly label={"아이디"}>
           <Input readOnly defaultValue={member.id} style={{ color: "gray" }} />
         </Field>

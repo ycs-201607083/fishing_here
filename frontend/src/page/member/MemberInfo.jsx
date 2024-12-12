@@ -60,49 +60,113 @@ export function MemberInfo() {
   }
 
   return (
-    <Box px="20px">
+    <Box px="20px" mx={"auto"} w={{ md: "500px" }}>
       <h3>회원 정보</h3>
-      <Stack gap={5}>
+      <Stack gap={5} p="5" bg="blue.200">
         <Field label={"아이디"}>
-          <Input readOnly value={member.id} />
+          <Input
+            readOnly
+            value={member.id}
+            mx={"auto"}
+            w={{ md: "100%" }}
+            style={{ color: "gray" }}
+          />
         </Field>
         <Field label={"암호"}>
-          <Input readOnly value={member.password} />
+          <Input
+            readOnly
+            value={member.password}
+            mx={"auto"}
+            w={{ md: "100%" }}
+            style={{ color: "gray" }}
+          />
         </Field>
         <Field label={"이름"}>
-          <Input readOnly value={member.name} />
+          <Input
+            readOnly
+            value={member.name}
+            mx={"auto"}
+            w={{ md: "100%" }}
+            style={{ color: "gray" }}
+          />
         </Field>
         <Field label={"이메일"}>
-          <Input readOnly value={member.email} />
+          <Input
+            readOnly
+            value={member.email}
+            mx={"auto"}
+            w={{ md: "100%" }}
+            style={{ color: "gray" }}
+          />
         </Field>
         <Field label={"번호"}>
-          <Input readOnly value={member.phone} />
+          <Input
+            readOnly
+            value={member.phone}
+            mx={"auto"}
+            w={{ md: "100%" }}
+            style={{ color: "gray" }}
+          />
         </Field>
         <Field label={"생일"}>
-          <Input readOnly value={member.birth} />
+          <Input
+            readOnly
+            value={member.birth}
+            mx={"auto"}
+            w={{ md: "100%" }}
+            style={{ color: "gray" }}
+          />
         </Field>
         <Field label={"우편번호"}>
-          <Input readOnly value={member.post} />
+          <Input
+            readOnly
+            value={member.post}
+            mx={"auto"}
+            w={{ md: "100%" }}
+            style={{ color: "gray" }}
+          />
         </Field>
         <Field label={"주소"}>
-          <Input readOnly value={member.address} />
+          <Input
+            readOnly
+            value={member.address}
+            mx={"auto"}
+            w={{ md: "100%" }}
+            style={{ color: "gray" }}
+          />
         </Field>
         <Field label={"가입일시"}>
-          <Input readOnly value={member.inserted} />
+          <Input
+            readOnly
+            value={member.inserted}
+            mx={"auto"}
+            w={{ md: "100%" }}
+            style={{ color: "gray" }}
+          />
         </Field>
         <Box>
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
               <div>
-                <Stack direction="row" spacing={5} mt={1} mb={5}>
+                <Box>
                   <Button
-                    colorPalette={"blue"}
+                    colorPalette={"skyblue"}
                     onClick={() => navigate(`/member/edit/${id}`)}
+                    mx={"auto"}
+                    w={{ md: "100%" }}
                   >
                     수정
                   </Button>
-                  <Button colorPalette={"orange"}>탈퇴</Button>
-                </Stack>
+                </Box>
+                <Box>
+                  <Button
+                    colorPalette={"orange"}
+                    mx={"auto"}
+                    w={{ md: "100%" }}
+                  >
+                    탈퇴
+                  </Button>
+                </Box>
               </div>
             </DialogTrigger>
             <DialogContent>
