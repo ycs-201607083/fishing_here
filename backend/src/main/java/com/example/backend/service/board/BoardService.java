@@ -171,4 +171,8 @@ public class BoardService {
         int cnt = mapper.update(board);
         return cnt == 1;
     }
+
+    public void updateAddress(String addressName, Double addressLng, Double addressLat, int boardNumber) {
+        mapper.updateKakaoAddr(addressName, addressLng, addressLat, boardNumber);
+    }
 }

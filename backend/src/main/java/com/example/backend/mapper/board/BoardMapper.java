@@ -133,13 +133,6 @@ public interface BoardMapper {
             """)
     int deleteById(int number);
 
-    @Insert("""
-                INSERT INTO fishing_addr
-                ( addr_name, addr_lng, addr_lat, board_number)
-                VALUES (#{addressName}, #{addressLng}, #{addressLat}, #{boardNumber})
-            """)
-    void insertKakaoAddr(String addressName, Double addressLng, Double addressLat, int boardNumber);
-
     @Select("""
                    SELECT addr_name addressName, addr_lng addressLng, addr_lat addressLat
                    FROM fishing_addr
@@ -152,12 +145,26 @@ public interface BoardMapper {
                     WHERE board_id = #{number}
                     AND name = #{name}
             """)
-    void deleteFileByBoardIdAndName(Integer number, String file);
+    void deleteFileByBoardIdAndName(Integer number, String name);
 
     @Update("""
                     UPDATE board
                     SET board_title = #{title}, board_content = #{content}
-                    WHERE number=#{number}
+                    WHERE board_number=#{number}
             """)
     int update(Board board);
+
+    @Insert("""
+                INSERT INTO fishing_addr
+                ( addr_name, addr_lng, addr_lat, board_number)
+                VALUES (#{addressName}, #{addressLng}, #{addressLat}, #{boardNumber})
+            """)
+    void insertKakaoAddr(String addressName, Double addressLng, Double addressLat, int boardNumber);
+
+    @Update("""
+                    UPDATE fishing_addr
+                    SET addr_name = #{addressName}, addr_lng = #{addressLng}, addr_lat = #{addressLat}
+                    WHERE board_number=#{boardNumber}
+            """)
+    void updateKakaoAddr(String addressName, Double addressLng, Double addressLat, int boardNumber);
 }

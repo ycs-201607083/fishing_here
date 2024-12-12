@@ -108,12 +108,12 @@ public class BoardController {
             Board board,
             @RequestParam(value = "removeFiles[]", required = false) List<String> removeFiles,
             @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] uploadFiles,
-            Authentication authentication) {
+            Authentication authentication,
+            KakaoMapAddress addr) {
         if (service.hasAccess(board.getNumber(), authentication)) {
-
-
             if (service.validate(board)) {
                 if (service.update(board, removeFiles, uploadFiles)) {
+                    service.updateAddress(addr.getAddressName(), addr.getAddressLng(), addr.getAddressLat(), board.getNumber());
                     return ResponseEntity.ok()
                             .body(Map.of("message", Map.of("type", "success",
                                     "text", board.getNumber() + "번 게시물이 수정 되었습니다.")));

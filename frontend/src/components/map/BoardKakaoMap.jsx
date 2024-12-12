@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, HStack, Input } from "@chakra-ui/react";
 import { Field } from "../ui/field.jsx";
 import DaumPostcodeEmbed from "react-daum-postcode";
-import { scrollDown } from "../../page/board/BoardAdd.jsx";
+
 import { useAddress } from "../../context/AddressContext.jsx";
 
 function BoardKakaoMap(props) {
@@ -65,6 +65,7 @@ function BoardKakaoMap(props) {
     }
   }, [map, marker]);
 
+  //주소검색창 열기
   const handlePostClick = () => {
     setIsOpen(true);
   };
@@ -105,8 +106,6 @@ function BoardKakaoMap(props) {
   const handleButtonClose = () => {
     setIsOpen(false);
   };
-
-  scrollDown(isOpen);
 
   return (
     <Box>

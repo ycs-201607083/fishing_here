@@ -3,15 +3,6 @@ import {
   Box,
   Button,
   Card,
-  DialogActionTrigger,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-  Field,
   FormatNumber,
   HStack,
   Icon,
@@ -29,6 +20,21 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { MyHeading } from "../../components/root/MyHeading.jsx";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog.jsx";
+import { ToggleTip } from "../../components/ui/toggle-tip";
+import { LuInfo } from "react-icons/lu";
+import BoardKakaoMap from "../../components/map/BoardKakaoMap.jsx";
+import { toggleContent } from "./BoardAdd.jsx";
+import { useAddress } from "../../context/AddressContext.jsx";
 
 function ImageView({ files, onRemoveSwitchClick }) {
   return (
@@ -43,7 +49,11 @@ function ImageView({ files, onRemoveSwitchClick }) {
             onCheckedChange={(e) => onRemoveSwitchClick(e.checked, file.name)}
           />
           <Box>
-            <Image border={"1px solid black"} src={file.src} />
+            <Image
+              boxSize="500px" // 원하는 크기로 설정
+              border={"1px solid black"}
+              src={file.src}
+            />
           </Box>
         </HStack>
       ))}
@@ -57,6 +67,10 @@ export function BoardEdit() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [removeFiles, setRemoveFiles] = useState([]);
   const [uploadFiles, setUploadFiles] = useState([]);
+  const [checkedSwitch, setCheckedSwitch] = useState(false);
+
+  //카카오맵 주소, 경도, 위도 가져오기
+  const { address, lng, lat, setAddress, setLng, setLat } = useAddress();
 
   const { hasAccess } = useContext(AuthenticationContext);
 
@@ -78,18 +92,19 @@ export function BoardEdit() {
     }
   };
 
-  console.log("지울파일목록", removeFiles);
-
   const handleSaveClick = () => {
     setProgress(true);
 
     axios
-      .putForm("/api/board/update", {
+      .putForm(`/api/board/update`, {
         number: board.number,
         title: board.title,
         content: board.content,
         removeFiles,
         uploadFiles,
+        addressName: address,
+        addressLng: lng,
+        addressLat: lat,
       })
       .then((res) => res.data)
       .then((data) => {
@@ -97,10 +112,12 @@ export function BoardEdit() {
           type: data.message.type,
           description: data.message.text,
         });
-        navigate(`/board/view/${board.number}`);
+
+        navigate(`/board/view/${number}`);
       })
       .catch((e) => {
         const message = e.response.data.message;
+        console.log("edit error", e);
         toaster.create({
           type: message.type,
           description: message.text,
@@ -121,6 +138,28 @@ export function BoardEdit() {
     board.title.trim().length > 0 && board.content.trim().length > 0
   );
 
+  //스위치 true 일때 카카오맵 열기
+  const handleKakaoMapChecked = (event) => {
+    const checked = event.target.checked;
+    setCheckedSwitch(checked);
+  };
+
+  //스위치가 off(false)일 때 값은 null
+  if (checkedSwitch === false) {
+    setAddress(null);
+    setLat(null);
+    setLng(null);
+  }
+
+  console.log(
+    "수정된 주소 = ",
+    address,
+    "수정된 경도 = ",
+    lat,
+    "수정된 위도 = ",
+    lng,
+  );
+
   return (
     <Box
       mx={"auto"}
@@ -130,33 +169,36 @@ export function BoardEdit() {
     >
       <MyHeading>{number}번 게시물 수정</MyHeading>
       <Stack gap={5}>
-        <Field label={"제목"}>
+        <label>
+          <p>수정할 제목</p>
           <Input
             value={board.title}
             onChange={(e) => setBoard({ ...board, title: e.target.value })}
           />
-        </Field>
-        <Field label={"내용"}>
+        </label>
+        <label>
+          <p>수정할 내용</p>
           <Textarea
             h={250}
             value={board.content}
             onChange={(e) => setBoard({ ...board, content: e.target.value })}
           />
-        </Field>
+        </label>
         <ImageView
           files={board.fileList}
           onRemoveSwitchClick={handleRemoveSwitchClick}
         />
         <Box>
           <Box>
-            <Field label={"파일 업로드"}>
+            <label>
+              <p>수정할 파일</p>
               <input
                 onChange={(e) => setUploadFiles(e.target.files)}
                 type={"file"}
                 multiple
                 accept={"image/*"}
               />
-            </Field>
+            </label>
           </Box>
           <Box>
             {Array.from(uploadFiles).map((file) => (
@@ -172,6 +214,7 @@ export function BoardEdit() {
                       <Icon>
                         <CiFileOn />
                       </Icon>
+
                       {file.name}
                     </Text>
                     <Text>
@@ -187,6 +230,24 @@ export function BoardEdit() {
             ))}
           </Box>
         </Box>
+
+        {/*카카오맵 수정하기*/}
+        <Stack direction={"row"}>
+          <Switch
+            checked={checkedSwitch}
+            onChange={handleKakaoMapChecked}
+            colorPalette={"blue"}
+          />
+          <p>
+            자신의 명당 수정
+            <ToggleTip content={toggleContent}>
+              <Button variant={"ghost"}>
+                <LuInfo />
+              </Button>
+            </ToggleTip>
+          </p>
+        </Stack>
+        {checkedSwitch && <BoardKakaoMap />}
 
         {hasAccess(board.writer) && (
           <Box>
@@ -204,14 +265,14 @@ export function BoardEdit() {
                   <DialogTitle>저장 확인</DialogTitle>
                 </DialogHeader>
                 <DialogBody>
-                  <p>{board.number}번 게시물을 수정 하시겠습니까?</p>
+                  <p>{board.number}번 게시물을 수정하시겠습니까?</p>
                 </DialogBody>
                 <DialogFooter>
                   <DialogActionTrigger>
-                    <Button varinat={"outline"}>취소</Button>
+                    <Button variant={"outline"}>취소</Button>
                   </DialogActionTrigger>
                   <Button
-                    loading={progress}
+                    isLoading={progress}
                     colorPalette={"blue"}
                     onClick={handleSaveClick}
                   >

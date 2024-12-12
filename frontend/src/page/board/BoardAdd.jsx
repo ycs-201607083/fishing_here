@@ -27,17 +27,30 @@ import { LuInfo } from "react-icons/lu";
 import { ToggleTip } from "../../components/ui/toggle-tip";
 
 export function scrollDown(isTrue) {
-  useEffect(() => {
-    if (isTrue) {
-      setTimeout(() => {
-        window.scrollTo({
-          top: document.body.scrollHeight,
-          behavior: "smooth", // 부드럽게 스크롤되도록
-        });
-      }, 300);
-    }
-  }, [isTrue]);
+  if (isTrue) {
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth", // 부드럽게 스크롤되도록
+      });
+    }, 300);
+  }
 }
+
+export const toggleContent = (
+  <>
+    ※ 스위치를 off 시 저장된 주소와 맵을 삭제 할 수 있습니다.
+    <br />
+    <br />
+    1. 지도의 검색기능으로 이동할 주소를 입력해주세요.
+    <br />
+    <br />
+    2. 지도가 이동 후 원하는 곳을 마우스로 클릭하여 위치를 지정해주세요.
+    <br />
+    <br />
+    3. 지정이 완료 되었다면 저장을 눌러 나의 명당을 사람들에게 알려주세요!
+  </>
+);
 
 export function BoardAdd() {
   const [title, setTitle] = useState("");
@@ -47,17 +60,6 @@ export function BoardAdd() {
   const [progress, setProgress] = useState(false);
   const navigate = useNavigate();
   const [checkedSwitch, setCheckedSwitch] = useState(false);
-  const toggleContent = (
-    <>
-      1. 지도의 검색기능으로 이동할 주소를 입력해주세요.
-      <br />
-      <br />
-      2. 지도가 이동 후 원하는 곳을 마우스로 클릭하여 위치를 지정해주세요.
-      <br />
-      <br />
-      3. 지정이 완료 되었다면 저장을 눌러 나의 명당을 사람들에게 알려주세요!
-    </>
-  );
 
   const { address, lng, lat, setAddress, setLng, setLat } = useAddress();
 
@@ -106,6 +108,7 @@ export function BoardAdd() {
           type: message.type,
         });
         navigate(`/board/view/${data.data.number}`);
+        setCheckedSwitch(false);
       })
       .catch((e) => {
         const message = e.response.data.message;
@@ -166,8 +169,6 @@ export function BoardAdd() {
   if (sumOfFileSize > 10 * 1024 * 1024 || invalidOneFileSize) {
     fileInputInvalid = true;
   }
-
-  scrollDown(checkedSwitch);
 
   if (checkedSwitch === false) {
     setAddress(null);
