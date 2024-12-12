@@ -1,17 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Flex,
   Image,
   Input,
+  Spacer,
   Spinner,
   Stack,
+  Text,
   Textarea,
 } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Checkbox } from "../../components/ui/checkbox.jsx";
+import { Button } from "../../components/ui/button.jsx";
+import { FaArrowLeft } from "react-icons/fa6";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog";
+import { toaster } from "../../components/ui/toaster.jsx";
 
 function ImageView({ files, onRemoveSwitchClick }) {
   // 체크 상태를 관리할 state 추가
@@ -52,10 +69,13 @@ function ImageView({ files, onRemoveSwitchClick }) {
 
 export function BoardAnnouncementEdit() {
   const { id } = useParams();
+  const { hasAccess } = useContext(AuthenticationContext);
   const [announcement, setAnnouncement] = useState(null);
   const [removeFiles, setRemoveFiles] = useState([]);
+  const [uploadFiles, setUploadFiles] = useState([]);
   const [progress, setProgress] = useState(false);
   const [loading, setLoading] = useState(true);
+  const naviagte = useNavigate();
 
   useEffect(() => {
     axios
@@ -67,11 +87,34 @@ export function BoardAnnouncementEdit() {
   }, []);
 
   const handleSaveClick = () => {
-    // axios.putForm("api/board/updateAnn", {
-    //   id: announcement.id,
-    //   title: announcement.title,
-    //   content: announcement.content,
-    // });
+    setProgress(true);
+    axios
+      .putForm("/api/board/updateAnn", {
+        id: announcement.id,
+        title: announcement.title,
+        content: announcement.content,
+        uploadFiles,
+        removeFiles,
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        const message = data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+        naviagte(`/board/viewAnn/${id}`);
+      })
+      .catch((e) => {
+        const message = e.data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+      })
+      .finally(() => {
+        setProgress(false);
+      });
   };
 
   if (loading) {
@@ -92,6 +135,7 @@ export function BoardAnnouncementEdit() {
       <Stack gap={5}>
         <Field label="제목">
           <Input
+            readOnly
             value={announcement.title}
             placeholder="제목을 입력해 주세요"
             onChange={(e) =>
@@ -113,7 +157,66 @@ export function BoardAnnouncementEdit() {
             }
           />
         </Field>
+        <Box>
+          <Field label={"추가 파일 선택"}>
+            <input
+              type={"file"}
+              multiple
+              accept={"image/*"}
+              onChange={(e) => setUploadFiles(e.target.files)}
+            />
+          </Field>
+        </Box>
+        <Box pb={5}>
+          {Array.from(uploadFiles).map((file) => (
+            <li key={file.name}>
+              {file.name}({Math.floor(file.size / 1024)}kb)
+            </li>
+          ))}
+        </Box>
       </Stack>
+      <Flex pb={5}>
+        <Button onClick={() => naviagte(`/board/viewAnn/${id}`)}>
+          <FaArrowLeft />
+        </Button>
+        <Spacer />
+
+        {hasAccess(announcement.writer) && (
+          <DialogRoot placement={"bottom"} role="alertdialog">
+            <DialogTrigger asChild>
+              <Button colorPalette={"blue"} variant={"ghost"}>
+                <Text fontSize={"18px"} fontWeight={"bold"}>
+                  저장
+                </Text>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>저장여부 확인</DialogTitle>
+              </DialogHeader>
+              <DialogBody>
+                <Text>저장하시겠습니까?</Text>
+              </DialogBody>
+              <DialogFooter>
+                <DialogActionTrigger asChild>
+                  <Button colorPalette={"red"}>
+                    <Text fontSize={"18px"}>취소</Text>
+                  </Button>
+                </DialogActionTrigger>
+                <Button
+                  loading={progress}
+                  colorPalette={"blue"}
+                  variant={"outline"}
+                  onClick={handleSaveClick}
+                >
+                  <Text fontSize={"18px"}>저장</Text>
+                </Button>
+              </DialogFooter>
+              <DialogCloseTrigger />
+            </DialogContent>
+          </DialogRoot>
+        )}
+      </Flex>
     </Box>
   );
 }

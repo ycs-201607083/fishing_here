@@ -170,4 +170,49 @@ public class BoardService {
 
         return title && content;
     }
+
+    public boolean hasAccessAnn(Integer id, Authentication auth) {
+        Announcement ann = mapper.selectByAnnId(id);
+        return ann.getWriter().equals(auth.getName());
+    }
+
+    public boolean updateAnn(Announcement announcement, List<String> removeFiles, MultipartFile[] updateFiles) {
+
+        System.out.println(announcement.getId());
+
+        if (removeFiles != null) {
+            for (String file : removeFiles) {
+                String key = "prj241126/" + announcement.getId() + "/" + file;
+                DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build();
+                s3.deleteObject(dor);
+                mapper.deleteFileByAnnIdAndName(announcement.getId(), file);
+            }
+        }
+
+        if (updateFiles != null && updateFiles.length > 0) {
+            for (MultipartFile file : updateFiles) {
+                String key = "prj241126/" + announcement.getId() + "/" + file.getOriginalFilename();
+                PutObjectRequest por = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
+                try {
+                    s3.putObject(por, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                //file 테이블에 파일명 입력
+                mapper.insertAnnFile(announcement.getId(), file.getOriginalFilename());
+            }
+        }
+
+        int cnt = mapper.updateAnn(announcement);
+
+        return cnt == 1;
+    }
 }

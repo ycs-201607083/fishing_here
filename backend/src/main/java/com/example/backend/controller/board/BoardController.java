@@ -64,8 +64,34 @@ public class BoardController {
 
     @PutMapping("updateAnn")
     @PreAuthorize("isAuthenticated()")
-    public void updateAnn() {
+    public ResponseEntity<Map<String, Object>> updateAnn(Announcement announcement,
+                                                         @RequestParam(value = "removeFiles[]", required = false) List<String> removeFiles,
+                                                         @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] updateFiles,
+                                                         Authentication auth) {
 
+        if (service.hasAccessAnn(announcement.getId(), auth)) {
+            if (service.validateAnn(announcement)) {
+                if (service.updateAnn(announcement, removeFiles, updateFiles)) {
+                    return ResponseEntity.ok()
+                            .body(Map.of("message", Map.of("type", "success",
+                                            "text", announcement.getId() + "번 게시물이 수정 되었습니다."),
+                                    "data", announcement));
+                } else {
+                    return ResponseEntity.internalServerError()
+                            .body(Map.of("message", Map.of("type", "error",
+                                    "text", "게시글이 수정되지 않았습니다.")));
+                }
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", Map.of("type", "error",
+                                "text", "제목이나 본문이 비어있습니다.")));
+            }
+
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error"
+                            , "text", "수정 권한이 없습니다.")));
+        }
     }
 
     @GetMapping("list")

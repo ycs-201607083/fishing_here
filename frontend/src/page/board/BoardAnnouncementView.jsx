@@ -90,10 +90,14 @@ export function BoardAnnouncementView() {
           variant={"ghost"}
           onClick={() => navigate(`/board/edit/${annView.id}`)}
         >
-          수정
+          <Text fontSize={"18px"} fontWeight={"bold"}>
+            수정
+          </Text>
         </Button>
         <Button colorPalette={"red"} variant={"ghost"} onClick={handleDelClick}>
-          삭제
+          <Text fontSize={"18px"} fontWeight={"bold"}>
+            삭제
+          </Text>
         </Button>
       </Flex>
     </Box>
