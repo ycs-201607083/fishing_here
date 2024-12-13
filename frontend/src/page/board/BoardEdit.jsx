@@ -2,10 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Card,
-  FormatNumber,
   HStack,
-  Icon,
   Image,
   Input,
   Spinner,
@@ -14,7 +11,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { Switch } from "../../components/ui/switch";
-import { CiFileOn, CiTrash } from "react-icons/ci";
+import { CiTrash } from "react-icons/ci";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";

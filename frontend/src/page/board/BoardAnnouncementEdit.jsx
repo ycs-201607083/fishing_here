@@ -132,10 +132,13 @@ export function BoardAnnouncementEdit() {
     }
   };
 
-  const disabled = !(
-    announcement.title.trim().length > 0 &&
-    announcement.content.trim().length > 0
-  );
+  let disabled = false;
+  if (announcement !== null) {
+    disabled = !(
+      announcement.title.trim().length > 0 &&
+      announcement.content.trim().length > 0
+    );
+  }
 
   //files 의 파일명 component 리스트로 만들기
   const fileList = [];
@@ -173,6 +176,9 @@ export function BoardAnnouncementEdit() {
     filedInputInvalid = true;
   }
 
+  if (announcement === null) {
+    return <Spinner />;
+  }
   return (
     <Box maxW={"70%"} mx={"auto"}>
       <Stack gap={5}>

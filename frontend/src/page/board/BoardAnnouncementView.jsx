@@ -117,7 +117,7 @@ export function BoardAnnouncementView() {
           <Button
             colorPalette={"blue"}
             variant={"ghost"}
-            onClick={() => navigate(`/board/edit/${annView.id}`)}
+            onClick={() => navigate(`/board/editAnn/${annView.id}`)}
           >
             <Text fontSize={"18px"} fontWeight={"bold"}>
               수정

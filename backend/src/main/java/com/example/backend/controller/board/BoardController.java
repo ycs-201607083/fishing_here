@@ -1,5 +1,6 @@
 package com.example.backend.controller.board;
 
+import com.example.backend.dto.board.Announcement;
 import com.example.backend.dto.board.Board;
 import com.example.backend.dto.board.KakaoMapAddress;
 import com.example.backend.service.board.BoardService;
@@ -7,10 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -145,10 +142,12 @@ public class BoardController {
     public ResponseEntity<Map<String, Object>> add(
             Board board,
             @RequestParam(value = "files[]", required = false) MultipartFile[] files,
-            Authentication authentication) {
+            Authentication authentication,
+            KakaoMapAddress addr) {
 
         if (service.validate(board)) {
             if (service.add(board, files, authentication)) {
+                service.insertAddress(addr.getAddressName(), addr.getAddressLng(), addr.getAddressLat(), board.getNumber());
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
                                         "text", board.getNumber() + "번 게시물이 등록 되었습니다."),

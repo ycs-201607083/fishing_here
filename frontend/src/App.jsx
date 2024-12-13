@@ -1,6 +1,6 @@
 import axios from "axios";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { LoginKakaoHandler } from "./page/kakao/LoginKakaoHandler.jsx";
 
@@ -59,7 +59,7 @@ const router = createBrowserRouter([
         element: <BoardAnnouncementView />,
       },
       {
-        path: "board/edit/:id",
+        path: "board/editAnn/:id",
         element: <BoardAnnouncementEdit />,
       },
       {

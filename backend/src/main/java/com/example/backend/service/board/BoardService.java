@@ -1,10 +1,6 @@
 package com.example.backend.service.board;
 
-import com.example.backend.dto.board.AnnFile;
-import com.example.backend.dto.board.Announcement;
-import com.example.backend.dto.board.Board;
-import com.example.backend.dto.board.BoardFile;
-import com.example.backend.dto.board.KakaoMapAddress;
+import com.example.backend.dto.board.*;
 import com.example.backend.mapper.board.BoardMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +16,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -60,8 +55,7 @@ public class BoardService {
 
             //파일 업로드
             for (MultipartFile file : files) {
-                System.out.println("file = " + Arrays.toString(files));
-                String objectKey = board.getWriter() + "/" + file.getOriginalFilename();
+                String objectKey = "prj241126/BoardWriter/" + board.getWriter() + "/" + file.getOriginalFilename();
                 PutObjectRequest por = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(objectKey)
@@ -96,7 +90,7 @@ public class BoardService {
         List<String> fileNameList = mapper.selectFilesByBoardId(number);
         List<BoardFile> fileSrcList = fileNameList
                 .stream()
-                .map(name -> new BoardFile(name, imageSrcPrefix + "/" + board.getWriter() + "/" + name))
+                .map(name -> new BoardFile(name, imageSrcPrefix + "/BoardWriter/" + board.getWriter() + "/" + name))
                 .toList();
         board.setFileList(fileSrcList);
         return board;
@@ -112,7 +106,7 @@ public class BoardService {
         List<String> fileName = mapper.selectFilesByBoardId(number);
         Board board = mapper.selectById(number);
         for (String file : fileName) {
-            String key = imageSrcPrefix + "/" + board.getWriter() + "/" + file;
+            String key = "prj241126/BoardWriter/" + board.getWriter() + "/" + file;
             DeleteObjectRequest dor = DeleteObjectRequest.builder()
                     .bucket(bucketName)
                     .key(key)
@@ -125,9 +119,7 @@ public class BoardService {
         return cnt == 1;
     }
 
-    public List<Board> getAllBoards(String memberId) {
-        return mapper.findALl(memberId);
-    }
+
     public List<Announcement> mainBanner() {
         List<Announcement> list = mapper.selectAllAnn();
         List<Announcement> newList = new ArrayList<>();
@@ -135,7 +127,7 @@ public class BoardService {
         for (Announcement ann : list) {
             List<String> fileNameList = mapper.selectFilesByAnnIdBanner(ann.getId());
             List<AnnFile> fileSrcList = fileNameList.stream()
-                    .map(name -> new AnnFile(name, imageSrcPrefix + "/" + ann.getId() + "/" + name)).toList();
+                    .map(name -> new AnnFile(name, imageSrcPrefix + "/Announcement/" + ann.getId() + "/" + name)).toList();
             ann.setFileList(fileSrcList);
             newList.add(ann);
         }
@@ -149,11 +141,60 @@ public class BoardService {
                 "count", mapper.getAnnouncementCount());
     }
 
+
+    public boolean update(Board board, List<String> removeFiles, MultipartFile[] uploadFiles) {
+        if (removeFiles != null) {
+            for (String file : removeFiles) {
+                String key = "prj241126/BoardWriter/" + board.getWriter() + "/" + file;
+                DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build();
+
+                // s3 파일 지우기
+                s3.deleteObject(dor);
+
+                // db 파일 지우기
+                mapper.deleteFileByBoardIdAndName(board.getNumber(), file);
+            }
+        }
+
+        if (uploadFiles != null && uploadFiles.length > 0) {
+            for (MultipartFile file : uploadFiles) {
+                String objectKey = "prj241126/BoardWriter/" + board.getWriter() + "/" + file.getOriginalFilename();
+                PutObjectRequest por = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(objectKey)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
+
+                try {
+                    s3.putObject(por, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // board_file 테이블에 파일명 입력
+                mapper.insertFile(board.getNumber(), file.getOriginalFilename());
+            }
+        }
+
+
+        int cnt = mapper.update(board);
+        return cnt == 1;
+    }
+
+    public void updateAddress(String addressName, Double addressLng, Double addressLat, int boardNumber) {
+        mapper.updateKakaoAddr(addressName, addressLng, addressLat, boardNumber);
+    }
+
+
     public Announcement getAnnView(int id) {
         Announcement announcement = mapper.selectByAnnId(id);
         List<String> fileNameList = mapper.selectFilesByAnnId(id);
         List<AnnFile> fileSrcList = fileNameList.stream()
-                .map(name -> new AnnFile(name, imageSrcPrefix + "/" + id + "/" + name)).toList();
+                .map(name -> new AnnFile(name, imageSrcPrefix + "/Announcement/" + id + "/" + name)).toList();
         announcement.setFileList(fileSrcList);
         return announcement;
     }
@@ -165,7 +206,7 @@ public class BoardService {
 
         if (files != null && files.length > 0) {
             for (MultipartFile file : files) {
-                String objectKey = "prj241126/" + announcement.getId() + "/" + file.getOriginalFilename();
+                String objectKey = "prj241126/Announcement/" + announcement.getId() + "/" + file.getOriginalFilename();
                 PutObjectRequest por = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(objectKey)
@@ -204,7 +245,7 @@ public class BoardService {
 
         if (removeFiles != null) {
             for (String file : removeFiles) {
-                String key = "prj241126/" + announcement.getId() + "/" + file;
+                String key = "prj241126/Announcement/" + announcement.getId() + "/" + file;
                 DeleteObjectRequest dor = DeleteObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -216,7 +257,7 @@ public class BoardService {
 
         if (updateFiles != null && updateFiles.length > 0) {
             for (MultipartFile file : updateFiles) {
-                String key = "prj241126/" + announcement.getId() + "/" + file.getOriginalFilename();
+                String key = "prj241126/Announcement/" + announcement.getId() + "/" + file.getOriginalFilename();
                 PutObjectRequest por = PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(key)
@@ -247,7 +288,7 @@ public class BoardService {
         List<String> fileName = mapper.selectFilesByAnnId(id);
         //서버에서 파일 지우기
         for (String file : fileName) {
-            String key = "prj241126/" + id + "/" + file;
+            String key = "prj241126/Announcement/" + id + "/" + file;
             DeleteObjectRequest dor = DeleteObjectRequest.builder()
                     .bucket(bucketName)
                     .key(key)
@@ -267,52 +308,5 @@ public class BoardService {
         mapper.insertKakaoAddr(addressName, addressLng, addressLat, boardNumber);
     }
 
-
-    public boolean update(Board board, List<String> removeFiles, MultipartFile[] uploadFiles) {
-        if (removeFiles != null) {
-            for (String file : removeFiles) {
-                String key = board.getWriter() + "/" + file;
-                DeleteObjectRequest dor = DeleteObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(key)
-                        .build();
-
-                // s3 파일 지우기
-                s3.deleteObject(dor);
-
-                // db 파일 지우기
-                mapper.deleteFileByBoardIdAndName(board.getNumber(), file);
-            }
-        }
-
-        if (uploadFiles != null && uploadFiles.length > 0) {
-            for (MultipartFile file : uploadFiles) {
-                String objectKey = board.getWriter() + "/" + file.getOriginalFilename();
-                PutObjectRequest por = PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(objectKey)
-                        .acl(ObjectCannedACL.PUBLIC_READ)
-                        .build();
-
-
-                try {
-                    s3.putObject(por, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // board_file 테이블에 파일명 입력
-                mapper.insertFile(board.getNumber(), file.getOriginalFilename());
-            }
-        }
-
-
-        int cnt = mapper.update(board);
-        return cnt == 1;
-    }
-
-    public void updateAddress(String addressName, Double addressLng, Double addressLat, int boardNumber) {
-        mapper.updateKakaoAddr(addressName, addressLng, addressLat, boardNumber);
-    }
 
 }

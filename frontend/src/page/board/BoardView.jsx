@@ -28,7 +28,6 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { useAddress } from "../../context/AddressContext.jsx";
-import { CommentContainer } from "../../components/comments/CommentContainer.jsx";
 
 function ImageFileView({ files }) {
   return (
@@ -214,8 +213,6 @@ export function BoardView() {
         )}
         <hr />
       </Stack>
-
-      <CommentContainer boardId={board.id} />
     </Box>
   );
 }
