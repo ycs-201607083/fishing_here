@@ -4,7 +4,7 @@ export function MyHeading({ children, ...rest }) {
   return (
     <Heading
       size={{ base: "xl", md: "2xl" }}
-      mb={7}
+      mb={2}
       textAlign={"center"}
       {...rest}
     >

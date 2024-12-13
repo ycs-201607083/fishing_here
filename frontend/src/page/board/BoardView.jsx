@@ -63,7 +63,6 @@ export function BoardView() {
     axios
       .get(`/api/board/view/${number}`)
       .then((res) => {
-        console.log(res.data);
         setBoard(res.data);
       })
       .catch((e) => {

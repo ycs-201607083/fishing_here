@@ -14,7 +14,7 @@ import {
   Table,
   Text,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { LuSearch, LuTerminal } from "react-icons/lu";
@@ -27,8 +27,9 @@ import {
   PaginationNextTrigger,
   PaginationPrevTrigger,
   PaginationRoot,
-} from "../../components/ui/pagination.jsx";
+} from "../../components/ui/pagination";
 import Slider from "react-slick";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
 export function BoardList() {
   // 게시판 데이터 상태
@@ -52,6 +53,7 @@ export function BoardList() {
   const [count, setCount] = useState(0);
 
   const navigate = useNavigate();
+  const authentication = useContext(AuthenticationContext);
 
   useEffect(() => {
     fetchBoardList();
@@ -103,10 +105,10 @@ export function BoardList() {
   /*클릭 시 조회수 증가 처리 추가*/
   const handleRowClick = async (number) => {
     console.log(`${number}번 게시물 이동`);
+
     try {
-      await axios.post("/board/view/${number}");
-      fetchBoardList();
-      navigate("/board/view/${number}");
+      navigate(`/board/view/${number}`);
+      await axios.post(`/api/board/list/${number}`);
       console.log(`${number}번 게시물 클릭으로 조회수 증가`);
     } catch (error) {
       console.error("조회수를 증가시키는 데 실패했습니다.");
@@ -114,7 +116,11 @@ export function BoardList() {
   };
 
   const handleWriteClick = () => {
-    navigate("/board/add");
+    if (authentication.isAuthenticated) {
+      navigate("/board/add"); // 로그인 상태에서 이동
+    } else {
+      window.alert("로그인이 필요합니다. 로그인 후 게시글 작성이 가능합니다."); // 경고창 표시
+    }
   };
 
   function MultipleItems() {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
-import React, { useEffect } from "react";
+import React from "react";
 
 import { LoginKakaoHandler } from "./page/kakao/LoginKakaoHandler.jsx";
 
@@ -14,6 +14,13 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardAdd } from "./page/board/BoardAdd.jsx";
 import BoardView from "./page/board/BoardView.jsx";
+import BoardAnnouncement from "./page/board/BoardAnnouncement.jsx";
+import BoardAnnouncementAdd from "./page/board/BoardAnnouncementAdd.jsx";
+import BoardAnnouncementView from "./page/board/BoardAnnouncementView.jsx";
+import BoardAnnouncementEdit from "./page/board/BoardAnnouncementEdit.jsx";
+import { MemberInfo } from "./page/member/MemberInfo.jsx";
+import { MemberEdit } from "./page/member/MemberEdit.jsx";
+import { BoardWritten } from "./page/board/BoardWritten.jsx";
 import { AddressProvider, useAddress } from "./context/AddressContext.jsx";
 import { BoardEdit } from "./page/board/BoardEdit.jsx";
 
@@ -38,6 +45,22 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <BoardMain />,
+      },
+      {
+        path: "board/announcement",
+        element: <BoardAnnouncement />,
+      },
+      {
+        path: "board/annAdd",
+        element: <BoardAnnouncementAdd />,
+      },
+      {
+        path: "board/viewAnn/:id",
+        element: <BoardAnnouncementView />,
+      },
+      {
+        path: "board/edit/:id",
+        element: <BoardAnnouncementEdit />,
       },
       {
         path: "board/map",
@@ -70,6 +93,18 @@ const router = createBrowserRouter([
       {
         path: "board/view/:number",
         element: <BoardView />,
+      },
+      {
+        path: "member/:id",
+        element: <MemberInfo />,
+      },
+      {
+        path: "member/edit/:id",
+        element: <MemberEdit />,
+      },
+      {
+        path: "board/personalPost/:id",
+        element: <BoardWritten />,
       },
       {
         path: "board/edit/:number",

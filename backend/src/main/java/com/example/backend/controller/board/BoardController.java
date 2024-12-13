@@ -7,6 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,9 +25,100 @@ public class BoardController {
     final BoardService service;
 
     @GetMapping("boardMain")
-    public List<String> boardMain() {
+    public List<Announcement> boardMain() {
+        return service.mainBanner();
+//        return null;
+    }
 
-        return null;
+    @GetMapping("announcement")
+    public Map<String, Object> announcement(@RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return service.listAnnouncement(page);
+    }
+
+    @GetMapping("viewAnn/{id}")
+    public Announcement announcementView(@PathVariable int id) {
+        return service.getAnnView(id);
+    }
+
+    @PostMapping("annAdd")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> announcementAdd(
+            Announcement announcement,
+            @RequestParam(value = "files[]", required = false) MultipartFile[] files,
+            Authentication auth) {
+
+        if (service.validateAnn(announcement)) {
+            if (service.addAnn(announcement, auth, files)) {
+                System.out.println("announcement = " + announcement);
+                return ResponseEntity.ok().body(
+                        Map.of("message",
+                                Map.of("type", "success", "text", announcement.getId() + "번 게시글이 등록되었습니다."),
+                                "data", announcement));
+            } else {
+                return ResponseEntity.internalServerError().body(
+                        Map.of("message",
+                                Map.of("type", "warning", "text", "등록되지 않았습니다..")));
+            }
+
+        } else {
+            return ResponseEntity.badRequest().body(
+                    Map.of("message",
+                            Map.of("type", "warning", "text", "제목과 본문을  입력해주세요.")));
+        }
+
+    }
+
+    @PutMapping("updateAnn")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> updateAnn(Announcement announcement,
+                                                         @RequestParam(value = "removeFiles[]", required = false) List<String> removeFiles,
+                                                         @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] updateFiles,
+                                                         Authentication auth) {
+
+        if (service.hasAccessAnn(announcement.getId(), auth)) {
+            if (service.validateAnn(announcement)) {
+                if (service.updateAnn(announcement, removeFiles, updateFiles)) {
+                    return ResponseEntity.ok()
+                            .body(Map.of("message", Map.of("type", "success",
+                                            "text", announcement.getId() + "번 게시물이 수정 되었습니다."),
+                                    "data", announcement));
+                } else {
+                    return ResponseEntity.internalServerError()
+                            .body(Map.of("message", Map.of("type", "error",
+                                    "text", "게시글이 수정되지 않았습니다.")));
+                }
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", Map.of("type", "error",
+                                "text", "제목이나 본문이 비어있습니다.")));
+            }
+
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error"
+                            , "text", "수정 권한이 없습니다.")));
+        }
+    }
+
+    @DeleteMapping("deleteAnn/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> deleteAnn(@PathVariable int id, Authentication auth) {
+        if (service.hasAccessAnn(id, auth)) {
+            if (service.removeAnn(id)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                "text", id + "번 게시물이 삭제 되었습니다.")));
+
+            } else {
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "error",
+                                "text", "게시물이 삭제 되지 않았습니다.")));
+            }
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "권한이 없습니다.")));
+        }
     }
 
     @GetMapping("list")
@@ -40,7 +135,7 @@ public class BoardController {
         return service.getTopBoardsByViews();
     }
 
-    @PostMapping("/view/{number}")
+    @PostMapping("/list/{number}")
     public void increaseViewCount(@PathVariable Integer number) {
         service.increaseViewCount(number);
     }
@@ -50,12 +145,10 @@ public class BoardController {
     public ResponseEntity<Map<String, Object>> add(
             Board board,
             @RequestParam(value = "files[]", required = false) MultipartFile[] files,
-            Authentication authentication,
-            KakaoMapAddress addr) {
+            Authentication authentication) {
 
         if (service.validate(board)) {
             if (service.add(board, files, authentication)) {
-                service.insertAddress(addr.getAddressName(), addr.getAddressLng(), addr.getAddressLat(), board.getNumber());
                 return ResponseEntity.ok()
                         .body(Map.of("message", Map.of("type", "success",
                                         "text", board.getNumber() + "번 게시물이 등록 되었습니다."),
@@ -67,16 +160,13 @@ public class BoardController {
             }
         } else {
             return ResponseEntity.badRequest().body(Map.of("message", Map.of("type", "warning",
-                    "text", "제목이나 본문이 비어 있을 수 없습니다.")));
+                    "text", "제목이나 본문이 비어있을 수 없습니다.")));
         }
-
     }
 
     @GetMapping("view/{number}")
     public Board view(@PathVariable int number) {
-        Board board = service.get(number);
-        System.out.println("Board returned from service: " + board);  // 로그 추가
-        return board;
+        return service.get(number);
     }
 
     @DeleteMapping("delete/{number}")
@@ -100,6 +190,12 @@ public class BoardController {
                     .body(Map.of("message", Map.of("type", "error"
                             , "text", "삭제 권한이 없습니다.")));
         }
+    }
+
+    @GetMapping("/personalPost")
+    public List<Board> getAllBoards(String memberId) {
+//        return service.getAllBoards(memberId);
+        return null;
     }
 
     @PutMapping("update")
@@ -134,5 +230,4 @@ public class BoardController {
                             , "text", "수정 권한이 없습니다.")));
         }
     }
-
 }
