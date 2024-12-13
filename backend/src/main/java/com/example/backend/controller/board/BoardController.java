@@ -131,7 +131,7 @@ public class BoardController {
         return service.getTopBoardsByViews();
     }
 
-    @PostMapping("/view/{number}")
+    @PostMapping("/list/{number}")
     public void increaseViewCount(@PathVariable Integer number) {
         service.increaseViewCount(number);
     }
