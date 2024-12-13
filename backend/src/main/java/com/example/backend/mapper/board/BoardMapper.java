@@ -220,21 +220,6 @@ public interface BoardMapper {
             """)
     List<Announcement> selectAllAnn();
 
-    @Select("""
-                        SELECT b.board_number number,
-                               b.board_site site,
-                               b.board_content content,
-                               b.board_date date,
-                               b.board_view_count count,
-                               b.board_writer writer,
-                               b.board_title title,
-                               m.member_id member_id
-                        FROM board AS b
-                                 JOIN member AS m
-                                 ON b.board_writer = m.member_id
-            WHERE m.member_id = #{member_id}
-            """)
-    List<Board> findALl(String member_id);
 
     @Select("""
                    SELECT addr_name addressName, addr_lng addressLng, addr_lat addressLat

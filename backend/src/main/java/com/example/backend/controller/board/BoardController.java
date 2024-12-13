@@ -191,11 +191,6 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/personalPost")
-    public List<Board> getAllBoards(String memberId) {
-//        return service.getAllBoards(memberId);
-        return null;
-    }
 
     @PutMapping("update")
     @PreAuthorize("isAuthenticated()")
