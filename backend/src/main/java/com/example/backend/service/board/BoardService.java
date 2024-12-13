@@ -118,4 +118,8 @@ public class BoardService {
         int cnt = mapper.deleteById(number);
         return cnt == 1;
     }
+
+    public List<Board> getAllBoards(String memberId) {
+        return mapper.findALl(memberId);
+    }
 }

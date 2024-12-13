@@ -1,5 +1,5 @@
 import { Box, Button, Input, Spinner, Stack } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
 export function MemberInfo() {
   const [member, setMember] = useState(null);
@@ -21,6 +22,8 @@ export function MemberInfo() {
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  const { hasAccess } = useContext(AuthenticationContext);
 
   useEffect(() => {
     //회원정보 얻기
