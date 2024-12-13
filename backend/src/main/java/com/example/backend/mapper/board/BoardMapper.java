@@ -2,6 +2,7 @@ package com.example.backend.mapper.board;
 
 import com.example.backend.dto.board.Announcement;
 import com.example.backend.dto.board.Board;
+import com.example.backend.dto.board.FishingAddress;
 import com.example.backend.dto.board.KakaoMapAddress;
 import org.apache.ibatis.annotations.*;
 
@@ -270,4 +271,11 @@ public interface BoardMapper {
                     WHERE board_number=#{boardNumber}
             """)
     void updateKakaoAddr(String addressName, Double addressLng, Double addressLat, int boardNumber);
+
+    @Select("""
+            SELECT board_number as number,addr_name as name,addr_lng as lng,addr_lat as lat
+            FROM fishing_addr
+            ORDER BY board_number DESC
+            """)
+    List<FishingAddress> selectFishAddress();
 }

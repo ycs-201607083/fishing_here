@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import { Field } from "../ui/field.jsx";
 import { Button } from "../ui/button.jsx";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const { kakao } = window;
 
@@ -22,6 +24,8 @@ export function KakaoMap() {
   const [markers, setMarkers] = useState([]); // 마커 관리
   const [infoWindows, setInfoWindows] = useState([]); // InfoWindow 관리
   const [places, setPlaces] = useState([]); // 검색 결과 데이터 저장
+  const [addressList, setAddressList] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 지도 초기화
@@ -38,6 +42,19 @@ export function KakaoMap() {
     setSearchService(ps);
   }, []);
 
+  useEffect(() => {
+    axios
+      .get("/api/board/fishingAddress")
+      .then((res) => res.data)
+      .then((data) => {
+        console.log(data, "낚시터");
+        setAddressList(data);
+      })
+      .catch(() => {
+        console.log("안됨");
+      });
+  }, []);
+
   function clearMarkersAndInfoWindows() {
     // 기존 마커 제거
     markers.forEach((marker) => marker.setMap(null));
@@ -45,6 +62,62 @@ export function KakaoMap() {
     setMarkers([]);
     setInfoWindows([]);
   }
+
+  const handleShareFishingAddress = () => {
+    setKeyWord("");
+    clearMarkersAndInfoWindows();
+    if (!map) {
+      console.error("Map is not initialized.");
+      return;
+    }
+    if (addressList && addressList.length > 0) {
+      const newMarkers = [];
+      const newInfoWindows = [];
+      const bounds = new kakao.maps.LatLngBounds(); // 검색 결과 범위
+
+      addressList.forEach((address) => {
+        if (address.lat !== null && address.lng !== null) {
+          const markerPosition = new kakao.maps.LatLng(
+            address.lat,
+            address.lng,
+          ); // lng, lat 사용
+          const marker = new kakao.maps.Marker({
+            position: markerPosition,
+            map: map,
+          });
+          newMarkers.push(marker);
+
+          // InfoWindow 생성
+          const infoWindow = new kakao.maps.InfoWindow({
+            content: `
+          <div style="padding:10px; white-space: nowrap">
+          <a href="/board/view/${address.number}">
+            <b style="font-size:16px">${address.number} 번 게시글</b>       
+            </a>
+            <br/>
+            ${address.name}
+          </div>
+        `,
+          });
+          newInfoWindows.push(infoWindow);
+
+          // 마커 클릭 이벤트 등록
+          kakao.maps.event.addListener(marker, "click", () => {
+            newInfoWindows.forEach((iw) => iw.close()); // 모든 InfoWindow 닫기
+            infoWindow.open(map, marker); // 현재 마커 InfoWindow 열기
+          });
+
+          bounds.extend(markerPosition); // 지도 범위 확장}
+        }
+      });
+
+      setMarkers(newMarkers);
+      setInfoWindows(newInfoWindows);
+      map.setBounds(bounds); // 지도 범위 조정
+    } else {
+      alert("공유 낚시터 데이터가 없습니다.");
+    }
+  };
 
   const handleClickButton = (searchKeyword) => {
     clearMarkersAndInfoWindows();
@@ -119,6 +192,7 @@ export function KakaoMap() {
       setIsOpen(true);
     }
   };
+
   return (
     <HStack
       position="relative" // 부모 컨테이너를 상대 위치로 설정
@@ -170,6 +244,13 @@ export function KakaoMap() {
               onClick={(e) => handleClickButton(e.target.value)}
             >
               전국 배 낚시
+            </Button>
+            <Button
+              variant="subtle"
+              colorPalette={"red"}
+              onClick={handleShareFishingAddress}
+            >
+              공유 낚시터
             </Button>
           </Group>
         </Field>
