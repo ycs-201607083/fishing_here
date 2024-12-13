@@ -142,6 +142,7 @@ export function BoardView() {
       <Flex>
         <MyHeading me={"auto"}>{number} 번 게시물</MyHeading>
       </Flex>
+      <Field>조회수:{board.viewCount}</Field>
       <Stack gap={5}>
         <Field label="제목" readOnly>
           <Input value={board.title} />
