@@ -188,4 +188,8 @@ public class BoardController {
         }
     }
 
+    @GetMapping("/personalPost")
+    public List<Board> getAllBoards(String memberId) {
+        return service.getAllBoards(memberId);
+    }
 }

@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -125,7 +124,9 @@ public class BoardService {
         return cnt == 1;
     }
 
-
+    public List<Board> getAllBoards(String memberId) {
+        return mapper.findALl(memberId);
+    }
     public List<Announcement> mainBanner() {
         List<Announcement> list = mapper.selectAllAnn();
         List<Announcement> newList = new ArrayList<>();

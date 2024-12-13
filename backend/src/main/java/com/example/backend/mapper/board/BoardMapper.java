@@ -83,7 +83,7 @@ public interface BoardMapper {
     @Update("""
             UPDATE board
             SET board_view_count = board_view_count + 1
-            WHERE board_number = #{number}
+            WHERE board_number = #{board_number}
             """)
     void updateViewCount(@Param("number") Integer number);
 
@@ -219,4 +219,19 @@ public interface BoardMapper {
             """)
     List<Announcement> selectAllAnn();
 
+    @Select("""
+                        SELECT b.board_number number,
+                               b.board_site site,
+                               b.board_content content,
+                               b.board_date date,
+                               b.board_view_count count,
+                               b.board_writer writer,
+                               b.board_title title,
+                               m.member_id member_id
+                        FROM board AS b
+                                 JOIN member AS m
+                                 ON b.board_writer = m.member_id
+            WHERE m.member_id = #{member_id}
+            """)
+    List<Board> findALl(String member_id);
 }

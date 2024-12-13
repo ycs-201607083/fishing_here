@@ -1,10 +1,8 @@
 package com.example.backend.mapper.member;
 
-import com.example.backend.dto.board.Board;
 import com.example.backend.dto.member.Member;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.example.backend.dto.member.MemberEdit;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -17,7 +15,7 @@ public interface MemberMapper {
             WHERE auth_id = #{id}
             """)
     List<String> selectAuthByMemberId(String id);
-    
+
 
     @Insert("""
             INSERT INTO member
@@ -40,6 +38,35 @@ public interface MemberMapper {
             """)
     Member selectById(String id);
 
+    @Select("""
+            SELECT member_id id,
+             member_email email,
+             member_password password,
+             member_phone phone,
+             member_name name,
+             member_birth birth,
+             member_post post,
+             member_address address,
+            member_inserted inserted
+            FROM member
+            WHERE member_id = #{id}
+            """)
+    Member infoId(String id);
 
+    @Delete("""
+            DELETE FROM member
+            WHERE member_id = #{id}
+            """)
+    int deleteById(String id);
 
+    @Update("""
+            UPDATE member
+            SET password=#{password},
+                email= #{description},
+                phone = #{phone},
+                post = #{post},
+                address= #{address}
+            WHERE id=#{id}
+            """)
+    int update(MemberEdit memberEdit);
 }

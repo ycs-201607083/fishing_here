@@ -18,6 +18,9 @@ import BoardAnnouncement from "./page/board/BoardAnnouncement.jsx";
 import BoardAnnouncementAdd from "./page/board/BoardAnnouncementAdd.jsx";
 import BoardAnnouncementView from "./page/board/BoardAnnouncementView.jsx";
 import BoardAnnouncementEdit from "./page/board/BoardAnnouncementEdit.jsx";
+import { MemberInfo } from "./page/member/MemberInfo.jsx";
+import { MemberEdit } from "./page/member/MemberEdit.jsx";
+import { BoardWritten } from "./page/board/BoardWritten.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -88,6 +91,18 @@ const router = createBrowserRouter([
       {
         path: "board/view/:number",
         element: <BoardView />,
+      },
+      {
+        path: "member/:id",
+        element: <MemberInfo />,
+      },
+      {
+        path: "member/edit/:id",
+        element: <MemberEdit />,
+      },
+      {
+        path: "board/personalPost/:id",
+        element: <BoardWritten />,
       },
     ],
   },
