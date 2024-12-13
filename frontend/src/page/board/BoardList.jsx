@@ -27,7 +27,7 @@ import {
   PaginationNextTrigger,
   PaginationPrevTrigger,
   PaginationRoot,
-} from "../../components/ui/pagination.jsx";
+} from "../../components/ui/pagination";
 import Slider from "react-slick";
 
 export function BoardList() {

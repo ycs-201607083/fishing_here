@@ -14,6 +14,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardAdd } from "./page/board/BoardAdd.jsx";
 import BoardView from "./page/board/BoardView.jsx";
+import BoardAnnouncement from "./page/board/BoardAnnouncement.jsx";
+import BoardAnnouncementAdd from "./page/board/BoardAnnouncementAdd.jsx";
+import BoardAnnouncementView from "./page/board/BoardAnnouncementView.jsx";
+import BoardAnnouncementEdit from "./page/board/BoardAnnouncementEdit.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -36,6 +40,22 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <BoardMain />,
+      },
+      {
+        path: "board/announcement",
+        element: <BoardAnnouncement />,
+      },
+      {
+        path: "board/annAdd",
+        element: <BoardAnnouncementAdd />,
+      },
+      {
+        path: "board/viewAnn/:id",
+        element: <BoardAnnouncementView />,
+      },
+      {
+        path: "board/edit/:id",
+        element: <BoardAnnouncementEdit />,
       },
       {
         path: "board/map",

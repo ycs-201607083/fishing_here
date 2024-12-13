@@ -29,7 +29,6 @@ export function MemberSignup() {
 
   //우편번호api
   const [isOpen, setIsOpen] = useState(false);
-  const [zonecode, setZonecode] = useState("");
 
   function handleSaveClick() {
     axios
