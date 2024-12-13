@@ -63,6 +63,7 @@ export function BoardView() {
       .get(`/api/board/view/${number}`)
       .then((res) => {
         setBoard(res.data);
+        console.log("data?????", res.data);
       })
       .catch((e) => {
         console.log(e);

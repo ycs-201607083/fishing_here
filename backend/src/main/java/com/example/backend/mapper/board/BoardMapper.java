@@ -253,7 +253,7 @@ public interface BoardMapper {
 
     @Update("""
                     UPDATE board
-                    SET board_title = #{title}, board_content = #{content}
+                    SET board_title = #{title}, board_content = #{content}, board_site=#{site}
                     WHERE board_number=#{number}
             """)
     int update(Board board);
