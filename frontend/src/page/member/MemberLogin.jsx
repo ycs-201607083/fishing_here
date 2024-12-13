@@ -16,9 +16,9 @@ export function MemberLogin(props) {
   const navigate = useNavigate();
   const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
-   const handleLogin = () => {
+  const handleLogin = () => {
     window.location.href = kakaoURL;
-  }
+  };
 
   function handleLoginClick() {
     axios
@@ -30,8 +30,6 @@ export function MemberLogin(props) {
           type: data.message.type,
           description: data.message.text,
         });
-        // login
-        console.log("token? = ", data.token);
         authentication.login(data.token);
         navigate("/");
       })
@@ -45,7 +43,6 @@ export function MemberLogin(props) {
       })
       .finally();
   }
-
 
   return (
     <Box>

@@ -1,5 +1,6 @@
 package com.example.backend.mapper.board;
 
+import com.example.backend.dto.board.Announcement;
 import com.example.backend.dto.board.Board;
 import org.apache.ibatis.annotations.*;
 
@@ -131,6 +132,92 @@ public interface BoardMapper {
                     WHERE board_number = #{number}
             """)
     int deleteById(int number);
+
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM announcement
+            """)
+    int getAnnouncementCount();
+
+    @Select("""
+            SELECT id,title,writer,inserted
+            FROM announcement
+            ORDER BY id desc
+            LIMIT #{offset},10;
+            """)
+    List<Announcement> selectAnnouncement(Integer offset);
+
+    @Insert("""
+            INSERT INTO announcement
+            (title,content,writer)
+            VALUES(#{title},#{content},#{writer})
+            """)
+    @Options(keyProperty = "id", useGeneratedKeys = true)
+    int insertAnn(Announcement announcement);
+
+    @Select("""
+            SELECT *
+            FROM announcement
+            WHERE id = #{id}
+            """)
+    Announcement selectByAnnId(int id);
+
+    @Insert("""
+            INSERT INTO ann_file
+            VALUES (#{id},#{fileName})
+            """)
+    int insertAnnFile(Integer id, String fileName);
+
+    @Select("""
+            SELECT name
+            FROM ann_file
+            WHERE id= #{id}
+            """)
+    List<String> selectFilesByAnnId(int id);
+
+    @Select("""
+            SELECT name
+            FROM ann_file
+            WHERE id=#{id}
+            LIMIT 1
+            """)
+    List<String> selectFilesByAnnIdBanner(Integer id);
+
+    @Delete("""
+            DELETE FROM ann_file
+            WHERE id = #{id}
+            AND name=#{name}
+            """)
+    int deleteFileByAnnIdAndName(Integer id, String name);
+
+    @Update("""
+            UPDATE announcement
+            SET title=#{title},
+                content=#{content}
+            WHERE id =#{id}
+            """)
+    int updateAnn(Announcement announcement);
+
+    @Delete("""
+            DELETE FROM ann_file
+            WHERE id = #{id}
+            """)
+    int deleteFileByAnnId(int id);
+
+    @Delete("""
+            DELETE FROM announcement
+            WHERE id =#{id}
+            """)
+    int deleteByAnnId(int id);
+
+    @Select("""
+            SELECT id, title
+            FROM announcement
+            ORDER BY inserted DESC
+            LIMIT 5;
+            """)
+    List<Announcement> selectAllAnn();
 
     @Select("""
                         SELECT b.board_number number,
