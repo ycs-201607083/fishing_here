@@ -2,16 +2,20 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
+  Card,
+  FormatNumber,
   HStack,
+  Icon,
   Image,
   Input,
   Spinner,
   Stack,
   Text,
   Textarea,
+  VStack,
 } from "@chakra-ui/react";
 import { Switch } from "../../components/ui/switch";
-import { CiTrash } from "react-icons/ci";
+import { CiFileOn, CiTrash } from "react-icons/ci";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -29,10 +33,10 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { useAddress } from "../../context/AddressContext.jsx";
 import { Field } from "../../components/ui/field.jsx";
-import { ToggleTip } from "../../components/ui/toggle-tip";
-import { LuInfo } from "react-icons/lu";
-import { toggleContent } from "./BoardAdd.jsx";
 import BoardKakaoMap from "../../components/map/BoardKakaoMap.jsx";
+import { ToggleTip } from "../../components/ui/toggle-tip";
+import { toggleContent } from "./BoardAdd.jsx";
+import { LuInfo } from "react-icons/lu";
 
 function ImageView({ files, onRemoveSwitchClick }) {
   return (
@@ -140,12 +144,12 @@ export function BoardEdit() {
       const options = {
         center: new kakao.maps.LatLng(addressLat, addressLng),
         level: 3,
+        draggable: false,
       };
 
       const mapInstance = new window.kakao.maps.Map(container, options);
       setMap(mapInstance);
 
-      // 지도 중심 강제 이동
       const newCenter = new kakao.maps.LatLng(addressLat, addressLng);
       mapInstance.panTo(newCenter);
 
@@ -191,7 +195,7 @@ export function BoardEdit() {
     <Box
       mx={"auto"}
       w={{
-        md: "500px",
+        md: "80%",
       }}
     >
       <MyHeading>{number}번 게시물 수정</MyHeading>
@@ -206,7 +210,8 @@ export function BoardEdit() {
         <label>
           <p>수정할 내용</p>
           <Textarea
-            h={250}
+            h={400}
+            resize={"none"}
             value={board.content}
             onChange={(e) => setBoard({ ...board, content: e.target.value })}
           />
@@ -258,13 +263,11 @@ export function BoardEdit() {
           </Box>
         </Box>
 
-        {/*카카오맵*/}
-        <Stack direction={"row"}>
-          <Switch
-            checked={checkedSwitch}
-            onChange={handleKakaoMapChecked}
-            colorPalette={"blue"}
-          />
+        <Switch
+          checked={checkedSwitch}
+          onChange={handleKakaoMapChecked}
+          colorPalette={"blue"}
+        >
           <p>
             자신의 명당 맵으로 공유하기
             <ToggleTip content={toggleContent}>
@@ -273,23 +276,41 @@ export function BoardEdit() {
               </Button>
             </ToggleTip>
           </p>
-        </Stack>
-        {checkedSwitch && <BoardKakaoMap />}
+        </Switch>
 
-        {board?.kakaoAddress ? (
-          <Field>
-            <Text>공유 명당 주소 : {board.kakaoAddress.addressName}</Text>
-            <Box
-              bg={"bg"}
-              shadow={"md"}
-              borderRadius={"md"}
-              borderWidth="2px"
-              borderColor="black"
-              style={{ width: "100%", height: "400px" }}
-              id="map"
-            ></Box>
-          </Field>
-        ) : null}
+        {/*카카오맵*/}
+        <VStack justify="space-around">
+          {checkedSwitch && (
+            <Field justify={"left"}>
+              <Text>수정할 명당 주소 : {address}</Text>
+              <Box
+                w={"100%"}
+                bg={"bg"}
+                shadow={"md"}
+                borderRadius={"md"}
+                borderWidth="2px"
+                borderColor="blue"
+              >
+                <BoardKakaoMap />
+              </Box>
+            </Field>
+          )}
+
+          {board?.kakaoAddress ? (
+            <Field>
+              <Text>현재 명당 주소 : {board.kakaoAddress.addressName}</Text>
+              <Box
+                bg={"bg"}
+                shadow={"md"}
+                borderRadius={"md"}
+                borderWidth="10px"
+                borderColor="red"
+                style={{ width: "100%", height: "400px" }}
+                id="map"
+              />
+            </Field>
+          ) : null}
+        </VStack>
 
         {hasAccess(board.writer) && (
           <Box>
