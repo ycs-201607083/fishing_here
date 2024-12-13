@@ -122,43 +122,44 @@ export function KakaoMap() {
 
   return (
     <HStack
-      gap={"5"}
+      position="relative" // 부모 컨테이너를 상대 위치로 설정
       mx="auto"
-      w={{ md: "1500px" }}
+      w="70%"
+      h="600px"
       bgColor="gray.100"
       borderRadius="md"
       boxShadow="md"
-      spacing={4}
-      p={4}
     >
       {/* 지도 */}
       <Box
         id="map"
-        w="1000px"
-        h="600px"
+        w="100%"
+        h="100%"
         bgColor="white"
         borderRadius="md"
         boxShadow="md"
       ></Box>
 
-      {/* 검색 및 목록 */}
+      {/* 검색 및 목록 패널 */}
       <Stack
-        w="500px"
-        h="600px"
-        mx="auto"
-        p={4}
+        position="absolute" // 지도 위에 패널을 올리기 위해 절대 위치 지정
+        top="10px"
+        right="10px"
+        w="30%" // 패널의 너비 설정
+        maxH="90%" // 패널 높이 제한
+        bgColor="white"
         borderRadius="md"
-        bgColor="blue.300"
-        spacing={4}
+        boxShadow="lg"
+        p={4}
+        zIndex="2" // 패널이 지도보다 위에 표시되도록 설정
       >
         {/* 검색 필드 */}
         <Field>
-          <Group mx="auto">
+          <Group>
             <Input
               variant="subtle"
               type="text"
               placeholder="검색어를 입력하세요"
-              w="300px"
               h="38px"
               value={keyWord}
               onChange={(e) => setKeyWord(e.target.value)}
@@ -174,13 +175,20 @@ export function KakaoMap() {
         </Field>
 
         {/* 검색 결과 목록 */}
-        <Box bgColor="white" w="450px" h="500px" mx="auto" overflowY="scroll">
+        <Box
+          bgColor="gray.100"
+          w="100%"
+          h="calc(100% - 60px)" // 검색 필드 높이를 제외한 공간 채우기
+          overflowY="scroll"
+          borderRadius="md"
+          p={2}
+        >
           <VStack spacing={2} align="stretch">
             {places.map((place, index) => (
               <Box
                 key={index}
                 p={4}
-                bgColor="gray.100"
+                bgColor="rgba(255, 255, 255, 0.2)" // 개별 항목의 배경 투명도 설정
                 borderRadius="md"
                 boxShadow="sm"
                 cursor="pointer"
