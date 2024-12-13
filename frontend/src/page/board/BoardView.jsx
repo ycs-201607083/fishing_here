@@ -8,6 +8,7 @@ import {
   Input,
   Spinner,
   Stack,
+  Text,
   Textarea,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,6 +27,8 @@ import {
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
+import { useAddress } from "../../context/AddressContext.jsx";
+import { CommentContainer } from "../../components/comments/CommentContainer.jsx";
 
 function ImageFileView({ files }) {
   return (
@@ -50,23 +53,68 @@ export function BoardView() {
   const { number } = useParams();
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
   const navigate = useNavigate();
+  const [map, setMap] = useState(null);
+  const [addr, setAddr] = useState(null);
+  const [lati, setLat] = useState(null);
+  const [lngi, setLng] = useState(null);
+  const { address, lng, lat } = useAddress();
 
   useEffect(() => {
     axios
       .get(`/api/board/view/${number}`)
       .then((res) => {
-        console.log("res.data?=", res.data);
         setBoard(res.data);
       })
       .catch((e) => {
         console.log(e);
       });
-  }, []);
+  }, [number]);
+
+  useEffect(() => {
+    setAddr(address);
+    setLng(lng);
+    setLat(lat);
+  }, [addr, lati, lngi]);
+
+  useEffect(() => {
+    console.log("board.kakaoAddress:", board?.kakaoAddress);
+    if (!board || !board.kakaoAddress) return; // board가 로드되기 전에 실행되지 않도록
+
+    const { addressLat, addressLng } = board.kakaoAddress;
+
+    // 카카오맵 불러오기
+    window.kakao.maps.load(() => {
+      const container = document.getElementById("map");
+      const options = {
+        center: new kakao.maps.LatLng(addressLat, addressLng),
+        level: 3,
+        draggable: false,
+      };
+
+      const mapInstance = new window.kakao.maps.Map(container, options);
+      setMap(mapInstance);
+
+      // 지도 중심 강제 이동
+      const newCenter = new kakao.maps.LatLng(addressLat, addressLng);
+      mapInstance.panTo(newCenter);
+
+      //마커생성
+      const markerPosition = new window.kakao.maps.LatLng(
+        addressLat,
+        addressLng,
+      );
+      const marker = new window.kakao.maps.Marker({
+        position: markerPosition,
+      });
+      marker.setMap(mapInstance);
+    });
+  }, [board]); // board가 변경될 때마다 실행
 
   if (board === null) {
     return (
       <Box>
         <p>존재하지 않는 페이지 입니다.</p>
+        <p>메인 페이지로 넘어갑니다..</p>
         <Spinner />
       </Box>
     );
@@ -89,7 +137,7 @@ export function BoardView() {
     <Box
       mx={"auto"}
       w={{
-        md: "500px",
+        md: "80%",
       }}
     >
       <Flex>
@@ -99,11 +147,29 @@ export function BoardView() {
         <Field label="제목" readOnly>
           <Input value={board.title} />
         </Field>
-        <Field label="본문" readOnly>
+        <Field label="내용" readOnly>
           <Textarea resize={"none"} h={400} value={board.content} />
         </Field>
 
+        {/*포토*/}
         <ImageFileView files={board.fileList} />
+
+        {/*카카오맵*/}
+
+        {board?.kakaoAddress ? (
+          <Field>
+            <Text>공유 명당 주소 : {board.kakaoAddress.addressName}</Text>
+            <Box
+              bg={"bg"}
+              shadow={"md"}
+              borderRadius={"md"}
+              borderWidth="2px"
+              borderColor="black"
+              style={{ width: "100%", height: "400px" }}
+              id="map"
+            ></Box>
+          </Field>
+        ) : null}
 
         <Field label="작성자" readOnly>
           <Input value={board.writer} />
@@ -119,7 +185,7 @@ export function BoardView() {
           <HStack>
             <Button
               colorPalette={"cyan"}
-              onClick={() => navigate(`/board/edit/${board.number}`)}
+              onClick={() => navigate(`/board/edit/${number}`)}
             >
               수정
             </Button>
@@ -146,8 +212,10 @@ export function BoardView() {
             </DialogRoot>
           </HStack>
         )}
+        <hr />
       </Stack>
-      <hr />
+
+      <CommentContainer boardId={board.id} />
     </Box>
   );
 }

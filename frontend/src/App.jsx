@@ -21,6 +21,8 @@ import BoardAnnouncementEdit from "./page/board/BoardAnnouncementEdit.jsx";
 import { MemberInfo } from "./page/member/MemberInfo.jsx";
 import { MemberEdit } from "./page/member/MemberEdit.jsx";
 import { BoardWritten } from "./page/board/BoardWritten.jsx";
+import { AddressProvider, useAddress } from "./context/AddressContext.jsx";
+import { BoardEdit } from "./page/board/BoardEdit.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -104,17 +106,28 @@ const router = createBrowserRouter([
         path: "board/personalPost/:id",
         element: <BoardWritten />,
       },
+      {
+        path: "board/edit/:number",
+        element: <BoardEdit />,
+      },
     ],
   },
 ]);
 
 function App() {
+  const { address } = useAddress();
+
+  useEffect(() => {
+    if (address) {
+      console.log("주소가 변경되었습니다 app:", address); // address 값이 변경될 때마다 실행됨
+    }
+  }, [address]); // address 값이 변경될 때마다 실행됩니다.
   return (
-    <>
-      <AuthenticationProvider>
+    <AuthenticationProvider>
+      <AddressProvider>
         <RouterProvider router={router} />
-      </AuthenticationProvider>
-    </>
+      </AddressProvider>
+    </AuthenticationProvider>
   );
 }
 

@@ -2,6 +2,7 @@ package com.example.backend.mapper.board;
 
 import com.example.backend.dto.board.Announcement;
 import com.example.backend.dto.board.Board;
+import com.example.backend.dto.board.KakaoMapAddress;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -234,4 +235,39 @@ public interface BoardMapper {
             WHERE m.member_id = #{member_id}
             """)
     List<Board> findALl(String member_id);
+
+    @Select("""
+                   SELECT addr_name addressName, addr_lng addressLng, addr_lat addressLat
+                   FROM fishing_addr
+                   WHERE board_number = #{number}
+            """)
+    KakaoMapAddress getKakaoAddress(int number);
+
+    @Delete("""
+                    DELETE FROM board_file
+                    WHERE board_id = #{number}
+                    AND name = #{name}
+            """)
+    void deleteFileByBoardIdAndName(Integer number, String name);
+
+    @Update("""
+                    UPDATE board
+                    SET board_title = #{title}, board_content = #{content}
+                    WHERE board_number=#{number}
+            """)
+    int update(Board board);
+
+    @Insert("""
+                INSERT INTO fishing_addr
+                ( addr_name, addr_lng, addr_lat, board_number)
+                VALUES (#{addressName}, #{addressLng}, #{addressLat}, #{boardNumber})
+            """)
+    void insertKakaoAddr(String addressName, Double addressLng, Double addressLat, int boardNumber);
+
+    @Update("""
+                    UPDATE fishing_addr
+                    SET addr_name = #{addressName}, addr_lng = #{addressLng}, addr_lat = #{addressLat}
+                    WHERE board_number=#{boardNumber}
+            """)
+    void updateKakaoAddr(String addressName, Double addressLng, Double addressLat, int boardNumber);
 }
