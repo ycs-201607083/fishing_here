@@ -33,6 +33,40 @@ const CustomArrow = ({ className, style, onClick, isNext }) => (
   ></Box>
 );
 
+// 공지사항 카드 컴포넌트
+const AnnouncementCard = ({ ann, onClick }) => {
+  const hasImage = ann.fileList && ann.fileList[0];
+
+  return (
+    <Box textAlign="center" onClick={() => onClick(ann.id)}>
+      {hasImage ? (
+        <Image
+          h="500px"
+          mx="auto"
+          objectFit="fill"
+          src={ann.fileList[0].src}
+          alt={ann.name}
+          pr={"4"}
+        />
+      ) : (
+        <Box
+          h="500px"
+          mx="auto"
+          bg="gray.200"
+          maxW="400px"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          pr={"4"}
+        >
+          <Text>{ann.title}</Text>
+        </Box>
+      )}
+      <Text mt="4">{ann.title}</Text>
+    </Box>
+  );
+};
+
 export function BoardMain() {
   const [cityName, setCityName] = useState("");
   const [annList, setAnnList] = useState([]);
@@ -60,9 +94,9 @@ export function BoardMain() {
 
   const sliderSettings = {
     dots: true,
-    infinite: true,
+    infinite: annList.length > 1,
     speed: 700,
-    slidesToShow: 3,
+    slidesToShow: annList.length,
     autoplay: true,
     autoplaySpeed: 4000,
     slidesToScroll: 1,
@@ -154,23 +188,19 @@ export function BoardMain() {
         </Stack>
       </Box>
 
-      <Box w="60%" mt={"150px"} zIndex={1} p={"2"}>
-        <Slider {...sliderSettings}>
-          {annList.map((ann) => (
-            <Box key={ann.id} textAlign="center">
-              <Image
-                pl={5}
-                h={"500px"}
-                mx="auto"
-                objectFit="fill"
-                src={ann.fileList[0].src}
-                alt={ann.name}
-                onClick={() => handleClick(ann.id)}
-              />
-              <Text mt="4">{ann.title}</Text>
-            </Box>
-          ))}
-        </Slider>
+      {/* 공지사항 슬라이더 */}
+      <Box w="60%" mt="150px" zIndex={1} p="2">
+        {annList.length > 0 ? (
+          <Slider {...sliderSettings}>
+            {annList.map((ann) => (
+              <AnnouncementCard key={ann.id} ann={ann} onClick={handleClick} />
+            ))}
+          </Slider>
+        ) : (
+          <Box textAlign="center" py="10">
+            <Text>공지사항이 없습니다</Text>
+          </Box>
+        )}
       </Box>
     </Box>
   );
