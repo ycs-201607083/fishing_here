@@ -30,11 +30,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../components/ui/dialog.jsx";
+import { useAddress } from "../../context/AddressContext.jsx";
+import { Field } from "../../components/ui/field.jsx";
 import { ToggleTip } from "../../components/ui/toggle-tip";
 import { LuInfo } from "react-icons/lu";
-import BoardKakaoMap from "../../components/map/BoardKakaoMap.jsx";
 import { toggleContent } from "./BoardAdd.jsx";
-import { useAddress } from "../../context/AddressContext.jsx";
+import BoardKakaoMap from "../../components/map/BoardKakaoMap.jsx";
 
 function ImageView({ files, onRemoveSwitchClick }) {
   return (
@@ -68,6 +69,7 @@ export function BoardEdit() {
   const [removeFiles, setRemoveFiles] = useState([]);
   const [uploadFiles, setUploadFiles] = useState([]);
   const [checkedSwitch, setCheckedSwitch] = useState(false);
+  const [map, setMap] = useState(null);
 
   //카카오맵 주소, 경도, 위도 가져오기
   const { address, lng, lat, setAddress, setLng, setLat } = useAddress();
@@ -128,6 +130,40 @@ export function BoardEdit() {
         setDialogOpen(false);
       });
   };
+
+  useEffect(() => {
+    console.log("board.kakaoAddress:", board?.kakaoAddress);
+    if (!board || !board.kakaoAddress) return; // board가 로드되기 전에 실행되지 않도록
+
+    const { addressName, addressLat, addressLng } = board.kakaoAddress;
+
+    // 카카오맵 불러오기
+    window.kakao.maps.load(() => {
+      const container = document.getElementById("map");
+      const options = {
+        center: new kakao.maps.LatLng(addressLat, addressLng),
+        level: 3,
+      };
+
+      const mapInstance = new window.kakao.maps.Map(container, options);
+      setMap(mapInstance);
+
+      // 지도 중심 강제 이동
+      const newCenter = new kakao.maps.LatLng(addressLat, addressLng);
+      mapInstance.panTo(newCenter);
+
+      //마커생성
+      const markerPosition = new window.kakao.maps.LatLng(
+        addressLat,
+        addressLng,
+      );
+      const marker = new window.kakao.maps.Marker({
+        position: markerPosition,
+      });
+      marker.setMap(mapInstance);
+    });
+  }, [board]); // board가 변경될 때마다 실행
+
   //board가 null일 때 첫 렌더
   if (board === null) {
     return <Spinner />;
@@ -141,15 +177,9 @@ export function BoardEdit() {
   //스위치 true 일때 카카오맵 열기
   const handleKakaoMapChecked = (event) => {
     const checked = event.target.checked;
+    console.log(checked);
     setCheckedSwitch(checked);
   };
-
-  //스위치가 off(false)일 때 값은 null
-  if (checkedSwitch === false) {
-    setAddress(null);
-    setLat(null);
-    setLng(null);
-  }
 
   console.log(
     "수정된 주소 = ",
@@ -231,7 +261,7 @@ export function BoardEdit() {
           </Box>
         </Box>
 
-        {/*카카오맵 수정하기*/}
+        {/*카카오맵*/}
         <Stack direction={"row"}>
           <Switch
             checked={checkedSwitch}
@@ -239,7 +269,7 @@ export function BoardEdit() {
             colorPalette={"blue"}
           />
           <p>
-            자신의 명당 수정
+            자신의 명당 맵으로 공유하기
             <ToggleTip content={toggleContent}>
               <Button variant={"ghost"}>
                 <LuInfo />
@@ -248,6 +278,21 @@ export function BoardEdit() {
           </p>
         </Stack>
         {checkedSwitch && <BoardKakaoMap />}
+
+        {board?.kakaoAddress ? (
+          <Field>
+            <Text>공유 명당 주소 : {board.kakaoAddress.addressName}</Text>
+            <Box
+              bg={"bg"}
+              shadow={"md"}
+              borderRadius={"md"}
+              borderWidth="2px"
+              borderColor="black"
+              style={{ width: "100%", height: "400px" }}
+              id="map"
+            ></Box>
+          </Field>
+        ) : null}
 
         {hasAccess(board.writer) && (
           <Box>
