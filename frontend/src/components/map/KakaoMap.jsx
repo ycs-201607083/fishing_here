@@ -3,20 +3,21 @@ import {
   Group,
   HStack,
   IconButton,
-  Input,
   Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Field } from "../ui/field.jsx";
-import { LuSearch } from "react-icons/lu";
+import { Button } from "../ui/button.jsx";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 const { kakao } = window;
 
 export function KakaoMap() {
   const [map, setMap] = useState(null);
   const [keyWord, setKeyWord] = useState(""); // 검색어
+  const [isOpen, setIsOpen] = useState(false);
   const [searchService, setSearchService] = useState(null); // 장소 검색 서비스
   const [markers, setMarkers] = useState([]); // 마커 관리
   const [infoWindows, setInfoWindows] = useState([]); // InfoWindow 관리
@@ -45,15 +46,10 @@ export function KakaoMap() {
     setInfoWindows([]);
   }
 
-  const handleClickButton = () => {
-    if (!keyWord || !searchService || !map) {
-      alert("검색어를 입력하세요");
-      return;
-    }
-
+  const handleClickButton = (searchKeyword) => {
     clearMarkersAndInfoWindows();
 
-    searchService.keywordSearch(keyWord, (data, status) => {
+    searchService.keywordSearch(searchKeyword, (data, status) => {
       if (status === kakao.maps.services.Status.OK) {
         const bounds = new kakao.maps.LatLngBounds(); // 검색 결과 범위
         const newMarkers = [];
@@ -96,16 +92,12 @@ export function KakaoMap() {
         setInfoWindows(newInfoWindows);
         setPlaces(data); // 검색 결과 저장
         map.setBounds(bounds); // 지도 범위 확장
+        setKeyWord(searchKeyword);
+        setIsOpen(true);
       } else {
         alert("검색결과가 없습니다.");
       }
     });
-  };
-
-  const handleEnterKey = (e) => {
-    if (e.key === "Enter") {
-      handleClickButton();
-    }
   };
 
   const handlePlaceClick = (place, index) => {
@@ -120,6 +112,13 @@ export function KakaoMap() {
     infoWindows[index].open(map, markers[index]); // 해당 마커 InfoWindow 열기
   };
 
+  const handleOpenList = () => {
+    if (isOpen) {
+      setIsOpen(false);
+    } else {
+      setIsOpen(true);
+    }
+  };
   return (
     <HStack
       position="relative" // 부모 컨테이너를 상대 위치로 설정
@@ -145,9 +144,9 @@ export function KakaoMap() {
         position="absolute" // 지도 위에 패널을 올리기 위해 절대 위치 지정
         top="10px"
         right="10px"
-        w="30%" // 패널의 너비 설정
+        w="400px" // 패널의 너비 설정
         maxH="90%" // 패널 높이 제한
-        bgColor="white"
+        bgColor="rgba(255, 255, 255, 0.6)" // 투명도 적용
         borderRadius="md"
         boxShadow="lg"
         p={4}
@@ -156,58 +155,67 @@ export function KakaoMap() {
         {/* 검색 필드 */}
         <Field>
           <Group>
-            <Input
+            <Button
               variant="subtle"
-              type="text"
-              placeholder="검색어를 입력하세요"
-              h="38px"
-              value={keyWord}
-              onChange={(e) => setKeyWord(e.target.value)}
-              onKeyDown={handleEnterKey}
-            />
-            <IconButton
-              aria-label="Search database"
-              onClick={handleClickButton}
+              colorPalette={"blue"}
+              value={"민물 낚시"}
+              onClick={(e) => handleClickButton(e.target.value)}
             >
-              <LuSearch />
-            </IconButton>
+              전국 민물 낚시
+            </Button>
+            <Button
+              variant="subtle"
+              colorPalette={"blue"}
+              value={"배 낚시"}
+              onClick={(e) => handleClickButton(e.target.value)}
+            >
+              전국 배 낚시
+            </Button>
           </Group>
         </Field>
 
         {/* 검색 결과 목록 */}
-        <Box
-          bgColor="gray.100"
-          w="100%"
-          h="calc(100% - 60px)" // 검색 필드 높이를 제외한 공간 채우기
-          overflowY="scroll"
-          borderRadius="md"
-          p={2}
-        >
-          <VStack spacing={2} align="stretch">
-            {places.map((place, index) => (
-              <Box
-                key={index}
-                p={4}
-                bgColor="rgba(255, 255, 255, 0.2)" // 개별 항목의 배경 투명도 설정
-                borderRadius="md"
-                boxShadow="sm"
-                cursor="pointer"
-                _hover={{ bgColor: "gray.200" }}
-                onClick={() => handlePlaceClick(place, index)}
-              >
-                <Text fontSize="lg" fontWeight="bold">
-                  {place.place_name}
-                </Text>
-                <Text fontSize="sm">{place.address_name}</Text>
-                {place.phone && (
-                  <Text fontSize="sm" color="gray.600">
-                    전화번호: {place.phone}
+        {isOpen && keyWord && (
+          <Box
+            bgColor="rgba(255, 255, 255, 0.4)" // 검색 결과 목록 배경 투명도 설정
+            w="100%"
+            h="calc(100% - 60px)" // 검색 필드 높이를 제외한 공간 채우기
+            overflowY="scroll"
+            borderRadius="md"
+            p={2}
+          >
+            <VStack spacing={2} align="stretch">
+              {places.map((place, index) => (
+                <Box
+                  key={index}
+                  p={4}
+                  bgColor="rgba(255, 255, 255, 0.5)" // 개별 항목의 배경 투명도 설정
+                  borderRadius="md"
+                  boxShadow="sm"
+                  cursor="pointer"
+                  _hover={{ bgColor: "rgba(240, 240, 240, 0.9)" }} // hover 시 조금 더 진하게
+                  onClick={() => handlePlaceClick(place, index)}
+                >
+                  <Text fontSize="lg" fontWeight="bold">
+                    {place.place_name}
                   </Text>
-                )}
-              </Box>
-            ))}
-          </VStack>
-        </Box>
+                  <Text fontSize="sm">{place.address_name}</Text>
+                  {place.phone && (
+                    <Text fontSize="sm" color="gray.600">
+                      전화번호: {place.phone}
+                    </Text>
+                  )}
+                </Box>
+              ))}
+            </VStack>
+          </Box>
+        )}
+
+        {keyWord && (
+          <IconButton w={"100%"} onClick={handleOpenList} h={"30px"}>
+            {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
+          </IconButton>
+        )}
       </Stack>
     </HStack>
   );
