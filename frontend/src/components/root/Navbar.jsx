@@ -54,7 +54,6 @@ export function Navbar() {
         {isAuthenticated && (
           <NavItem
             onClick={() => {
-
               navigate(`/member/${id}`);
             }}
           >
@@ -74,6 +73,8 @@ export function Navbar() {
         )}
       </Flex>
       <Center
+        alignItems="center"
+        justifyContent="center"
         color={"blue.800"}
         fontSize={"40px"}
         h={"100px"}
@@ -83,7 +84,13 @@ export function Navbar() {
         <Image src={mainTitle} />
       </Center>
 
-      <Flex p={4} justify="center" bgColor={"blue.500"} w="100%">
+      <Flex
+        p={4}
+        alignItems="center"
+        justifyContent="center"
+        bgColor={"blue.500"}
+        w="100%"
+      >
         <Flex gap={10} mx={"auto"}>
           <NavItem onClick={() => navigate("/board/announcement")}>
             <TextItem>공지사항</TextItem>

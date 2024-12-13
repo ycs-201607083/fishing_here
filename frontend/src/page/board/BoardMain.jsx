@@ -96,7 +96,7 @@ export function BoardMain() {
     dots: true,
     infinite: annList.length > 1,
     speed: 700,
-    slidesToShow: annList.length,
+    slidesToShow: Math.min(annList.length, 3),
     autoplay: true,
     autoplaySpeed: 4000,
     slidesToScroll: 1,
