@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   Group,
   HStack,
   IconButton,
@@ -10,9 +11,16 @@ import {
 import { useEffect, useState } from "react";
 import { Field } from "../ui/field.jsx";
 import { Button } from "../ui/button.jsx";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import {
+  IoIosArrowDown,
+  IoIosArrowForward,
+  IoIosArrowUp,
+} from "react-icons/io";
 import axios from "axios";
 import "../../components/css/kakaoMapStyle.css";
+import { GiRiver } from "react-icons/gi";
+import { FaList, FaShip } from "react-icons/fa6";
+import { FaShareAlt } from "react-icons/fa";
 
 const { kakao } = window;
 
@@ -47,12 +55,13 @@ const createInfoWindowContent = (type, data) => {
 export function KakaoMap() {
   const [map, setMap] = useState(null);
   const [keyWord, setKeyWord] = useState(""); // 검색어
-  const [isOpen, setIsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [searchService, setSearchService] = useState(null); // 장소 검색 서비스
   const [markers, setMarkers] = useState([]); // 마커 관리
   const [infoWindows, setInfoWindows] = useState([]); // InfoWindow 관리
   const [places, setPlaces] = useState([]); // 검색 결과 데이터 저장
   const [addressList, setAddressList] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     // 지도 초기화
@@ -92,7 +101,7 @@ export function KakaoMap() {
 
   const handleShareFishingAddress = () => {
     setKeyWord("공유 낚시터"); // 키워드 설정
-    setIsOpen(true); // 목록 열기
+    setSearchOpen(true); // 목록 열기
     setPlaces(addressList);
 
     clearMarkersAndInfoWindows();
@@ -193,7 +202,7 @@ export function KakaoMap() {
         setPlaces(data);
         map.setBounds(bounds);
         setKeyWord(searchKeyword);
-        setIsOpen(true);
+        setSearchOpen(true);
       } else {
         alert("검색결과가 없습니다.");
       }
@@ -214,10 +223,11 @@ export function KakaoMap() {
   };
 
   const handleOpenList = () => {
-    if (isOpen) {
-      setIsOpen(false);
+    if (searchOpen) {
+      setSearchOpen(false);
+      setKeyWord("");
     } else {
-      setIsOpen(true);
+      setSearchOpen(true);
     }
   };
 
@@ -241,91 +251,111 @@ export function KakaoMap() {
         boxShadow="md"
       ></Box>
 
-      {/* 검색 및 목록 패널 */}
-      <Stack
-        position="absolute" // 지도 위에 패널을 올리기 위해 절대 위치 지정
-        top="10px"
-        right="10px"
-        w="400px" // 패널의 너비 설정
-        maxH="90%" // 패널 높이 제한
-        bgColor="rgba(255, 255, 255, 0.6)" // 투명도 적용
-        borderRadius="md"
-        boxShadow="lg"
-        p={4}
-        zIndex="2" // 패널이 지도보다 위에 표시되도록 설정
-      >
-        {/* 검색 필드 */}
-        <Field>
-          <Group>
-            <Button
-              variant="subtle"
-              colorPalette={"blue"}
-              value={"민물 낚시"}
-              onClick={(e) => handleClickButton(e.target.value)}
-            >
-              전국 민물 낚시
+      {isOpen ? (
+        <Box position="absolute" top="10px" right="10px" zIndex="2">
+          <Flex>
+            <Button top="15px" bg={"red.500"} onClick={() => setIsOpen(false)}>
+              <IoIosArrowForward />
             </Button>
-            <Button
-              variant="subtle"
-              colorPalette={"blue"}
-              value={"배 낚시"}
-              onClick={(e) => handleClickButton(e.target.value)}
+            {/* 검색 및 목록 패널 */}
+            <Stack
+              w="470px" // 패널의 너비 설정
+              maxH="90%" // 패널 높이 제한
+              bgColor="rgba(255, 255, 255, 0.6)" // 투명도 적용
+              borderRadius="md"
+              boxShadow="lg"
+              p={4}
             >
-              전국 배 낚시
-            </Button>
-            <Button
-              variant="subtle"
-              colorPalette={"red"}
-              onClick={handleShareFishingAddress}
-            >
-              공유 낚시터
-            </Button>
-          </Group>
-        </Field>
+              {/* 검색 필드 */}
+              <Field>
+                <Group>
+                  <Button
+                    variant="subtle"
+                    colorPalette={"blue"}
+                    value={"민물 낚시"}
+                    onClick={(e) => handleClickButton(e.target.value)}
+                  >
+                    <GiRiver />
+                    전국 민물 낚시
+                  </Button>
+                  <Button
+                    variant="subtle"
+                    colorPalette={"blue"}
+                    value={"배 낚시"}
+                    onClick={(e) => handleClickButton(e.target.value)}
+                  >
+                    <FaShip />
+                    전국 배 낚시
+                  </Button>
+                  <Button
+                    variant="subtle"
+                    colorPalette={"red"}
+                    onClick={handleShareFishingAddress}
+                  >
+                    <FaShareAlt />
+                    공유 낚시터
+                  </Button>
+                </Group>
+              </Field>
 
-        {/* 검색 결과 목록 */}
-        {isOpen && keyWord && (
-          <Box
-            bgColor="rgba(255, 255, 255, 0.4)" // 검색 결과 목록 배경 투명도 설정
-            w="100%"
-            h="calc(100% - 60px)" // 검색 필드 높이를 제외한 공간 채우기
-            overflowY="scroll"
-            borderRadius="md"
-            p={2}
-          >
-            <VStack spacing={2} align="stretch">
-              {places.map((place, index) => (
+              {/* 검색 결과 목록 */}
+              {searchOpen && keyWord && (
                 <Box
-                  key={index}
-                  p={4}
-                  bgColor="rgba(255, 255, 255, 0.5)" // 개별 항목의 배경 투명도 설정
+                  bgColor="rgba(255, 255, 255, 0.4)" // 검색 결과 목록 배경 투명도 설정
+                  w="100%"
+                  maxH="450px" /* 최대 높이 설정 */
+                  overflowY="auto"
                   borderRadius="md"
-                  boxShadow="sm"
-                  cursor="pointer"
-                  _hover={{ bgColor: "rgba(240, 240, 240, 0.9)" }} // hover 시 조금 더 진하게
-                  onClick={() => handlePlaceClick(place, index)}
+                  p={2}
                 >
-                  <Text fontSize="lg" fontWeight="bold">
-                    {place.place_name || place.number + "번 게시글"}
-                  </Text>
-                  <Text fontSize="sm">{place.address_name || place.name}</Text>
-                  {place.phone && (
-                    <Text fontSize="sm" color="gray.600">
-                      전화번호: {place.phone}
-                    </Text>
-                  )}
+                  <VStack spacing={2} align="stretch">
+                    {places.map((place, index) => (
+                      <Box
+                        key={index}
+                        p={4}
+                        bgColor="rgba(255, 255, 255, 0.5)" // 개별 항목의 배경 투명도 설정
+                        borderRadius="md"
+                        boxShadow="sm"
+                        cursor="pointer"
+                        _hover={{ bgColor: "rgba(240, 240, 240, 0.9)" }} // hover 시 조금 더 진하게
+                        onClick={() => handlePlaceClick(place, index)}
+                      >
+                        <Text fontSize="lg" fontWeight="bold">
+                          {place.place_name || place.number + "번 게시글"}
+                        </Text>
+                        <Text fontSize="sm">
+                          {place.address_name || place.name}
+                        </Text>
+                        {place.phone && (
+                          <Text fontSize="sm" color="gray.600">
+                            전화번호: {place.phone}
+                          </Text>
+                        )}
+                      </Box>
+                    ))}
+                  </VStack>
                 </Box>
-              ))}
-            </VStack>
-          </Box>
-        )}
+              )}
 
-        {keyWord && (
-          <IconButton w={"100%"} onClick={handleOpenList} h={"30px"}>
-            {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
-          </IconButton>
-        )}
-      </Stack>
+              {keyWord && (
+                <IconButton w={"100%"} onClick={handleOpenList} h={"30px"}>
+                  {searchOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
+                </IconButton>
+              )}
+            </Stack>
+          </Flex>
+        </Box>
+      ) : (
+        <Button
+          position="absolute"
+          top="10px"
+          right="10px"
+          zIndex="2"
+          onClick={() => setIsOpen(true)}
+        >
+          <FaList />
+        </Button>
+      )}
     </HStack>
   );
 }
