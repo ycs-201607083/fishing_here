@@ -58,11 +58,11 @@ export function MemberSignup() {
         post,
         address,
       })
-      .then((res) => {
+      .then(() => {
         console.log("잘됨");
         navigate("/");
       })
-      .catch((e) => {
+      .catch(() => {
         console.log("안됨");
       });
   }

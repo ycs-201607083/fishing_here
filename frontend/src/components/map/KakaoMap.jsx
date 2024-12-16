@@ -12,7 +12,6 @@ import { Field } from "../ui/field.jsx";
 import { Button } from "../ui/button.jsx";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import "../../components/css/kakaoMapStyle.css";
 
 const { kakao } = window;
@@ -54,7 +53,6 @@ export function KakaoMap() {
   const [infoWindows, setInfoWindows] = useState([]); // InfoWindow 관리
   const [places, setPlaces] = useState([]); // 검색 결과 데이터 저장
   const [addressList, setAddressList] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     // 지도 초기화
