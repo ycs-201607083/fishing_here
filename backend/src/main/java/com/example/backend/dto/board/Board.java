@@ -15,6 +15,7 @@ public class Board {
     private String site;//민물낚시, 바다낚시
     private Integer countComment;
 
+
     private List<BoardFile> fileList;
     private KakaoMapAddress kakaoAddress;
 }

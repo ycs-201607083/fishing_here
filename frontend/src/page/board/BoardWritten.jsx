@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Spinner, Text } from "@chakra-ui/react";
+import { Box, Spinner, Table, Text } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function BoardWritten() {
@@ -41,8 +41,10 @@ export function BoardWritten() {
 
   return (
     <Box>
-      <h3>내 게시글 보기</h3>
-      <Table interactive>
+      <Text fontSize="2xl" mb={4}>
+        내 게시글 보기
+      </Text>
+      <Table.Root interactive>
         <Table.Header>
           <Table.Row>
             <Table.ColumnHeader>번호</Table.ColumnHeader>
@@ -55,23 +57,23 @@ export function BoardWritten() {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {posts.map((post) => (
-            <Table.Row
-              key={post.number}
-              onClick={() => handleRowClick(post.number)}
+          {posts.map((board) => (
+            <tr
+              key={board.number}
+              onClick={() => handleRowClick(board.number)}
               style={{ cursor: "pointer" }}
             >
-              <Table.Cell>{post.number}</Table.Cell>
-              <Table.Cell>{post.site}</Table.Cell>
-              <Table.Cell>{post.title}</Table.Cell>
-              <Table.Cell>{post.content}</Table.Cell>
-              <Table.Cell>{post.writer}</Table.Cell>
-              <Table.Cell>{post.viewCount}</Table.Cell>
-              <Table.Cell>{post.date}</Table.Cell>
-            </Table.Row>
+              <td>{board.number}</td>
+              <td>{board.site}</td>
+              <td>{board.title}</td>
+              <td>{board.content}</td>
+              <td>{board.writer}</td>
+              <td>{board.viewCount}</td>
+              <td>{board.date}</td>
+            </tr>
           ))}
         </Table.Body>
-      </Table>
+      </Table.Root>
     </Box>
   );
 }

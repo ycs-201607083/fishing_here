@@ -225,9 +225,9 @@ public class BoardController {
         }
     }
 
-//    @GetMapping("written/{id}")
-//    public ResponseEntity<List<Board>> getBoardsByMemberId(@PathVariable("id") String id) {
-//        List<Board> boards = service.getBoardsByMemberId(id);
-//        return ResponseEntity.ok(boards);
-//    }
+    @GetMapping("written/{id}")
+    public ResponseEntity<List<Board>> getBoardsByMemberId(@PathVariable("id") String id) {
+        List<Board> boards = service.getBoardsByMemberId(id);
+        return ResponseEntity.ok(boards);
+    }
 }

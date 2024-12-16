@@ -309,7 +309,7 @@ public class BoardService {
     }
 
 
-//    public List<Board> getBoardsByMemberId(String id) {
-//        return mapper.findBoardsByMemberId(id);
-//    }
+    public List<Board> getBoardsByMemberId(String id) {
+        return mapper.findBoardsByMemberId(id);
+    }
 }

@@ -256,17 +256,17 @@ public interface BoardMapper {
             """)
     void updateKakaoAddr(String addressName, Double addressLng, Double addressLat, int boardNumber);
 
-//    @Select("""
-//            SELECT
-//            board_number AS number,
-//            board_title AS title,
-//            board_writer AS writer,
-//            board_view_count AS viewCount,
-//            board_date AS date,
-//            board_content AS content,
-//            board_site AS site
-//            FROM board
-//            WHERE member_id = #{memberId}
-//            """)
-//    List<Board> findBoardsByMemberId(String memberId);
+    @Select("""
+            SELECT
+            board_number AS number,
+            board_title AS title,
+            board_writer AS writer,
+            board_view_count AS viewCount,
+            board_date AS date,
+            board_content AS content,
+            board_site AS site
+            FROM board
+            WHERE member_id = #{id}
+            """)
+    List<Board> findBoardsByMemberId(String id);
 }
