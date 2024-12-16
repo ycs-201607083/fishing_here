@@ -7,6 +7,7 @@ import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import { MyHeading } from "../../components/root/MyHeading.jsx";
+import { useNavigate } from "react-router-dom";
 
 export function MemberSignup() {
   //데이터 입력
@@ -19,6 +20,7 @@ export function MemberSignup() {
   const [birth, setBirth] = useState("");
   const [post, setPost] = useState("");
   const [address, setAddress] = useState("");
+  const navigate = useNavigate();
 
   //유효성 체크 & 오류메시지
   const [idCheck, setIdCheck] = useState(false);
@@ -44,6 +46,7 @@ export function MemberSignup() {
       })
       .then((res) => {
         console.log("잘됨");
+        navigate("/");
       })
       .catch((e) => {
         console.log("안됨");

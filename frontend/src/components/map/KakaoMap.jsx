@@ -73,7 +73,7 @@ export function KakaoMap() {
     if (addressList && addressList.length > 0) {
       const newMarkers = [];
       const newInfoWindows = [];
-      // const bounds = new kakao.maps.LatLngBounds(); // 검색 결과 범위
+      const bounds = new kakao.maps.LatLngBounds(); // 검색 결과 범위
 
       addressList.forEach((address) => {
         if (
@@ -112,15 +112,15 @@ export function KakaoMap() {
             newInfoWindows.forEach((iw) => iw.close()); // 모든 InfoWindow 닫기
             infoWindow.open(map, marker); // 현재 마커 InfoWindow 열기
           });
-          // bounds.extend(markerPosition); // 범위 확장
+          bounds.extend(markerPosition); // 범위 확장
         } else {
           console.log("없음", address);
         }
       });
       setMarkers(newMarkers);
       setInfoWindows(newInfoWindows);
-      map.setLevel(13);
-      // map.setBounds(bounds); // 지도 범위 확장 = 마커주소값이 너무 많아서 작동이안됨
+      // map.setLevel(13);
+      map.setBounds(bounds); // 지도 범위 확장 = 마커주소값이 너무 많아서 작동이안됨
     } else {
       alert("공유 낚시터 데이터가 없습니다.");
     }
