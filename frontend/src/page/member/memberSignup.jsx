@@ -212,6 +212,15 @@ export function MemberSignup() {
           />
           <Span style={{ color: pwError ? "green" : "red" }}>{pwMessage}</Span>
         </Field>
+
+        <Field label={"이름"}>
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            variant="subtle"
+          />
+        </Field>
+
         <Field label={"전화번호"}>
           <Input
             value={phone}
@@ -223,13 +232,7 @@ export function MemberSignup() {
             {phoneMessage}
           </Span>
         </Field>
-        <Field label={"이름"}>
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            variant="subtle"
-          />
-        </Field>
+
         <Field label={"생년월일"}>
           <Input
             value={birth}

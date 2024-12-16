@@ -96,12 +96,16 @@ export function KakaoMap() {
           // InfoWindow 생성
           const infoWindow = new kakao.maps.InfoWindow({
             content: `
-          <div style="padding:10px; white-space: nowrap">
-          <a href="/board/view/${address.number}">
-            <b style="font-size:16px">${address.number} 번 게시글</b>       
+          <div style="padding: 5px;
+                      background-color: #ff3d00; color: white; 
+                      font-size: 14px;
+                      white-space: nowrap;">
+            <a href="/board/view/${address.number}">
+                <b style="font-size:16px">${address.number} 번 게시글</b>       
             </a>
-            <br/>
-            ${address.name}
+          </div>
+          <div style="padding: 10px; white-space: nowrap;">
+            <b>${address.name}</b>
           </div>
         `,
           });
@@ -147,12 +151,16 @@ export function KakaoMap() {
           // InfoWindow 생성
           const infoWindow = new kakao.maps.InfoWindow({
             content: `
-              <div style="padding:10px; white-space: nowrap">
-              <a href="${place.place_url}" target="_blank" >
-              <b style="font-size:16px">${place.place_name}</b>
-                <br/>
+              <div style="padding: 5px;
+                      background-color: #ff3d00; color: white; 
+                      font-size: 14px;
+                      white-space: nowrap;">
+                <a href="${place.place_url}" target="_blank" >
+                <b style="font-size:16px">${place.place_name}</b>
+                </a>
+              </div>
+              <div style="padding: 10px; white-space: nowrap;">
                 <b style="font-size:12px">${place.address_name}</b>
-               </a>
               </div>
             `,
           });
