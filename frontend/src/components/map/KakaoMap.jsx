@@ -13,8 +13,37 @@ import { Button } from "../ui/button.jsx";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../../components/css/kakaoMapStyle.css";
 
 const { kakao } = window;
+
+const createInfoWindowContent = (type, data) => {
+  if (type === "sharedFishing") {
+    // 공유 낚시터일 때의 InfoWindow 내용
+    return `
+      <div class="info-window-header">
+        <a href="/board/view/${data.number}" class="info-window-link">
+          ${data.number} 번 게시글
+        </a>
+      </div>
+      <div class="info-window-body">
+        <b>${data.name}</b>
+      </div>
+    `;
+  } else if (type === "searchResult") {
+    // 검색된 장소일 때의 InfoWindow 내용
+    return `
+      <div class="info-window-header">
+        <a href="${data.place_url}" target="_blank" class="info-window-link">
+          ${data.place_name}
+        </a>
+      </div>
+      <div class="info-window-body">
+        ${data.address_name}
+      </div>
+    `;
+  }
+};
 
 export function KakaoMap() {
   const [map, setMap] = useState(null);
@@ -66,14 +95,14 @@ export function KakaoMap() {
   const handleShareFishingAddress = () => {
     setKeyWord("공유 낚시터"); // 키워드 설정
     setIsOpen(true); // 목록 열기
-    setPlaces(addressList); // 공유 낚시터 데이터를 검색 결과로 설정
+    setPlaces(addressList);
 
     clearMarkersAndInfoWindows();
 
     if (addressList && addressList.length > 0) {
       const newMarkers = [];
       const newInfoWindows = [];
-      const bounds = new kakao.maps.LatLngBounds(); // 검색 결과 범위
+      const bounds = new kakao.maps.LatLngBounds();
 
       addressList.forEach((address) => {
         if (
@@ -93,38 +122,32 @@ export function KakaoMap() {
           });
           newMarkers.push(marker);
 
-          // InfoWindow 생성
+          const infoWindowContent = createInfoWindowContent(
+            "sharedFishing",
+            address,
+          );
+          const infoWindowClose = true;
+
           const infoWindow = new kakao.maps.InfoWindow({
-            content: `
-          <div style="padding: 5px;
-                      background-color: #ff3d00; color: white; 
-                      font-size: 14px;
-                      white-space: nowrap;">
-            <a href="/board/view/${address.number}">
-                <b style="font-size:16px">${address.number} 번 게시글</b>       
-            </a>
-          </div>
-          <div style="padding: 10px; white-space: nowrap;">
-            <b>${address.name}</b>
-          </div>
-        `,
+            content: infoWindowContent,
+            removable: infoWindowClose,
           });
           newInfoWindows.push(infoWindow);
 
-          // 마커 클릭 이벤트 등록
           kakao.maps.event.addListener(marker, "click", () => {
-            newInfoWindows.forEach((iw) => iw.close()); // 모든 InfoWindow 닫기
-            infoWindow.open(map, marker); // 현재 마커 InfoWindow 열기
+            newInfoWindows.forEach((iw) => iw.close());
+            infoWindow.open(map, marker);
           });
-          bounds.extend(markerPosition); // 범위 확장
+
+          bounds.extend(markerPosition);
         } else {
-          console.log("없음", address);
+          console.log("위치 데이터 없음", address);
         }
       });
+
       setMarkers(newMarkers);
       setInfoWindows(newInfoWindows);
-      // map.setLevel(13);
-      map.setBounds(bounds); // 지도 범위 확장 = 마커주소값이 너무 많아서 작동이안됨
+      map.setBounds(bounds);
     } else {
       alert("공유 낚시터 데이터가 없습니다.");
     }
@@ -135,12 +158,11 @@ export function KakaoMap() {
 
     searchService.keywordSearch(searchKeyword, (data, status) => {
       if (status === kakao.maps.services.Status.OK) {
-        const bounds = new kakao.maps.LatLngBounds(); // 검색 결과 범위
+        const bounds = new kakao.maps.LatLngBounds();
         const newMarkers = [];
         const newInfoWindows = [];
 
         data.forEach((place) => {
-          // 마커 생성 및 지도에 표시
           const markerPosition = new kakao.maps.LatLng(place.y, place.x);
           const marker = new kakao.maps.Marker({
             position: markerPosition,
@@ -148,38 +170,30 @@ export function KakaoMap() {
           });
           newMarkers.push(marker);
 
-          // InfoWindow 생성
+          const infoWindowContent = createInfoWindowContent(
+            "searchResult",
+            place,
+          );
+          const infoWindowClose = true;
+
           const infoWindow = new kakao.maps.InfoWindow({
-            content: `
-              <div style="padding: 5px;
-                      background-color: #ff3d00; color: white; 
-                      font-size: 14px;
-                      white-space: nowrap;">
-                <a href="${place.place_url}" target="_blank" >
-                <b style="font-size:16px">${place.place_name}</b>
-                </a>
-              </div>
-              <div style="padding: 10px; white-space: nowrap;">
-                <b style="font-size:12px">${place.address_name}</b>
-              </div>
-            `,
+            content: infoWindowContent,
+            removable: infoWindowClose,
           });
           newInfoWindows.push(infoWindow);
 
-          // 마커 클릭 이벤트 등록
           kakao.maps.event.addListener(marker, "click", () => {
-            newInfoWindows.forEach((iw) => iw.close()); // 모든 InfoWindow 닫기
-            infoWindow.open(map, marker); // 현재 마커 InfoWindow 열기
+            newInfoWindows.forEach((iw) => iw.close());
+            infoWindow.open(map, marker);
           });
 
-          // 결과 범위 확장
           bounds.extend(markerPosition);
         });
 
         setMarkers(newMarkers);
         setInfoWindows(newInfoWindows);
-        setPlaces(data); // 검색 결과 저장
-        map.setBounds(bounds); // 지도 범위 확장
+        setPlaces(data);
+        map.setBounds(bounds);
         setKeyWord(searchKeyword);
         setIsOpen(true);
       } else {
