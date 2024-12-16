@@ -64,23 +64,29 @@ export function KakaoMap() {
   }
 
   const handleShareFishingAddress = () => {
-    setKeyWord("");
+    setKeyWord("공유 낚시터"); // 키워드 설정
+    setIsOpen(true); // 목록 열기
+    setPlaces(addressList); // 공유 낚시터 데이터를 검색 결과로 설정
+
     clearMarkersAndInfoWindows();
-    if (!map) {
-      console.error("Map is not initialized.");
-      return;
-    }
+
     if (addressList && addressList.length > 0) {
       const newMarkers = [];
       const newInfoWindows = [];
-      const bounds = new kakao.maps.LatLngBounds(); // 검색 결과 범위
+      // const bounds = new kakao.maps.LatLngBounds(); // 검색 결과 범위
 
       addressList.forEach((address) => {
-        if (address.lat !== null && address.lng !== null) {
+        if (
+          address.lat &&
+          address.lng &&
+          !isNaN(address.lat) &&
+          !isNaN(address.lng)
+        ) {
           const markerPosition = new kakao.maps.LatLng(
             address.lat,
             address.lng,
-          ); // lng, lat 사용
+          );
+
           const marker = new kakao.maps.Marker({
             position: markerPosition,
             map: map,
@@ -106,14 +112,15 @@ export function KakaoMap() {
             newInfoWindows.forEach((iw) => iw.close()); // 모든 InfoWindow 닫기
             infoWindow.open(map, marker); // 현재 마커 InfoWindow 열기
           });
-
-          bounds.extend(markerPosition); // 지도 범위 확장}
+          // bounds.extend(markerPosition); // 범위 확장
+        } else {
+          console.log("없음", address);
         }
       });
-
       setMarkers(newMarkers);
       setInfoWindows(newInfoWindows);
-      map.setBounds(bounds); // 지도 범위 조정
+      map.setLevel(13);
+      // map.setBounds(bounds); // 지도 범위 확장 = 마커주소값이 너무 많아서 작동이안됨
     } else {
       alert("공유 낚시터 데이터가 없습니다.");
     }
@@ -174,15 +181,16 @@ export function KakaoMap() {
   };
 
   const handlePlaceClick = (place, index) => {
-    const targetPosition = new kakao.maps.LatLng(place.y, place.x);
+    const targetPosition = new kakao.maps.LatLng(
+      place.lat || place.y,
+      place.lng || place.x,
+    );
 
-    // 지도 중심 이동 및 줌 설정
     map.setCenter(targetPosition);
-    map.setLevel(3, { anchor: new kakao.maps.LatLng(place.y, place.x) }); // 줌 레벨 설정 (1: 가장 확대, 숫자가 클수록 축소)
+    map.setLevel(3, { anchor: targetPosition });
 
-    // InfoWindow 열기
-    infoWindows.forEach((iw) => iw.close()); // 모든 InfoWindow 닫기
-    infoWindows[index].open(map, markers[index]); // 해당 마커 InfoWindow 열기
+    infoWindows.forEach((iw) => iw.close());
+    infoWindows[index].open(map, markers[index]);
   };
 
   const handleOpenList = () => {
@@ -278,9 +286,9 @@ export function KakaoMap() {
                   onClick={() => handlePlaceClick(place, index)}
                 >
                   <Text fontSize="lg" fontWeight="bold">
-                    {place.place_name}
+                    {place.place_name || place.number + "번 게시글"}
                   </Text>
-                  <Text fontSize="sm">{place.address_name}</Text>
+                  <Text fontSize="sm">{place.address_name || place.name}</Text>
                   {place.phone && (
                     <Text fontSize="sm" color="gray.600">
                       전화번호: {place.phone}

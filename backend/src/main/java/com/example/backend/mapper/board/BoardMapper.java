@@ -273,9 +273,13 @@ public interface BoardMapper {
     void updateKakaoAddr(String addressName, Double addressLng, Double addressLat, int boardNumber);
 
     @Select("""
-            SELECT board_number as number,addr_name as name,addr_lng as lng,addr_lat as lat
-            FROM fishing_addr
-            ORDER BY board_number DESC
+                SELECT board_number AS number,
+                       addr_name AS name,
+                       addr_lng AS lng,
+                       addr_lat AS lat
+                FROM fishing_addr
+                WHERE addr_lng IS NOT NULL AND addr_lat IS NOT NULL
+                ORDER BY board_number DESC
             """)
     List<FishingAddress> selectFishAddress();
 }
