@@ -224,4 +224,10 @@ public class BoardController {
                             , "text", "수정 권한이 없습니다.")));
         }
     }
+
+//    @GetMapping("written/{id}")
+//    public ResponseEntity<List<Board>> getBoardsByMemberId(@PathVariable("id") String id) {
+//        List<Board> boards = service.getBoardsByMemberId(id);
+//        return ResponseEntity.ok(boards);
+//    }
 }
