@@ -250,4 +250,17 @@ public class BoardController {
                     .body("조회수 증가 실패");
         }
     }
+
+    @GetMapping("like/{number}")
+    public Map<String, Object> getLike(@PathVariable int number,
+                                       Authentication auth) {
+        return service.getLike(number, auth);
+    }
+
+    @PostMapping("like")
+    @PreAuthorize("isAuthenticated()")
+    public Map<String, Object> like(@RequestBody Board board,
+                                    Authentication authentication) {
+        return service.like(board, authentication);
+    }
 }

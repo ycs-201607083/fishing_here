@@ -3,6 +3,7 @@ import axios from "axios";
 import {
   Box,
   Flex,
+  Heading,
   HStack,
   Image,
   Input,
@@ -28,6 +29,8 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { useAddress } from "../../context/AddressContext.jsx";
+import { ToggleTip } from "../../components/ui/toggle-tip";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 
 function ImageFileView({ files }) {
   const [selectedImage, setSelectedImage] = useState(null); // 클릭된 이미지 상태 관리
@@ -88,7 +91,6 @@ function ImageFileView({ files }) {
 
 export function BoardView() {
   const [board, setBoard] = useState(null);
-  const { number } = useParams();
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
   const navigate = useNavigate();
   const [map, setMap] = useState(null);
@@ -97,6 +99,17 @@ export function BoardView() {
   const [lngi, setLng] = useState(null);
   const { address, lng, lat } = useAddress();
   const [viewCnt, setViewCnt] = useState(null);
+  const [like, setLike] = useState({ like: false, count: 0 });
+  const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
+
+  const { number } = useParams();
+
+  useEffect(() => {
+    axios
+      .get(`/api/board/like/${number}`)
+      .then((res) => res.data)
+      .then((data) => setLike(data));
+  }, []);
 
   useEffect(() => {
     // 조회수 증가 요청
@@ -180,6 +193,22 @@ export function BoardView() {
       });
   };
 
+  const handleLikeClick = () => {
+    if (isAuthenticated) {
+      axios
+        .post("/api/board/like", {
+          number: number,
+        })
+        .then((res) => res.data)
+        .then((data) => setLike(data))
+        .catch()
+        .finally();
+    } else {
+      //tooltip 보여주기
+      setLikeTooltipOpen(!likeTooltipOpen);
+    }
+  };
+
   return (
     <Box
       mx={"auto"}
@@ -189,6 +218,22 @@ export function BoardView() {
     >
       <Flex>
         <MyHeading me={"auto"}>{number} 번 게시물</MyHeading>
+        <HStack>
+          <Box onClick={handleLikeClick}>
+            <ToggleTip
+              open={likeTooltipOpen}
+              content={"로그인 후 좋아요를 클릭해주세요."}
+            >
+              <Heading>
+                {like.like || <GoHeart />}
+                {like.like && <GoHeartFill />}
+              </Heading>
+            </ToggleTip>
+          </Box>
+          <Box>
+            <Heading>{like.count}</Heading>
+          </Box>
+        </HStack>
       </Flex>
       <Field>조회수:{viewCnt}</Field>
       <Stack gap={5}>
