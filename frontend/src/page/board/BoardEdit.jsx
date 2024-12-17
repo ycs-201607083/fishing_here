@@ -37,29 +37,38 @@ import BoardKakaoMap from "../../components/map/BoardKakaoMap.jsx";
 import { ToggleTip } from "../../components/ui/toggle-tip";
 import { toggleContent } from "./BoardAdd.jsx";
 import { LuInfo } from "react-icons/lu";
+import {
+  NativeSelectField,
+  NativeSelectRoot,
+} from "../../components/ui/native-select.jsx";
 
 function ImageView({ files, onRemoveSwitchClick }) {
+  const handleImageClick = (src) => {
+    setSelectedImage(src); // 클릭한 이미지 설정
+    onBig();
+  };
+
   return (
-    <Box>
+    <HStack>
       {files.map((file) => (
         <HStack key={file.name} my={3}>
-          <Switch
-            thumbLabel={{
-              on: <CiTrash />,
-            }}
-            colorPalette={"red"}
-            onCheckedChange={(e) => onRemoveSwitchClick(e.checked, file.name)}
-          />
           <Box>
+            <Switch
+              thumbLabel={{
+                on: <CiTrash />,
+              }}
+              colorPalette={"red"}
+              onCheckedChange={(e) => onRemoveSwitchClick(e.checked, file.name)}
+            />
             <Image
-              boxSize="500px" // 원하는 크기로 설정
+              boxSize="250px" // 원하는 크기로 설정
               border={"1px solid black"}
               src={file.src}
             />
           </Box>
         </HStack>
       ))}
-    </Box>
+    </HStack>
   );
 }
 
@@ -103,6 +112,7 @@ export function BoardEdit() {
         number: board.number,
         title: board.title,
         content: board.content,
+        site: board.site,
         removeFiles,
         uploadFiles,
         addressName: address,
@@ -170,9 +180,28 @@ export function BoardEdit() {
     return <Spinner />;
   }
 
+  //파일의 용량이 크다면 true, true일때 저장안됨
+  let fileInputInvalid = false;
+
+  let sumOfFileSize = 0;
+  let invalidOneFileSize = false; // 한 파일이라도 1MB을 넘는지?
+  for (const file of uploadFiles) {
+    sumOfFileSize += file.size;
+    if (file.size > 1024 * 1024) {
+      invalidOneFileSize = true;
+    }
+  }
+
+  if (sumOfFileSize > 10 * 1024 * 1024 || invalidOneFileSize) {
+    fileInputInvalid = true;
+  }
+
   //제목이나 본문이 비었는 지 확인
   const disabled = !(
-    board.title.trim().length > 0 && board.content.trim().length > 0
+    board.title.trim().length > 0 &&
+    board.content.trim().length > 0 &&
+    !fileInputInvalid &&
+    board.site
   );
 
   //스위치 true 일때 카카오맵 열기
@@ -216,6 +245,21 @@ export function BoardEdit() {
             onChange={(e) => setBoard({ ...board, content: e.target.value })}
           />
         </label>
+
+        <label>
+          <p>낚시 종류</p>
+          <NativeSelectRoot size={"sm"}>
+            <NativeSelectField
+              placeholder={"낚시 종류를 선택 해주세요."}
+              value={board.site}
+              onChange={(e) => setBoard({ ...board, site: e.target.value })}
+            >
+              <option value={"바다낚시"}>바다낚시</option>
+              <option value={"민물낚시"}>민물낚시</option>
+            </NativeSelectField>
+          </NativeSelectRoot>
+        </label>
+
         <ImageView
           files={board.fileList}
           onRemoveSwitchClick={handleRemoveSwitchClick}

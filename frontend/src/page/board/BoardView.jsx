@@ -30,20 +30,59 @@ import { toaster } from "../../components/ui/toaster.jsx";
 import { useAddress } from "../../context/AddressContext.jsx";
 
 function ImageFileView({ files }) {
+  const [selectedImage, setSelectedImage] = useState(null); // 클릭된 이미지 상태 관리
+
+  const handleImageClick = (src) => {
+    setSelectedImage(src); // 클릭된 이미지 설정
+  };
+
+  const handleBackgroundClick = () => {
+    setSelectedImage(null); // 이미지 닫기
+  };
+
   return (
-    <Box>
-      {files.map((file) => (
-        <Image
-          key={file.name}
-          src={file.src}
-          alt={file.name || "uploaded image"}
-          my={3}
-          border="1px solid black"
-          boxSize="500px" // 원하는 크기로 설정
-          objectFit="cover" // 이미지의 표시 방법
-        />
-      ))}
-    </Box>
+    <>
+      {/* 이미지 목록 */}
+      <Stack direction="row" wrap="wrap" spacing={4}>
+        {files.map((file) => (
+          <Image
+            key={file.name}
+            src={file.src}
+            alt={file.name || "uploaded image"}
+            boxSize="250px"
+            border="1px solid black"
+            objectFit="cover"
+            cursor="pointer"
+            onClick={() => handleImageClick(file.src)}
+          />
+        ))}
+      </Stack>
+
+      {/* 이미지 확대 */}
+      {selectedImage && (
+        <Box
+          position="fixed"
+          top="0"
+          left="0"
+          width="100vw"
+          height="100vh"
+          bg="rgba(0, 0, 0, 0.8)"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          zIndex="1000"
+          onClick={handleBackgroundClick} // 배경 클릭 시 닫기
+        >
+          <Image
+            src={selectedImage}
+            alt="Expanded view"
+            maxH="90vh"
+            maxW="90vw"
+            objectFit="contain"
+          />
+        </Box>
+      )}
+    </>
   );
 }
 
@@ -63,6 +102,7 @@ export function BoardView() {
       .get(`/api/board/view/${number}`)
       .then((res) => {
         setBoard(res.data);
+        console.log("data?????", res.data);
       })
       .catch((e) => {
         console.log(e);
@@ -142,6 +182,7 @@ export function BoardView() {
       <Flex>
         <MyHeading me={"auto"}>{number} 번 게시물</MyHeading>
       </Flex>
+      <Field>조회수:{board.viewCount}</Field>
       <Stack gap={5}>
         <Field label="제목" readOnly>
           <Input value={board.title} />

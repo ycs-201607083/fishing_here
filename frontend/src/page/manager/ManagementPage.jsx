@@ -24,7 +24,7 @@ export function ManagementPage() {
 
   //회원 테이블 행 클릭 시 회원정보 보기로 이동
   function handleMemberClick(id) {
-    navigate(`/member/view/${id}`);
+    navigate(`/member/${id}`);
   }
 
   //게시글 테이블 행 클릭 시 게시글 보기로 이동

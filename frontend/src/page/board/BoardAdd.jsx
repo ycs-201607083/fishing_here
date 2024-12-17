@@ -123,11 +123,8 @@ export function BoardAdd() {
       });
   };
 
-  const disabled = !(
-    title.trim().length > 0 &&
-    content.trim().length > 0 &&
-    site
-  );
+  console.log("files", files);
+
   // files 의 파일명을 component 리스트로 만들기
   const filesList = [];
   let sumOfFileSize = 0;
@@ -175,6 +172,13 @@ export function BoardAdd() {
     setLat(null);
     setLng(null);
   }
+
+  const disabled = !(
+    title.trim().length > 0 &&
+    content.trim().length > 0 &&
+    site &&
+    !fileInputInvalid
+  );
 
   return (
     <Box

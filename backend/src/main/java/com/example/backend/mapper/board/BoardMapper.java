@@ -115,7 +115,8 @@ public interface BoardMapper {
                         board_writer writer, 
                         board_date AS date,
                         board_content content,
-                        board_site site
+                        board_site site,
+                        board_view_count viewCount
                                     FROM board
                                     WHERE board_number = #{number}
             """)
@@ -238,7 +239,7 @@ public interface BoardMapper {
 
     @Update("""
                     UPDATE board
-                    SET board_title = #{title}, board_content = #{content}
+                    SET board_title = #{title}, board_content = #{content}, board_site=#{site}
                     WHERE board_number=#{number}
             """)
     int update(Board board);
