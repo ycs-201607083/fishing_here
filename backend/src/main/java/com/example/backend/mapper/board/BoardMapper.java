@@ -336,4 +336,16 @@ public interface BoardMapper {
             WHERE id =#{id}
             """)
     int updateQuestion(Question question);
+
+    @Delete("""
+            DELETE FROM ques_file
+            WHERE id = #{id}
+            """)
+    int deleteFileByQuesId(int id);
+
+    @Delete("""
+            DELETE FROM question
+            WHERE id =#{id}
+            """)
+    int deleteByQuesId(int id);
 }

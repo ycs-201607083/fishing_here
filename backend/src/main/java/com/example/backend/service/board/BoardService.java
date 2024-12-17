@@ -407,4 +407,29 @@ public class BoardService {
         Question ann = mapper.selectByQuesId(id);
         return ann.getWriter().equals(auth.getName());
     }
+
+    public boolean removeQues(int id) {
+        //게시물 지우기전에
+        //첨부파일 지우기
+
+        //실제 파일(s3) 지우기
+        //현재파일명 얻어오기
+        List<String> fileName = mapper.selectFilesByQuesId(id);
+        //서버에서 파일 지우기
+        for (String file : fileName) {
+            String key = "prj241126/Question/" + id + "/" + file;
+            DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+            s3.deleteObject(dor);
+        }
+
+        //db 에서 지우기
+        mapper.deleteFileByQuesId(id);
+        //게시글 지우기
+        int cnt = mapper.deleteByQuesId(id);
+
+        return cnt == 1;
+    }
 }
