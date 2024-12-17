@@ -23,6 +23,9 @@ import { MemberEdit } from "./page/member/MemberEdit.jsx";
 import { BoardWritten } from "./page/board/BoardWritten.jsx";
 import { AddressProvider, useAddress } from "./context/AddressContext.jsx";
 import { BoardEdit } from "./page/board/BoardEdit.jsx";
+import { BoardQuestion } from "./page/board/BoardQuestion.jsx";
+import { BoardQuestionAdd } from "./page/board/BoardQuestionAdd.jsx";
+import { BoardQuestionView } from "./page/board/BoardQuestionView.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -109,6 +112,18 @@ const router = createBrowserRouter([
       {
         path: "board/edit/:number",
         element: <BoardEdit />,
+      },
+      {
+        path: "board/question",
+        element: <BoardQuestion />,
+      },
+      {
+        path: "board/questionAdd",
+        element: <BoardQuestionAdd />,
+      },
+      {
+        path: "board/questionView/:id",
+        element: <BoardQuestionView />,
       },
     ],
   },

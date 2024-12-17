@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 import axios from "axios";
 import { Box, Flex, Heading, Spacer, Spinner, Text } from "@chakra-ui/react";
-import { FaArrowLeft } from "react-icons/fa6";
+import { toaster } from "../../components/ui/toaster.jsx";
 import { Button } from "../../components/ui/button.jsx";
-import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
+import { FaArrowLeft } from "react-icons/fa6";
 import {
   DialogActionTrigger,
   DialogBody,
@@ -16,20 +17,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../components/ui/dialog";
-import { toaster } from "../../components/ui/toaster.jsx";
 import { ImageFileView } from "../../components/root/ImageFileView.jsx";
 
-export function BoardAnnouncementView() {
+export function BoardQuestionView() {
   const { id } = useParams();
   const { hasAccess, isAdmin } = useContext(AuthenticationContext);
-  const [annView, setAnnView] = useState(null);
+  const [question, setQuestion] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/board/viewAnn/${id}`).then((res) => setAnnView(res.data));
+    axios
+      .get(`/api/board/questionView/${id}`)
+      .then((res) => setQuestion(res.data));
   }, []);
 
-  if (annView === null) {
+  if (question === null) {
     return <Spinner />;
   }
 
@@ -39,7 +41,7 @@ export function BoardAnnouncementView() {
 
   const handleDelClick = () => {
     axios
-      .delete(`/api/board/deleteQuestion/${annView.id}`)
+      .delete(`/api/board/deleteQues/${question.id}`)
       .then((res) => res.data)
       .then((data) => {
         const message = data.message;
@@ -65,27 +67,27 @@ export function BoardAnnouncementView() {
       </Heading>
       <hr />
       <Text fontWeight={"bold"} fontSize={"20px"} pt={10} pb={5}>
-        {annView.title}
+        {question.title}
       </Text>
       <Flex pb={30}>
-        <Text>작성자 : {annView.writer}</Text>
+        <Text>작성자 : {question.writer}</Text>
         <Spacer />
-        <Text>작성일 : {annView.inserted}</Text>
+        <Text>작성일 : {question.inserted}</Text>
       </Flex>
       <hr />
-      <ImageFileView files={annView.fileList || []} />
-      <Text h="200px">{annView.content}</Text>
+      <ImageFileView files={question.fileList || []} />
+      <Text h="200px">{question.content}</Text>
       <Flex>
         <Button onClick={handleClickPrev}>
           <FaArrowLeft />
         </Button>
         <Spacer />
 
-        {hasAccess(annView.writer) && (
+        {hasAccess(question.writer) && (
           <Button
             colorPalette={"blue"}
             variant={"ghost"}
-            onClick={() => navigate(`/board/editQuestion/${annView.id}`)}
+            onClick={() => navigate(`/board/editAnn/${question.id}`)}
           >
             <Text fontSize={"18px"} fontWeight={"bold"}>
               수정
@@ -93,7 +95,7 @@ export function BoardAnnouncementView() {
           </Button>
         )}
 
-        {(hasAccess(annView.writer) || isAdmin) && (
+        {(hasAccess(question.writer) || isAdmin) && (
           <DialogRoot placement={"bottom"} role="alertdialog">
             <DialogTrigger asChild>
               <Button colorPalette={"red"} variant={"ghost"}>
@@ -131,5 +133,3 @@ export function BoardAnnouncementView() {
     </Box>
   );
 }
-
-export default BoardAnnouncementView;

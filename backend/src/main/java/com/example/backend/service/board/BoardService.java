@@ -141,6 +141,11 @@ public class BoardService {
                 "count", mapper.getAnnouncementCount());
     }
 
+    public Map<String, Object> listQuestion(Integer page) {
+        return Map.of("list", mapper.selectALlQuestion((page - 1) * 10),
+                "count", mapper.getQuestionCount());
+    }
+
 
     public boolean update(Board board, List<String> removeFiles, MultipartFile[] uploadFiles) {
         if (removeFiles != null) {
@@ -226,6 +231,39 @@ public class BoardService {
         return cnt == 1;
     }
 
+    public boolean validateQues(Question question) {
+        boolean title = !question.getTitle().trim().isEmpty();
+        boolean content = !question.getContent().trim().isEmpty();
+
+        return title && content;
+    }
+
+    public boolean addQues(Question question, Authentication auth, MultipartFile[] files) {
+        question.setWriter(auth.getName());
+
+        int cnt = mapper.insertQues(question);
+
+        if (files != null && files.length > 0) {
+            for (MultipartFile file : files) {
+                String objectKey = "prj241126/Question/" + question.getId() + "/" + file.getOriginalFilename();
+                PutObjectRequest por = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(objectKey)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
+                try {
+                    s3.putObject(por, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                //file 테이블에 파일명 입력
+                mapper.insertQuesFile(question.getId(), file.getOriginalFilename());
+            }
+        }
+
+        return cnt == 1;
+    }
 
     public boolean validateAnn(Announcement announcement) {
         boolean title = !announcement.getTitle().trim().isEmpty();
@@ -315,5 +353,15 @@ public class BoardService {
 
     public List<Board> getBoardsByMemberId(String id) {
         return mapper.findBoardsByMemberId(id);
+    }
+
+
+    public Question getQuesView(int id) {
+        Question question = mapper.selectByQuesId(id);
+        List<String> fileNameList = mapper.selectFilesByQuesId(id);
+        List<QuesFile> fileSrcList = fileNameList.stream()
+                .map(name -> new QuesFile(name, imageSrcPrefix + "/Question/" + id + "/" + name)).toList();
+        question.setFileList(fileSrcList);
+        return question;
     }
 }

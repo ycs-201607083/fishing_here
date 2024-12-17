@@ -1,9 +1,6 @@
 package com.example.backend.controller.board;
 
-import com.example.backend.dto.board.Announcement;
-import com.example.backend.dto.board.Board;
-import com.example.backend.dto.board.FishingAddress;
-import com.example.backend.dto.board.KakaoMapAddress;
+import com.example.backend.dto.board.*;
 import com.example.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +30,48 @@ public class BoardController {
         return service.selectFishingAddress();
     }
 
+
+    @GetMapping("question")
+    public Map<String, Object> divide(@RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return service.listQuestion(page);
+    }
+
+    @PostMapping("questionAdd")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> questionAdd(
+            Question question,
+            @RequestParam(value = "files[]", required = false) MultipartFile[] files,
+            Authentication auth) {
+
+        if (service.validateQues(question)) {
+            if (service.addQues(question, auth, files)) {
+                return ResponseEntity.ok().body(
+                        Map.of("message",
+                                Map.of("type", "success", "text", question.getId() + "번 게시글이 등록되었습니다."),
+                                "data", question));
+            } else {
+                return ResponseEntity.internalServerError().body(
+                        Map.of("message",
+                                Map.of("type", "warning", "text", "등록되지 않았습니다..")));
+            }
+
+        } else {
+            return ResponseEntity.badRequest().body(
+                    Map.of("message",
+                            Map.of("type", "warning", "text", "제목과 본문을  입력해주세요.")));
+        }
+    }
+
+    @GetMapping("questionView/{id}")
+    public Question questionView(@PathVariable int id) {
+        return service.getQuesView(id);
+    }
+
     @GetMapping("announcement")
     public Map<String, Object> announcement(@RequestParam(value = "page", defaultValue = "1") Integer page) {
         return service.listAnnouncement(page);
     }
+
 
     @GetMapping("viewAnn/{id}")
     public Announcement announcementView(@PathVariable int id) {
