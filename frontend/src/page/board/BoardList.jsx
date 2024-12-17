@@ -306,7 +306,11 @@ export function BoardList() {
                   <Table.Cell>{board.number}</Table.Cell>
                   <Table.Cell>{board.site}</Table.Cell>
                   <Table.Cell>{board.title}</Table.Cell>
-                  <Table.Cell>{board.content}</Table.Cell>
+                  <Table.Cell>
+                    {board.content.length > 20
+                      ? `${board.content.slice(0, 22)}...`
+                      : board.content}
+                  </Table.Cell>
                   <Table.Cell>{board.writer}</Table.Cell>
                   <Table.Cell>{board.viewCount}</Table.Cell>
                   <Table.Cell>{board.date}</Table.Cell>
