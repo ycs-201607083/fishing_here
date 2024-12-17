@@ -34,12 +34,12 @@ export function BoardAnnouncementView() {
   }
 
   const handleClickPrev = () => {
-    navigate("/board/question");
+    navigate("/board/announcement");
   };
 
   const handleDelClick = () => {
     axios
-      .delete(`/api/board/deleteQuestion/${annView.id}`)
+      .delete(`/api/board/deleteAnn/${annView.id}`)
       .then((res) => res.data)
       .then((data) => {
         const message = data.message;
@@ -47,7 +47,7 @@ export function BoardAnnouncementView() {
           type: message.type,
           description: message.text,
         });
-        navigate("/board/question");
+        navigate("/board/announcement");
       })
       .catch((e) => {
         const message = e.data.message;
@@ -85,7 +85,7 @@ export function BoardAnnouncementView() {
           <Button
             colorPalette={"blue"}
             variant={"ghost"}
-            onClick={() => navigate(`/board/editQuestion/${annView.id}`)}
+            onClick={() => navigate(`/board/editAnn/${annView.id}`)}
           >
             <Text fontSize={"18px"} fontWeight={"bold"}>
               수정
