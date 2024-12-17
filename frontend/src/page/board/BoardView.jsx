@@ -96,16 +96,22 @@ export function BoardView() {
   const [lati, setLat] = useState(null);
   const [lngi, setLng] = useState(null);
   const { address, lng, lat } = useAddress();
+  const [viewCnt, setViewCnt] = useState(null);
 
   useEffect(() => {
+    // 조회수 증가 요청
     axios
-      .get(`/api/board/view/${number}`)
+      .post(`/api/board/view/increment/${number}`)
+      .then(() => {
+        // 조회수 증가 후 게시물 데이터 로드
+        return axios.get(`/api/board/view/${number}`);
+      })
       .then((res) => {
-        setBoard(res.data);
-        console.log("data?????", res.data);
+        setBoard(res.data); // 게시물 데이터 설정
+        setViewCnt(res.data.viewCount); // 증가된 조회수 설정
       })
       .catch((e) => {
-        console.log(e);
+        console.log("Error fetching board data:", e);
       });
   }, [number]);
 
@@ -149,6 +155,8 @@ export function BoardView() {
     });
   }, [board]); // board가 변경될 때마다 실행
 
+  useEffect(() => {}, [board]);
+
   if (board === null) {
     return (
       <Box>
@@ -182,7 +190,7 @@ export function BoardView() {
       <Flex>
         <MyHeading me={"auto"}>{number} 번 게시물</MyHeading>
       </Flex>
-      <Field>조회수:{board.viewCount}</Field>
+      <Field>조회수:{viewCnt}</Field>
       <Stack gap={5}>
         <Field label="제목" readOnly>
           <Input value={board.title} />

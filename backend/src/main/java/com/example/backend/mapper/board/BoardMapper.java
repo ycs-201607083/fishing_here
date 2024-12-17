@@ -282,4 +282,12 @@ public interface BoardMapper {
             WHERE member_id = #{id}
             """)
     List<Board> findBoardsByMemberId(String id);
+
+    @Select("""
+                    SELECT board_view_count viewCount
+                    FROM board
+                    WHERE board_number = #{number}
+            """)
+    int selectViewCount(int number);
+
 }

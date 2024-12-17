@@ -316,4 +316,9 @@ public class BoardService {
     public List<Board> getBoardsByMemberId(String id) {
         return mapper.findBoardsByMemberId(id);
     }
+
+    //조회수 증가 불러오기
+    public int getViewCount(int number) {
+        return mapper.selectViewCount(number);
+    }
 }

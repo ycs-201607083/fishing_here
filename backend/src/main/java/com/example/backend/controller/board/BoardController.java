@@ -6,6 +6,7 @@ import com.example.backend.dto.board.FishingAddress;
 import com.example.backend.dto.board.KakaoMapAddress;
 import com.example.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -235,5 +236,18 @@ public class BoardController {
     public ResponseEntity<List<Board>> getBoardsByMemberId(@PathVariable("id") String id) {
         List<Board> boards = service.getBoardsByMemberId(id);
         return ResponseEntity.ok(boards);
+    }
+
+    @PostMapping("view/increment/{number}")
+    public ResponseEntity<?> incrementViewCount(@PathVariable int number) {
+        try {
+            int updatedViewCount = service.getViewCount(number);
+
+            // 증가된 조회수를 클라이언트에 반환
+            return ResponseEntity.ok(Map.of("viewCount", updatedViewCount));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("조회수 증가 실패");
+        }
     }
 }
