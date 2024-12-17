@@ -61,12 +61,12 @@ public interface MemberMapper {
 
     @Update("""
             UPDATE member
-            SET password=#{password},
-                email= #{description},
-                phone = #{phone},
-                post = #{post},
-                address= #{address}
-            WHERE id=#{id}
+            SET member_password=#{password},
+                member_email= #{email},
+                member_phone = #{phone},
+                member_post = #{post},
+                member_address= #{address}
+            WHERE member_id=#{id}
             """)
     int update(MemberEdit memberEdit);
 }

@@ -5,6 +5,7 @@ import com.example.backend.dto.member.MemberEdit;
 import com.example.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -63,11 +64,13 @@ public class MemberController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
     public Member getMember(@PathVariable String id) {
         return service.get(id);
     }
 
     @DeleteMapping("remove")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> remove(@RequestBody Member member) {
         if (service.remove(member)) {
             return ResponseEntity.ok(Map.of("message",
@@ -82,6 +85,7 @@ public class MemberController {
     }
 
     @PutMapping("update")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> update(@RequestBody MemberEdit member) {
         if (service.update(member)) {
             //잘됨
