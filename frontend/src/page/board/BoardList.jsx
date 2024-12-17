@@ -133,20 +133,29 @@ export function BoardList() {
     };
 
     return (
-      <Box>
-        <h3>게시물 목록</h3>
-
-        {/* 검색 필터 */}
-        <HStack mb={4} justifyContent="center">
+      <Box
+        style={{
+          padding: "20px",
+          backgroundColor: "#e0f7fa", // 푸른 느낌
+          borderRadius: "8px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+        }}
+      >
+        <HStack mb={4} justifyContent="center" style={{ gap: "20px" }}>
+          {/* 드롭다운 - 낚시 장소 */}
           <NativeSelectRoot
-            width="240px"
-            maxW="120px"
-            W="120px"
-            maxH="50"
-            H="50"
+            style={{
+              width: "175px",
+              maxHeight: "50px",
+              fontSize: "14px",
+              padding: "5px",
+              border: "1px solid #0288d1",
+              borderRadius: "4px",
+              backgroundColor: "#e1f5fe",
+            }}
           >
             <NativeSelectField
-              value={site} // **
+              value={site}
               onChange={(e) => setSite(e.target.value)}
             >
               <option value={"allSite"}>민물/바다</option>
@@ -155,15 +164,20 @@ export function BoardList() {
             </NativeSelectField>
           </NativeSelectRoot>
 
+          {/* 드롭다운 - 검색 타입 */}
           <NativeSelectRoot
-            width="240px"
-            maxW="100px"
-            W="120px"
-            maxH="50"
-            H="50"
+            style={{
+              width: "150px",
+              maxHeight: "50px",
+              fontSize: "14px",
+              padding: "5px",
+              border: "1px solid #0288d1",
+              borderRadius: "4px",
+              backgroundColor: "#e1f5fe",
+            }}
           >
             <NativeSelectField
-              value={type} // **
+              value={type}
               onChange={(e) => setType(e.target.value)}
             >
               <option value={"all"}>전체</option>
@@ -173,20 +187,38 @@ export function BoardList() {
             </NativeSelectField>
           </NativeSelectRoot>
 
+          {/* 검색창 */}
           <Input
             placeholder="검색어를 입력하세요"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            maxW="700px"
-            w="100%"
-            maxH="50"
-            H="50"
+            style={{
+              maxWidth: "700px",
+              width: "100%",
+              maxHeight: "50px",
+              height: "50px",
+              padding: "8px",
+              fontSize: "14px",
+              border: "1px solid #0288d1",
+              borderRadius: "20px",
+              backgroundColor: "#ffffff",
+            }}
           />
+
+          {/* 검색 버튼 */}
           <IconButton
             aria-label="Search database"
-            onClick={(e) => setSearchParams({ type, keyword, site })} // **
-            maxH="50"
-            H="30"
+            onClick={() => setSearchParams({ type, keyword, site })}
+            style={{
+              maxHeight: "50px",
+              height: "30px",
+              padding: "5px",
+              backgroundColor: "#0288d1",
+              color: "white",
+              border: "none",
+              borderRadius: "20px",
+              cursor: "pointer",
+            }}
           >
             <LuSearch />
           </IconButton>
@@ -194,7 +226,14 @@ export function BoardList() {
 
         {/* 조회수 상위 3개 데이터 표시 */}
         <div className="slider-container">
-          <Slider {...settings}>
+          <Slider
+            {...settings}
+            autoplay={true} // 자동 슬라이드 활성화
+            autoplaySpeed={3000} // 2.5초 단위로 슬라이드 변경
+            dots={false} // 점 표시 활성화
+            infinite={true} // 슬라이드가 무한히 반복되도록
+            speed={1500}
+          >
             <div>
               <Box
                 mb={8}
@@ -204,36 +243,62 @@ export function BoardList() {
                 justifyContent="center"
                 p={4}
               >
-                <h3>조회수 Top 3</h3>
-                {/* 조회수가 높은 게시물 카드 형태로 표시 */}
-                <SimpleGrid columns={[1, null, 3]} gap="40px" mt={4}>
+                <h3 style={{ color: "#0288d1" }}>조회수 Top 3</h3>
+                <SimpleGrid columns={3} gap="20px" mt={4} dots:true>
                   {topBoards.slice(0, 3).map((board) => (
-                    <Card.Root key={board.number} width="250px">
+                    <Card.Root
+                      key={board.number}
+                      width="200px"
+                      style={{
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                        borderRadius: "8px",
+                      }}
+                    >
                       <Card.Body gap="2">
                         <Image
                           rounded="md"
                           src="https://bit.ly/dan-abramov"
                           alt="Dan Abramov"
+                          style={{
+                            width: "100%",
+                            height: "100px",
+                            objectFit: "cover",
+                          }}
                         />
                         <HStack justifyContent="space-between" mt="1">
-                          <Text fontSize="sm" color="gray.500">
+                          <Text fontSize="sm" color="#0288d1" noOfLines={1}>
                             {board.site}
                           </Text>
                           <Text fontSize="sm" color="gray.500">
                             Views: {board.viewCount}
                           </Text>
                         </HStack>
-                        <Card.Title mt="2">{board.title}</Card.Title>
-                        <Text fontSize="sm" color="gray.500" mt="1">
-                          {board.writer}
+                        <Card.Title
+                          mt="2"
+                          style={{ color: "#0288d1", fontSize: "14px" }}
+                        >
+                          {board.title}
+                        </Card.Title>
+                        <Text
+                          fontSize="sm"
+                          color="gray.600"
+                          mt="1"
+                          noOfLines={2}
+                        >
+                          {board.content}
                         </Text>
-                        <Card.Description>{board.content}</Card.Description>
                       </Card.Body>
                       <Card.Footer justifyContent="flex-end">
                         <Button
                           variant="outline"
                           onClick={() => handleRowClick(board.number)}
-                          key={board.number}
+                          style={{
+                            backgroundColor: "#0288d1",
+                            color: "white",
+                            padding: "2px 6px",
+                            borderRadius: "16px",
+                            fontSize: "12px",
+                          }}
                         >
                           View
                         </Button>
@@ -246,11 +311,11 @@ export function BoardList() {
             <div>
               <Box
                 mb={8}
+                p={4}
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="center"
-                p={4}
               >
                 <h3>인기 게시글 Top3</h3>
               </Box>
@@ -266,12 +331,22 @@ export function BoardList() {
             </HStack>
           </Center>
         ) : errorMessage ? (
-          <Alert title="Alert Title" icon={<LuTerminal />}>
-            데이터를 불러오는 데 실페하였습니다.
+          <Alert
+            title="Alert Title"
+            icon={<LuTerminal />}
+            status="error"
+            style={{
+              backgroundColor: "#ffcccc",
+              color: "#900",
+              padding: "10px",
+              borderRadius: "8px",
+            }}
+          >
+            데이터를 불러오는 데 실패하였습니다.
           </Alert>
-        ) : boardList.length === 0 ? ( // ** 검색 결과 없음 조건
+        ) : boardList.length === 0 ? (
           <Center flexDirection="column" gap={2} mt="35px">
-            <h2>해당 게시글이 없습니다.</h2>
+            <h2 style={{ color: "#0288d1" }}>해당 게시글이 없습니다.</h2>
             <Box
               as="p"
               fontSize="sm"
@@ -283,47 +358,178 @@ export function BoardList() {
             </Box>
           </Center>
         ) : (
-          <Table.Root interactive>
+          <Table.Root
+            interactive
+            style={{
+              margin: "0 auto",
+              width: "80%",
+              borderCollapse: "collapse",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+            }}
+          >
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader>번호</Table.ColumnHeader>
-                <Table.ColumnHeader>낚시 장소</Table.ColumnHeader>
-                <Table.ColumnHeader>제목</Table.ColumnHeader>
-                <Table.ColumnHeader>본문</Table.ColumnHeader>
-                <Table.ColumnHeader>작성자</Table.ColumnHeader>
-                <Table.ColumnHeader>조회수</Table.ColumnHeader>
-                <Table.ColumnHeader>작성일시</Table.ColumnHeader>
+                <Table.ColumnHeader
+                  style={{
+                    padding: "8px",
+                    backgroundColor: "#0288d1",
+                    color: "white",
+                    border: "1px solid #ddd",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    borderRadius: "4px",
+                    width: "10%",
+                  }}
+                >
+                  번호
+                </Table.ColumnHeader>
+                <Table.ColumnHeader
+                  style={{
+                    padding: "8px",
+                    backgroundColor: "#0288d1",
+                    color: "white",
+                    border: "1px solid #ddd",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    borderRadius: "4px",
+                    width: "10%",
+                  }}
+                >
+                  낚시 장소
+                </Table.ColumnHeader>
+                <Table.ColumnHeader
+                  style={{
+                    padding: "8px",
+                    backgroundColor: "#0288d1",
+                    color: "white",
+                    border: "1px solid #ddd",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    borderRadius: "4px",
+                    width: "35%",
+                  }}
+                >
+                  제목
+                </Table.ColumnHeader>
+
+                <Table.ColumnHeader
+                  style={{
+                    padding: "8px",
+                    backgroundColor: "#0288d1",
+                    color: "white",
+                    border: "1px solid #ddd",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    borderRadius: "4px",
+                    width: "15%",
+                  }}
+                >
+                  작성자
+                </Table.ColumnHeader>
+                <Table.ColumnHeader
+                  style={{
+                    padding: "8px",
+                    backgroundColor: "#0288d1",
+                    color: "white",
+                    border: "1px solid #ddd",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    borderRadius: "4px",
+                    width: "10%",
+                  }}
+                >
+                  조회수
+                </Table.ColumnHeader>
+                <Table.ColumnHeader
+                  style={{
+                    padding: "8px",
+                    backgroundColor: "#0288d1",
+                    color: "white",
+                    border: "1px solid #ddd",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    borderRadius: "4px",
+                    width: "10%",
+                  }}
+                >
+                  작성일시
+                </Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>
               {boardList.map((board) => (
                 <Table.Row
                   key={board.number}
-                  onClick={() => handleRowClick(board.number)} // 클릭 이벤트 핸들러 추가
-                  cursor="pointer" // 클릭 가능하다는 시각적 표시
-                  _hover={{ bg: "gray.100" }}
+                  onClick={() => handleRowClick(board.number)} // 클릭 이벤트 핸들러
+                  cursor="pointer"
+                  _hover={{ backgroundColor: "#e0f7fa" }}
+                  style={{
+                    transition: "background-color 0.2s ease",
+                    padding: "8px",
+                    border: "1px solid #ddd",
+                  }}
                 >
-                  <Table.Cell>{board.number}</Table.Cell>
-                  <Table.Cell>{board.site}</Table.Cell>
-                  <Table.Cell>{board.title}</Table.Cell>
-                  <Table.Cell>
-                    {board.content.length > 20
-                      ? `${board.content.slice(0, 22)}...`
-                      : board.content}
+                  <Table.Cell
+                    style={{
+                      padding: "8px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {board.number}
                   </Table.Cell>
-                  <Table.Cell>{board.writer}</Table.Cell>
-                  <Table.Cell>{board.viewCount}</Table.Cell>
-                  <Table.Cell>{board.date}</Table.Cell>
+                  <Table.Cell
+                    style={{
+                      padding: "8px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {board.site}
+                  </Table.Cell>
+                  <Table.Cell
+                    style={{
+                      padding: "11px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {board.title.length > 20
+                      ? `${board.title.slice(0, 20)}...`
+                      : board.title}
+                  </Table.Cell>
+
+                  <Table.Cell
+                    style={{
+                      padding: "8px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {board.writer}
+                  </Table.Cell>
+                  <Table.Cell
+                    style={{
+                      padding: "8px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {board.viewCount}
+                  </Table.Cell>
+                  <Table.Cell
+                    style={{
+                      padding: "8px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {board.date}
+                  </Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
           </Table.Root>
         )}
-        {/*페이지 네이션*/}
 
+        {/* 페이지네이션 */}
         <Box mt={5} mb={5}>
           <HStack spacing={10} justifyContent="space-between">
-            {/* 페이지네이션 중앙 정렬 */}
+            {/* 페이지네이션 중앙 */}
             <HStack gap="4" justifyContent="center" flex="1" ml="150px">
               <PaginationRoot
                 onPageChange={handlePageChange}
@@ -337,9 +543,21 @@ export function BoardList() {
               </PaginationRoot>
             </HStack>
 
-            {/* 버튼 왼쪽 끝에 정렬 */}
+            {/* 버튼 왼쪽 끝 */}
             <Flex justifyContent="flex-start" mr="115px">
-              <Button variant="surface" onClick={handleWriteClick}>
+              <Button
+                variant="surface"
+                onClick={handleWriteClick}
+                style={{
+                  backgroundColor: "#0288d1",
+                  color: "white",
+                  padding: "8px 12px",
+                  borderRadius: "20px",
+                  border: "none",
+                  cursor: "pointer",
+                  marginRight: "100px",
+                }}
+              >
                 게시글 작성
               </Button>
             </Flex>
