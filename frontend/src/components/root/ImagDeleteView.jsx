@@ -12,6 +12,7 @@ export function ImagDeleteView({ files, onRemoveSwitchClick }) {
       [fileName]: isChecked, // 이미지의 blur 상태를 업데이트
     }));
     onRemoveSwitchClick(isChecked, fileName); // 기존 콜백 호출
+    console.log(onRemoveSwitchClick);
   };
 
   return (

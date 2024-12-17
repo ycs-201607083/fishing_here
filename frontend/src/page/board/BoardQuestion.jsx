@@ -15,7 +15,7 @@ export function BoardQuestion() {
   const [queList, setQueList] = useState([]);
   const [count, setCount] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { login } = useContext(AuthenticationContext);
+  const { isAuthenticated } = useContext(AuthenticationContext);
   const navigate = useNavigate();
 
   const pageParam = searchParams.get("page") ? searchParams.get("page") : "1";
@@ -102,7 +102,9 @@ export function BoardQuestion() {
         </Table.Body>
       </Table.Root>
       <Box ml={"auto"}>
-        {login && <Button onClick={handleWriteContent}>잘문하기</Button>}
+        {isAuthenticated && (
+          <Button onClick={handleWriteContent}>잘문하기</Button>
+        )}
       </Box>
       <Center>
         <PaginationRoot

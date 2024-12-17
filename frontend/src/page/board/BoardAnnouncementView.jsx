@@ -77,7 +77,7 @@ export function BoardAnnouncementView() {
       <Text h="200px">{annView.content}</Text>
       <Flex>
         <Button onClick={handleClickPrev}>
-          <FaArrowLeft />
+          <FaArrowLeft /> 목록
         </Button>
         <Spacer />
 
@@ -94,7 +94,7 @@ export function BoardAnnouncementView() {
         )}
 
         {(hasAccess(annView.writer) || isAdmin) && (
-          <DialogRoot placement={"bottom"} role="alertdialog">
+          <DialogRoot placement={"center"} role="alertdialog">
             <DialogTrigger asChild>
               <Button colorPalette={"red"} variant={"ghost"}>
                 <Text fontSize={"18px"} fontWeight={"bold"}>
