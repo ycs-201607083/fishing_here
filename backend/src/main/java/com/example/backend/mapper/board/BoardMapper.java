@@ -221,21 +221,6 @@ public interface BoardMapper {
             """)
     List<Announcement> selectAllAnn();
 
-    @Select("""
-                        SELECT b.board_number number,
-                               b.board_site site,
-                               b.board_content content,
-                               b.board_date date,
-                               b.board_view_count count,
-                               b.board_writer writer,
-                               b.board_title title,
-                               m.member_id member_id
-                        FROM board AS b
-                                 JOIN member AS m
-                                 ON b.board_writer = m.member_id
-            WHERE m.member_id = #{member_id}
-            """)
-    List<Board> findALl(String member_id);
 
     @Select("""
                    SELECT addr_name addressName, addr_lng addressLng, addr_lat addressLat
@@ -282,4 +267,18 @@ public interface BoardMapper {
                 ORDER BY board_number DESC
             """)
     List<FishingAddress> selectFishAddress();
+
+    @Select("""
+            SELECT
+            board_number AS number,
+            board_title AS title,
+            board_writer AS writer,
+            board_view_count AS viewCount,
+            board_date AS date,
+            board_content AS content,
+            board_site AS site
+            FROM board
+            WHERE member_id = #{id}
+            """)
+    List<Board> findBoardsByMemberId(String id);
 }

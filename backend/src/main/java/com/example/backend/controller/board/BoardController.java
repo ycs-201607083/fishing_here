@@ -197,11 +197,6 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/personalPost")
-    public List<Board> getAllBoards(String memberId) {
-//        return service.getAllBoards(memberId);
-        return null;
-    }
 
     @PutMapping("update")
     @PreAuthorize("isAuthenticated()")
@@ -234,5 +229,11 @@ public class BoardController {
                     .body(Map.of("message", Map.of("type", "error"
                             , "text", "수정 권한이 없습니다.")));
         }
+    }
+
+    @GetMapping("written/{id}")
+    public ResponseEntity<List<Board>> getBoardsByMemberId(@PathVariable("id") String id) {
+        List<Board> boards = service.getBoardsByMemberId(id);
+        return ResponseEntity.ok(boards);
     }
 }

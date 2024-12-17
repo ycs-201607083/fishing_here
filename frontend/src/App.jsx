@@ -103,7 +103,7 @@ const router = createBrowserRouter([
         element: <MemberEdit />,
       },
       {
-        path: "board/personalPost/:id",
+        path: "board/written/:id",
         element: <BoardWritten />,
       },
       {

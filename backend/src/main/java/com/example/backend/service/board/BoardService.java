@@ -312,4 +312,8 @@ public class BoardService {
     public List<FishingAddress> selectFishingAddress() {
         return mapper.selectFishAddress();
     }
+
+    public List<Board> getBoardsByMemberId(String id) {
+        return mapper.findBoardsByMemberId(id);
+    }
 }
