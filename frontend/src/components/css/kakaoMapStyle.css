@@ -1,0 +1,19 @@
+.info-window-header {
+    padding: 5px;
+    background-color: #008cff;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.info-window-link {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.info-window-body {
+    padding: 10px;
+    white-space: nowrap;
+    font-size: 12px;
+}

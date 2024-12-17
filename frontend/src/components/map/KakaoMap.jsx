@@ -1,26 +1,67 @@
 import {
   Box,
+  Flex,
   Group,
   HStack,
   IconButton,
-  Input,
   Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Field } from "../ui/field.jsx";
-import { LuSearch } from "react-icons/lu";
+import { Button } from "../ui/button.jsx";
+import {
+  IoIosArrowDown,
+  IoIosArrowForward,
+  IoIosArrowUp,
+} from "react-icons/io";
+import axios from "axios";
+import "../../components/css/kakaoMapStyle.css";
+import { GiRiver } from "react-icons/gi";
+import { FaList, FaShip } from "react-icons/fa6";
+import { FaShareAlt } from "react-icons/fa";
 
 const { kakao } = window;
+
+const createInfoWindowContent = (type, data) => {
+  if (type === "sharedFishing") {
+    // 공유 낚시터일 때의 InfoWindow 내용
+    return `
+      <div class="info-window-header">
+        <a href="/board/view/${data.number}" class="info-window-link">
+          ${data.number} 번 게시글
+        </a>
+      </div>
+      <div class="info-window-body">
+        <b>${data.name}</b>
+      </div>
+    `;
+  } else if (type === "searchResult") {
+    // 검색된 장소일 때의 InfoWindow 내용
+    return `
+      <div class="info-window-header">
+        <a href="${data.place_url}" target="_blank" class="info-window-link">
+          ${data.place_name}
+        </a>
+      </div>
+      <div class="info-window-body">
+        ${data.address_name}
+      </div>
+    `;
+  }
+};
 
 export function KakaoMap() {
   const [map, setMap] = useState(null);
   const [keyWord, setKeyWord] = useState(""); // 검색어
+  const [searchOpen, setSearchOpen] = useState(false);
   const [searchService, setSearchService] = useState(null); // 장소 검색 서비스
   const [markers, setMarkers] = useState([]); // 마커 관리
   const [infoWindows, setInfoWindows] = useState([]); // InfoWindow 관리
   const [places, setPlaces] = useState([]); // 검색 결과 데이터 저장
+  const [addressList, setAddressList] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     // 지도 초기화
@@ -37,6 +78,19 @@ export function KakaoMap() {
     setSearchService(ps);
   }, []);
 
+  useEffect(() => {
+    axios
+      .get("/api/board/fishingAddress")
+      .then((res) => res.data)
+      .then((data) => {
+        console.log(data, "낚시터");
+        setAddressList(data);
+      })
+      .catch(() => {
+        console.log("안됨");
+      });
+  }, []);
+
   function clearMarkersAndInfoWindows() {
     // 기존 마커 제거
     markers.forEach((marker) => marker.setMap(null));
@@ -45,22 +99,77 @@ export function KakaoMap() {
     setInfoWindows([]);
   }
 
-  const handleClickButton = () => {
-    if (!keyWord || !searchService || !map) {
-      alert("검색어를 입력하세요");
-      return;
-    }
+  const handleShareFishingAddress = () => {
+    setKeyWord("공유 낚시터"); // 키워드 설정
+    setSearchOpen(true); // 목록 열기
+    setPlaces(addressList);
 
     clearMarkersAndInfoWindows();
 
-    searchService.keywordSearch(keyWord, (data, status) => {
+    if (addressList && addressList.length > 0) {
+      const newMarkers = [];
+      const newInfoWindows = [];
+      const bounds = new kakao.maps.LatLngBounds();
+
+      addressList.forEach((address) => {
+        if (
+          address.lat &&
+          address.lng &&
+          !isNaN(address.lat) &&
+          !isNaN(address.lng)
+        ) {
+          const markerPosition = new kakao.maps.LatLng(
+            address.lat,
+            address.lng,
+          );
+
+          const marker = new kakao.maps.Marker({
+            position: markerPosition,
+            map: map,
+          });
+          newMarkers.push(marker);
+
+          const infoWindowContent = createInfoWindowContent(
+            "sharedFishing",
+            address,
+          );
+          const infoWindowClose = true;
+
+          const infoWindow = new kakao.maps.InfoWindow({
+            content: infoWindowContent,
+            removable: infoWindowClose,
+          });
+          newInfoWindows.push(infoWindow);
+
+          kakao.maps.event.addListener(marker, "click", () => {
+            newInfoWindows.forEach((iw) => iw.close());
+            infoWindow.open(map, marker);
+          });
+
+          bounds.extend(markerPosition);
+        } else {
+          console.log("위치 데이터 없음", address);
+        }
+      });
+
+      setMarkers(newMarkers);
+      setInfoWindows(newInfoWindows);
+      map.setBounds(bounds);
+    } else {
+      alert("공유 낚시터 데이터가 없습니다.");
+    }
+  };
+
+  const handleClickButton = (searchKeyword) => {
+    clearMarkersAndInfoWindows();
+
+    searchService.keywordSearch(searchKeyword, (data, status) => {
       if (status === kakao.maps.services.Status.OK) {
-        const bounds = new kakao.maps.LatLngBounds(); // 검색 결과 범위
+        const bounds = new kakao.maps.LatLngBounds();
         const newMarkers = [];
         const newInfoWindows = [];
 
         data.forEach((place) => {
-          // 마커 생성 및 지도에 표시
           const markerPosition = new kakao.maps.LatLng(place.y, place.x);
           const marker = new kakao.maps.Marker({
             position: markerPosition,
@@ -68,56 +177,58 @@ export function KakaoMap() {
           });
           newMarkers.push(marker);
 
-          // InfoWindow 생성
+          const infoWindowContent = createInfoWindowContent(
+            "searchResult",
+            place,
+          );
+          const infoWindowClose = true;
+
           const infoWindow = new kakao.maps.InfoWindow({
-            content: `
-              <div style="padding:10px; white-space: nowrap">
-              <a href="${place.place_url}" target="_blank" >
-              <b style="font-size:16px">${place.place_name}</b>
-                <br/>
-                <b style="font-size:12px">${place.address_name}</b>
-               </a>
-              </div>
-            `,
+            content: infoWindowContent,
+            removable: infoWindowClose,
           });
           newInfoWindows.push(infoWindow);
 
-          // 마커 클릭 이벤트 등록
           kakao.maps.event.addListener(marker, "click", () => {
-            newInfoWindows.forEach((iw) => iw.close()); // 모든 InfoWindow 닫기
-            infoWindow.open(map, marker); // 현재 마커 InfoWindow 열기
+            newInfoWindows.forEach((iw) => iw.close());
+            infoWindow.open(map, marker);
           });
 
-          // 결과 범위 확장
           bounds.extend(markerPosition);
         });
 
         setMarkers(newMarkers);
         setInfoWindows(newInfoWindows);
-        setPlaces(data); // 검색 결과 저장
-        map.setBounds(bounds); // 지도 범위 확장
+        setPlaces(data);
+        map.setBounds(bounds);
+        setKeyWord(searchKeyword);
+        setSearchOpen(true);
       } else {
         alert("검색결과가 없습니다.");
       }
     });
   };
 
-  const handleEnterKey = (e) => {
-    if (e.key === "Enter") {
-      handleClickButton();
-    }
+  const handlePlaceClick = (place, index) => {
+    const targetPosition = new kakao.maps.LatLng(
+      place.lat || place.y,
+      place.lng || place.x,
+    );
+
+    map.setCenter(targetPosition);
+    map.setLevel(3, { anchor: targetPosition });
+
+    infoWindows.forEach((iw) => iw.close());
+    infoWindows[index].open(map, markers[index]);
   };
 
-  const handlePlaceClick = (place, index) => {
-    const targetPosition = new kakao.maps.LatLng(place.y, place.x);
-
-    // 지도 중심 이동 및 줌 설정
-    map.setCenter(targetPosition);
-    map.setLevel(3, { anchor: new kakao.maps.LatLng(place.y, place.x) }); // 줌 레벨 설정 (1: 가장 확대, 숫자가 클수록 축소)
-
-    // InfoWindow 열기
-    infoWindows.forEach((iw) => iw.close()); // 모든 InfoWindow 닫기
-    infoWindows[index].open(map, markers[index]); // 해당 마커 InfoWindow 열기
+  const handleOpenList = () => {
+    if (searchOpen) {
+      setSearchOpen(false);
+      setKeyWord("");
+    } else {
+      setSearchOpen(true);
+    }
   };
 
   return (
@@ -140,75 +251,111 @@ export function KakaoMap() {
         boxShadow="md"
       ></Box>
 
-      {/* 검색 및 목록 패널 */}
-      <Stack
-        position="absolute" // 지도 위에 패널을 올리기 위해 절대 위치 지정
-        top="10px"
-        right="10px"
-        w="30%" // 패널의 너비 설정
-        maxH="90%" // 패널 높이 제한
-        bgColor="white"
-        borderRadius="md"
-        boxShadow="lg"
-        p={4}
-        zIndex="2" // 패널이 지도보다 위에 표시되도록 설정
-      >
-        {/* 검색 필드 */}
-        <Field>
-          <Group>
-            <Input
-              variant="subtle"
-              type="text"
-              placeholder="검색어를 입력하세요"
-              h="38px"
-              value={keyWord}
-              onChange={(e) => setKeyWord(e.target.value)}
-              onKeyDown={handleEnterKey}
-            />
-            <IconButton
-              aria-label="Search database"
-              onClick={handleClickButton}
+      {isOpen ? (
+        <Box position="absolute" top="10px" right="10px" zIndex="2">
+          <Flex>
+            <Button top="15px" bg={"red.500"} onClick={() => setIsOpen(false)}>
+              <IoIosArrowForward />
+            </Button>
+            {/* 검색 및 목록 패널 */}
+            <Stack
+              w="470px" // 패널의 너비 설정
+              maxH="90%" // 패널 높이 제한
+              bgColor="rgba(255, 255, 255, 0.6)" // 투명도 적용
+              borderRadius="md"
+              boxShadow="lg"
+              p={4}
             >
-              <LuSearch />
-            </IconButton>
-          </Group>
-        </Field>
+              {/* 검색 필드 */}
+              <Field>
+                <Group>
+                  <Button
+                    variant="subtle"
+                    colorPalette={"blue"}
+                    value={"민물 낚시"}
+                    onClick={(e) => handleClickButton(e.target.value)}
+                  >
+                    <GiRiver />
+                    전국 민물 낚시
+                  </Button>
+                  <Button
+                    variant="subtle"
+                    colorPalette={"blue"}
+                    value={"배 낚시"}
+                    onClick={(e) => handleClickButton(e.target.value)}
+                  >
+                    <FaShip />
+                    전국 배 낚시
+                  </Button>
+                  <Button
+                    variant="subtle"
+                    colorPalette={"red"}
+                    onClick={handleShareFishingAddress}
+                  >
+                    <FaShareAlt />
+                    공유 낚시터
+                  </Button>
+                </Group>
+              </Field>
 
-        {/* 검색 결과 목록 */}
-        <Box
-          bgColor="gray.100"
-          w="100%"
-          h="calc(100% - 60px)" // 검색 필드 높이를 제외한 공간 채우기
-          overflowY="scroll"
-          borderRadius="md"
-          p={2}
-        >
-          <VStack spacing={2} align="stretch">
-            {places.map((place, index) => (
-              <Box
-                key={index}
-                p={4}
-                bgColor="rgba(255, 255, 255, 0.2)" // 개별 항목의 배경 투명도 설정
-                borderRadius="md"
-                boxShadow="sm"
-                cursor="pointer"
-                _hover={{ bgColor: "gray.200" }}
-                onClick={() => handlePlaceClick(place, index)}
-              >
-                <Text fontSize="lg" fontWeight="bold">
-                  {place.place_name}
-                </Text>
-                <Text fontSize="sm">{place.address_name}</Text>
-                {place.phone && (
-                  <Text fontSize="sm" color="gray.600">
-                    전화번호: {place.phone}
-                  </Text>
-                )}
-              </Box>
-            ))}
-          </VStack>
+              {/* 검색 결과 목록 */}
+              {searchOpen && keyWord && (
+                <Box
+                  bgColor="rgba(255, 255, 255, 0.4)" // 검색 결과 목록 배경 투명도 설정
+                  w="100%"
+                  maxH="450px" /* 최대 높이 설정 */
+                  overflowY="auto"
+                  borderRadius="md"
+                  p={2}
+                >
+                  <VStack spacing={2} align="stretch">
+                    {places.map((place, index) => (
+                      <Box
+                        key={index}
+                        p={4}
+                        bgColor="rgba(255, 255, 255, 0.5)" // 개별 항목의 배경 투명도 설정
+                        borderRadius="md"
+                        boxShadow="sm"
+                        cursor="pointer"
+                        _hover={{ bgColor: "rgba(240, 240, 240, 0.9)" }} // hover 시 조금 더 진하게
+                        onClick={() => handlePlaceClick(place, index)}
+                      >
+                        <Text fontSize="lg" fontWeight="bold">
+                          {place.place_name || place.number + "번 게시글"}
+                        </Text>
+                        <Text fontSize="sm">
+                          {place.address_name || place.name}
+                        </Text>
+                        {place.phone && (
+                          <Text fontSize="sm" color="gray.600">
+                            전화번호: {place.phone}
+                          </Text>
+                        )}
+                      </Box>
+                    ))}
+                  </VStack>
+                </Box>
+              )}
+
+              {keyWord && (
+                <IconButton w={"100%"} onClick={handleOpenList} h={"30px"}>
+                  {searchOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
+                </IconButton>
+              )}
+            </Stack>
+          </Flex>
         </Box>
-      </Stack>
+      ) : (
+        <Button
+          position="absolute"
+          top="10px"
+          right="10px"
+          zIndex="2"
+          onClick={() => setIsOpen(true)}
+        >
+          <FaList />
+        </Button>
+      )}
     </HStack>
   );
 }

@@ -80,6 +80,7 @@ export function Navbar() {
         fontSize={"40px"}
         h={"100px"}
         w={"100%"}
+        _hover={{ cursor: "pointer" }}
         onClick={() => navigate("/")}
       >
         <Image src={mainTitle} />
@@ -97,7 +98,7 @@ export function Navbar() {
             <TextItem>공지사항</TextItem>
           </NavItem>
           <NavItem onClick={() => navigate("/board/map")}>
-            <TextItem>낚시터찾기</TextItem>
+            <TextItem>낚시터 찾기</TextItem>
           </NavItem>
           <NavItem onClick={() => navigate("/board/list")}>
             <TextItem>커뮤니티</TextItem>

@@ -309,4 +309,7 @@ public class BoardService {
     }
 
 
+    public List<FishingAddress> selectFishingAddress() {
+        return mapper.selectFishAddress();
+    }
 }
