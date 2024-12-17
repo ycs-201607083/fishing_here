@@ -7,10 +7,12 @@ import { Button } from "../ui/button.jsx";
 export function QuesCommentInput({ quesId, onSaveClick }) {
   const { isAuthenticated } = useContext(AuthenticationContext);
   const [comment, setComment] = useState("");
+  const [secret, setSecret] = useState(false);
 
   const handleSaveClick = () => {
-    onSaveClick(comment);
+    onSaveClick(comment, secret);
     setComment("");
+    setSecret(false);
   };
 
   return (
@@ -28,7 +30,9 @@ export function QuesCommentInput({ quesId, onSaveClick }) {
         onChange={(e) => setComment(e.target.value)}
       />
       <Flex>
-        <Checkbox>비밀글</Checkbox>
+        <Checkbox onCheckedChange={(e) => setSecret(e.checked)}>
+          비밀글
+        </Checkbox>
         <Spacer />
         <Button onClick={handleSaveClick}>댓글쓰기</Button>
       </Flex>
