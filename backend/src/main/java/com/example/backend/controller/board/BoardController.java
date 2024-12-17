@@ -2,6 +2,7 @@ package com.example.backend.controller.board;
 
 import com.example.backend.dto.board.Announcement;
 import com.example.backend.dto.board.Board;
+import com.example.backend.dto.board.FishingAddress;
 import com.example.backend.dto.board.KakaoMapAddress;
 import com.example.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,11 @@ public class BoardController {
     public List<Announcement> boardMain() {
         return service.mainBanner();
 //        return null;
+    }
+
+    @GetMapping("fishingAddress")
+    public List<FishingAddress> fishingAddress() {
+        return service.selectFishingAddress();
     }
 
     @GetMapping("announcement")

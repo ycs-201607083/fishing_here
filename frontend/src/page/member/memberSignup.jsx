@@ -7,6 +7,17 @@ import axios from "axios";
 import { toaster } from "../../components/ui/toaster.jsx";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import { MyHeading } from "../../components/root/MyHeading.jsx";
+import { useNavigate } from "react-router-dom";
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog";
 
 export function MemberSignup() {
   //데이터 입력
@@ -19,6 +30,7 @@ export function MemberSignup() {
   const [birth, setBirth] = useState("");
   const [post, setPost] = useState("");
   const [address, setAddress] = useState("");
+  const navigate = useNavigate();
 
   //유효성 체크 & 오류메시지
   const [idCheck, setIdCheck] = useState(false);
@@ -26,6 +38,10 @@ export function MemberSignup() {
   const [emailError, setEmailError] = useState(false);
   const [pwMessage, setPwMessage] = useState("");
   const [pwError, setPwError] = useState(false);
+  const [phoneMessage, setPhoneMessage] = useState("");
+  const [phoneError, setPhoneError] = useState(false);
+  const [birthMessage, setBirthMessage] = useState("");
+  const [birthError, setBirthError] = useState(false);
 
   //우편번호api
   const [isOpen, setIsOpen] = useState(false);
@@ -42,10 +58,11 @@ export function MemberSignup() {
         post,
         address,
       })
-      .then((res) => {
+      .then(() => {
         console.log("잘됨");
+        navigate("/");
       })
-      .catch((e) => {
+      .catch(() => {
         console.log("안됨");
       });
   }
@@ -96,18 +113,40 @@ export function MemberSignup() {
   };
 
   //전화번호 정규식
-  function regPhoneNumber(e) {
+  const phoneCheck = (e) => {
     const result = e.target.value
       .replace(/[^0-9.]/g, "")
       .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
       .replace(/(-{1,2})$/g, "");
     setPhone(result);
-  }
+
+    const regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+
+    if (!regPhone.test(result)) {
+      setPhoneMessage("올바르지 않은 형식");
+      setPhoneError(false);
+    } else {
+      setPhoneMessage("");
+      setPhoneError(true);
+    }
+  };
+
+  //생년월일 정규식
+  const handleBirthCheck = (e) => {
+    const value = e.target.value;
+    const regBirth = /^([0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1,2][0-9]|3[0,1]))$/;
+    setBirth(value);
+
+    if (!regBirth.test(value)) {
+      setBirthMessage("올바르지 않은 형식");
+      setBirthError(false);
+    } else {
+      setBirthMessage("");
+      setBirthError(true);
+    }
+  };
 
   // api
-  const handleApi = () => {
-    setIsOpen(true);
-  };
   const handleComplete = (e) => {
     const { address, zonecode } = e;
     setPost(zonecode);
@@ -119,9 +158,6 @@ export function MemberSignup() {
     } else if (e === "COMPLETE_CLOSE") {
       setIsOpen(false);
     }
-  };
-  const handleButtonClose = () => {
-    setIsOpen(false);
   };
 
   let disabled = true;
@@ -151,7 +187,12 @@ export function MemberSignup() {
           </Group>
         </Field>
         <Field label={"이메일"}>
-          <Input value={email} onChange={handleEmailChange} variant="subtle" />
+          <Input
+            value={email}
+            onChange={handleEmailChange}
+            variant="subtle"
+            placeholder={"예) 12345@gmail.com"}
+          />
           <Span style={{ color: emailError ? "green" : "red" }}>
             {emailMessage}
           </Span>
@@ -171,9 +212,7 @@ export function MemberSignup() {
           />
           <Span style={{ color: pwError ? "green" : "red" }}>{pwMessage}</Span>
         </Field>
-        <Field label={"전화번호"}>
-          <Input value={phone} onChange={regPhoneNumber} variant="subtle" />{" "}
-        </Field>
+
         <Field label={"이름"}>
           <Input
             value={name}
@@ -181,12 +220,29 @@ export function MemberSignup() {
             variant="subtle"
           />
         </Field>
+
+        <Field label={"전화번호"}>
+          <Input
+            value={phone}
+            onChange={phoneCheck}
+            variant="subtle"
+            placeholder={" - 를 제외하고 입력하세요"}
+          />
+          <Span style={{ color: phoneError ? "green" : "red" }}>
+            {phoneMessage}
+          </Span>
+        </Field>
+
         <Field label={"생년월일"}>
           <Input
             value={birth}
-            onChange={(e) => setBirth(e.target.value)}
+            onChange={handleBirthCheck}
             variant="subtle"
+            placeholder={"예) 991230"}
           />
+          <Span style={{ color: birthError ? "green" : "red" }}>
+            {birthMessage}
+          </Span>
         </Field>
         <Box>
           <Field label={"우편번호"}>
@@ -197,7 +253,36 @@ export function MemberSignup() {
                 onChange={(e) => setPost(e.target.value)}
                 variant="subtle"
               />
-              <Button onClick={handleApi}>우편번호 찾기</Button>
+              <DialogRoot>
+                <DialogTrigger asChild>
+                  <Button onClick={() => setIsOpen(true)}>우편번호 찾기</Button>
+                </DialogTrigger>
+                {isOpen && (
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>우편번호 검색</DialogTitle>
+                    </DialogHeader>
+                    <DialogBody pb="4">
+                      <Field mt="5">
+                        <DaumPostcodeEmbed
+                          onComplete={handleComplete}
+                          onClose={handleClose}
+                        />
+                      </Field>
+                    </DialogBody>
+                    <DialogFooter>
+                      <DialogActionTrigger asChild>
+                        <Button
+                          variant="outline"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          닫기
+                        </Button>
+                      </DialogActionTrigger>
+                    </DialogFooter>
+                  </DialogContent>
+                )}
+              </DialogRoot>
             </Group>
           </Field>
           <Field label={"상세주소"}>
@@ -208,18 +293,6 @@ export function MemberSignup() {
               variant="subtle"
             />
           </Field>
-
-          {isOpen && (
-            <Field mt="5">
-              <DaumPostcodeEmbed
-                onComplete={handleComplete}
-                onClose={handleClose}
-              />
-              <Button onClick={handleButtonClose} w={{ md: "100%" }}>
-                닫기
-              </Button>
-            </Field>
-          )}
         </Box>
         <Box>
           <Button
