@@ -22,5 +22,16 @@ public class ManagerService {
     public List<Board> boardList() {
         return mapper.selectBoardAll();
     }
+
+
+    public boolean removeMember(String id) {
+        int cnt = mapper.selectRemoveId(id);
+        return cnt == 1;
+    }
+
+    public boolean removeBoard(int number) {
+        int cnt = mapper.selectRemoveNum(number);
+        return cnt == 1;
+    }
 }
 

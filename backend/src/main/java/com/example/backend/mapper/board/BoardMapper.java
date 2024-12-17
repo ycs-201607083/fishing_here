@@ -317,4 +317,6 @@ public interface BoardMapper {
                     AND member_id=#{name}
             """)
     int deleteLikeByBoardIdAndMemberId(Integer number, String name);
+
+
 }

@@ -263,4 +263,6 @@ public class BoardController {
                                     Authentication authentication) {
         return service.like(board, authentication);
     }
+
+
 }
