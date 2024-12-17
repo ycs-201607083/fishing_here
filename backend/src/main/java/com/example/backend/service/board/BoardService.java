@@ -265,6 +265,15 @@ public class BoardService {
         return cnt == 1;
     }
 
+    public Question getQuesView(int id) {
+        Question question = mapper.selectByQuesId(id);
+        List<String> fileNameList = mapper.selectFilesByQuesId(id);
+        List<QuesFile> fileSrcList = fileNameList.stream()
+                .map(name -> new QuesFile(name, imageSrcPrefix + "/Question/" + id + "/" + name)).toList();
+        question.setFileList(fileSrcList);
+        return question;
+    }
+
     public boolean validateAnn(Announcement announcement) {
         boolean title = !announcement.getTitle().trim().isEmpty();
         boolean content = !announcement.getContent().trim().isEmpty();
@@ -356,12 +365,46 @@ public class BoardService {
     }
 
 
-    public Question getQuesView(int id) {
-        Question question = mapper.selectByQuesId(id);
-        List<String> fileNameList = mapper.selectFilesByQuesId(id);
-        List<QuesFile> fileSrcList = fileNameList.stream()
-                .map(name -> new QuesFile(name, imageSrcPrefix + "/Question/" + id + "/" + name)).toList();
-        question.setFileList(fileSrcList);
-        return question;
+    public boolean updateQues(Question question, List<String> removeFiles, MultipartFile[] updateFiles) {
+
+        if (removeFiles != null) {
+            for (String file : removeFiles) {
+                String key = "prj241126/Question/" + question.getId() + "/" + file;
+                DeleteObjectRequest dor = DeleteObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build();
+                s3.deleteObject(dor);
+                mapper.deleteFileByQuesIdAndName(question.getId(), file);
+            }
+        }
+
+        if (updateFiles != null && updateFiles.length > 0) {
+            for (MultipartFile file : updateFiles) {
+                String key = "prj241126/Question/" + question.getId() + "/" + file.getOriginalFilename();
+                PutObjectRequest por = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build();
+
+                try {
+                    s3.putObject(por, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                //file 테이블에 파일명 입력
+                mapper.insertQuesFile(question.getId(), file.getOriginalFilename());
+            }
+        }
+
+        int cnt = mapper.updateQuestion(question);
+
+        return cnt == 1;
+    }
+
+    public boolean hasAccessQues(Integer id, Authentication auth) {
+        Question ann = mapper.selectByQuesId(id);
+        return ann.getWriter().equals(auth.getName());
     }
 }

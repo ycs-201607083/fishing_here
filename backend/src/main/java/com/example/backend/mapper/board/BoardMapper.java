@@ -321,4 +321,19 @@ public interface BoardMapper {
             WHERE id = #{id}
             """)
     List<String> selectFilesByQuesId(int id);
+
+    @Delete("""
+            DELETE FROM ques_file
+            WHERE id = #{id}
+            AND name=#{name}
+            """)
+    int deleteFileByQuesIdAndName(Integer id, String name);
+
+    @Update("""
+            UPDATE question
+            SET title=#{title},
+                content=#{content}
+            WHERE id =#{id}
+            """)
+    int updateQuestion(Question question);
 }

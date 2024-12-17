@@ -26,6 +26,7 @@ import { BoardEdit } from "./page/board/BoardEdit.jsx";
 import { BoardQuestion } from "./page/board/BoardQuestion.jsx";
 import { BoardQuestionAdd } from "./page/board/BoardQuestionAdd.jsx";
 import { BoardQuestionView } from "./page/board/BoardQuestionView.jsx";
+import { BoardQuestionEdit } from "./page/board/BoardQuestionEdit.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
@@ -124,6 +125,10 @@ const router = createBrowserRouter([
       {
         path: "board/questionView/:id",
         element: <BoardQuestionView />,
+      },
+      {
+        path: "board/questionEdit/:id",
+        element: <BoardQuestionEdit />,
       },
     ],
   },

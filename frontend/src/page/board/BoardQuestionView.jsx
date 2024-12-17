@@ -26,9 +26,9 @@ export function BoardQuestionView() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`/api/board/questionView/${id}`)
-      .then((res) => setQuestion(res.data));
+    axios.get(`/api/board/questionView/${id}`).then((res) => {
+      setQuestion(res.data);
+    });
   }, []);
 
   if (question === null) {
@@ -87,7 +87,7 @@ export function BoardQuestionView() {
           <Button
             colorPalette={"blue"}
             variant={"ghost"}
-            onClick={() => navigate(`/board/editAnn/${question.id}`)}
+            onClick={() => navigate(`/board/questionEdit/${question.id}`)}
           >
             <Text fontSize={"18px"} fontWeight={"bold"}>
               수정
