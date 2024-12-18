@@ -208,7 +208,7 @@ export function BoardList() {
           {/* 검색 버튼 */}
           <IconButton
             aria-label="Search database"
-            onClick={() => setSearchParams({ type, keyword, site })}
+            onClick={(e) => setSearchParams({ type, keyword, site })} // **
             style={{
               maxHeight: "50px",
               height: "30px",
