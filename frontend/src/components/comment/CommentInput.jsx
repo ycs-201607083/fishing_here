@@ -1,31 +1,32 @@
-import { Box, Group, Textarea } from "@chakra-ui/react";
+import { Box, Textarea } from "@chakra-ui/react";
 import { Button } from "../ui/button.jsx";
 import { useState } from "react";
-import axios from "axios";
 
-export function CommentInput(boardId, onSaveClick) {
+export function CommentInput({ boardId, onSaveClick }) {
   const [comment, setComment] = useState("");
 
-  function handleSaveClick() {
-    axios
-      .post("/api/comment/add", {
-        boardId: boardId,
-        comment: comment,
-      })
-      .then()
-      .catch()
-      .finally();
-  }
+  const handleSave = () => {
+    if (!boardId) {
+      console.error("Cannot save comment: boardId is undefined."); // 디버깅 추가
+      return;
+    }
+
+    if (comment.trim()) {
+      onSaveClick(comment);
+      setComment("");
+    } else {
+      alert("댓글을 입력하세요.");
+    }
+  };
 
   return (
     <Box>
-      <Group>
-        <Textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />
-        <Button onClick={() => onSaveClick(comment)}>댓글 쓰기</Button>
-      </Group>
+      <Textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="댓글을 입력하세요."
+      />
+      <Button onClick={handleSave}>댓글 쓰기</Button>
     </Box>
   );
 }

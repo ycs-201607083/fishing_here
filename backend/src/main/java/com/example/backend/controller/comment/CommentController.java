@@ -10,21 +10,39 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/comment")
+@RequiredArgsConstructor
 public class CommentController {
 
     final CommentService service;
 
-    @PostMapping("add")
+    @DeleteMapping("remove/{id}")
     @PreAuthorize("isAuthenticated()")
-    public void add(@RequestBody Comment comment, Authentication auth) {
-        service.add(comment, auth);
+    public void remove(@PathVariable Integer id, Authentication auth) {
+        if (service.hasAccess(id, auth)) {
+            service.remove(id);
+        }
     }
 
     @GetMapping("list/{boardId}")
     public List<Comment> list(@PathVariable Integer boardId) {
         return service.list(boardId);
     }
-}
 
+    @PostMapping("add")
+    @PreAuthorize("isAuthenticated()")
+    public void add(@RequestBody Comment comment, Authentication auth) {
+        if (comment.getBoardId() == null) {
+            throw new IllegalArgumentException("Board ID is required.");
+        }
+        service.add(comment, auth);
+    }
+
+    @PostMapping("edit/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public void edit(@PathVariable Integer id, @RequestBody Comment comment, Authentication auth) {
+        if (service.hasAccess(id, auth)) {
+            service.edit(id, comment.getComment());
+        }
+    }
+}

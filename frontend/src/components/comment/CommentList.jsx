@@ -1,14 +1,19 @@
 import { Box } from "@chakra-ui/react";
-import * as PropTypes from "prop-types";
 import { CommentItem } from "./CommentItem.jsx";
 
-CommentItem.propTypes = { comment: PropTypes.any };
+export function CommentList({ boardId, commentList, onDeleteClick }) {
+  if (commentList.length === 0) {
+    return <p>등록된 댓글이 없습니다.</p>; // 수정: 빈 목록 메시지 추가
+  }
 
-export function CommentList({ boardId, commentList }) {
   return (
     <Box>
       {commentList.map((comment) => (
-        <CommentItem key={comment.id} comment={comment} />
+        <CommentItem
+          key={comment.id}
+          comment={comment}
+          onDeleteClick={onDeleteClick} // 수정: 삭제 핸들러 전달
+        />
       ))}
     </Box>
   );
