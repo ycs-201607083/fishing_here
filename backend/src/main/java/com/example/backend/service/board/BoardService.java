@@ -33,9 +33,12 @@ public class BoardService {
     String bucketName;
 
     public Map<String, Object> getAllBoards(String search, String type, String site, Integer page) {
-        page = (page - 1) * 10;
-        return Map.of("list", mapper.findAllBoards(search, type, site, page),
-                "count", mapper.countAll());
+        int offset = (page - 1) * 10; // 페이지네이션을 위한 offset 계산
+        List<Board> boards = mapper.findAllBoards(search, type, site, offset); // 검색 결과 가져오기
+        Integer totalCount = mapper.countBoardsBySearch(search, type, site); // 검색된 게시글 개수 반환
+
+        // 검색 결과 리스트와 개수를 Map으로 반환
+        return Map.of("list", boards, "count", totalCount);
     }
 
     public List<Board> getTopBoardsByViews() {

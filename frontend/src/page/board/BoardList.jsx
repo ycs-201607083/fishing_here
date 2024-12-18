@@ -73,16 +73,17 @@ export function BoardList() {
 
   // page 번호
   const pageParam = searchPage.get("page") ? searchPage.get("page") : "1";
-  const page = Number(pageParam);
+  const page = Number(searchParams.get("page") || "1");
 
-  function handlePageChange(e) {
+  const handlePageChange = (e) => {
     console.log(e.page);
     const nextSearchParams = new URLSearchParams(searchPage);
     nextSearchParams.set("page", e.page);
     setSearchPage(nextSearchParams);
-  }
+  };
 
   const fetchBoardList = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get("/api/board/list", {
         params: Object.fromEntries(searchPage.entries()), //**URL의 쿼리스트링을 서버로 전달
