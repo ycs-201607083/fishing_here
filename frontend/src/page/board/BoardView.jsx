@@ -28,6 +28,7 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { useAddress } from "../../context/AddressContext.jsx";
+import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
 
 function ImageFileView({ files }) {
   const [selectedImage, setSelectedImage] = useState(null); // 클릭된 이미지 상태 관리
@@ -85,6 +86,8 @@ function ImageFileView({ files }) {
     </>
   );
 }
+
+CommentContainer.propTypes = {};
 
 export function BoardView() {
   const [board, setBoard] = useState(null);
@@ -254,6 +257,8 @@ export function BoardView() {
         )}
         <hr />
       </Stack>
+      <hr />
+      <CommentContainer boardId={board.id} />
     </Box>
   );
 }
