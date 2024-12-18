@@ -128,7 +128,6 @@ export function BoardList() {
     <Box
       style={{
         padding: "20px",
-        backgroundColor: "#e0f7fa", // 푸른 느낌
         borderRadius: "8px",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
       }}
@@ -143,7 +142,6 @@ export function BoardList() {
             padding: "5px",
             border: "1px solid #0288d1",
             borderRadius: "4px",
-            backgroundColor: "#e1f5fe",
           }}
         >
           <NativeSelectField
@@ -165,7 +163,6 @@ export function BoardList() {
             padding: "5px",
             border: "1px solid #0288d1",
             borderRadius: "4px",
-            backgroundColor: "#e1f5fe",
           }}
         >
           <NativeSelectField
@@ -205,7 +202,6 @@ export function BoardList() {
             maxHeight: "50px",
             height: "30px",
             padding: "5px",
-            backgroundColor: "#0288d1",
             color: "white",
             border: "none",
             borderRadius: "20px",
