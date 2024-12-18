@@ -44,9 +44,54 @@ export function QuesCommentContainer({ quesId, writer }) {
           description: message.text,
         });
       })
+      .catch(() => {
+        const message = data.message;
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+      })
       .finally(() => {
         setProcessing(false);
       });
+  }
+
+  function handleDeleteClick(id) {
+    setProcessing(true);
+    axios
+      .delete(`/api/comment/quesRemove/${id}`)
+      .then((res) => res.data.message)
+      .then((message) => {
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+      })
+      .catch(() => {
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+      })
+      .finally(() => setProcessing(false));
+  }
+
+  function handleEditClick(id, comment) {
+    console.log(id, comment);
+    setProcessing(true);
+    axios
+      .put("/api/comment/quesEdit", {
+        id,
+        comment,
+      })
+      .then((res) => res.data.message)
+      .then((message) => {
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+      })
+      .finally(() => setProcessing(false));
   }
 
   return (
@@ -54,7 +99,12 @@ export function QuesCommentContainer({ quesId, writer }) {
       <Heading>댓글</Heading>
       <Stack>
         <QuesCommentInput quesId={quesId} onSaveClick={handleSaveClick} />
-        <QuesCommentList commentList={commentList} writer={writer} />
+        <QuesCommentList
+          commentList={commentList}
+          writer={writer}
+          onDeleteClick={handleDeleteClick}
+          onEditClick={handleEditClick}
+        />
       </Stack>
     </Box>
   );

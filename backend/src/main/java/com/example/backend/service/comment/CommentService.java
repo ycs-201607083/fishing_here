@@ -25,4 +25,20 @@ public class CommentService {
     public List<QuestionComment> quesCommList(Integer quesId) {
         return mapper.selectByQuesId(quesId);
     }
+
+    public boolean hasQuesCommAccess(Integer id, Authentication auth) {
+        QuestionComment comment = mapper.selectByQuesCommentId(id);
+
+        return comment.getWriter().equals(auth.getName());
+    }
+
+    public boolean updateQuesComment(QuestionComment comment) {
+        int cnt = mapper.updateQuesComment(comment);
+        return cnt == 1;
+    }
+
+    public boolean removeQuesComment(Integer comment) {
+        int cnt = mapper.deleteQuesComment(comment);
+        return true;
+    }
 }
