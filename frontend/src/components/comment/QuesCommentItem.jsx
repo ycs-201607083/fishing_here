@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 import { Box, Card, Flex, Spacer, Text, Textarea } from "@chakra-ui/react";
 import { Button } from "../ui/button.jsx";
-import * as PropTypes from "prop-types";
+
 import {
   DialogActionTrigger,
   DialogBody,
@@ -57,8 +57,6 @@ function DeleteButton({ onClick }) {
     </DialogRoot>
   );
 }
-
-DeleteButton.propTypes = { onClick: PropTypes.func };
 
 export function QuesCommentItem({
   comment,
