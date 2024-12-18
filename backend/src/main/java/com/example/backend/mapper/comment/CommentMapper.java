@@ -1,6 +1,7 @@
 package com.example.backend.mapper.comment;
 
 import com.example.backend.dto.comment.QuestionComment;
+import com.example.backend.dto.comment.QuestionReComment;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -41,4 +42,19 @@ public interface CommentMapper {
             WHERE id = #{id}
             """)
     int deleteQuesComment(Integer id);
+
+    @Insert("""
+            INSERT INTO quesReComment
+            (ques_id,parent_id,writer,comment,secret)
+            VALUES (#{quesId},#{parentId},#{writer},#{comment},#{secret})
+            """)
+    int insertReQues(QuestionReComment comment);
+
+    @Select("""
+            SELECT *
+            FROM quesReComment
+            WHERE ques_id=#{ques_id}
+            ORDER BY id;
+            """)
+    List<QuestionReComment> selectByQuesIdReComment(Integer quesId);
 }

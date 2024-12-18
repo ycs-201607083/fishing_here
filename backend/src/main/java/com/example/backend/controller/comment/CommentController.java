@@ -1,6 +1,7 @@
 package com.example.backend.controller.comment;
 
 import com.example.backend.dto.comment.QuestionComment;
+import com.example.backend.dto.comment.QuestionReComment;
 import com.example.backend.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,20 @@ import java.util.Map;
 public class CommentController {
 
     final CommentService service;
+
+    @PostMapping("reQuesAdd")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> reQuesAdd(@RequestBody QuestionReComment comment, Authentication auth) {
+
+        service.reQuesAdd(comment, auth);
+        return ResponseEntity.ok(Map.of("message", Map.of("type", "success", "text", "댓글이 등록되었습니다.")));
+    }
+
+    @GetMapping("quesReCommentList/{quesId}")
+    public List<QuestionReComment> questionReCommentList(@PathVariable Integer quesId) {
+        return service.quesReCommList(quesId);
+    }
+
 
     @PostMapping("quesAdd")
     @PreAuthorize("isAuthenticated()")

@@ -3,13 +3,11 @@ import { Box, Heading, Stack } from "@chakra-ui/react";
 import { QuesCommentInput } from "./QuesCommentInput.jsx";
 import axios from "axios";
 import { toaster } from "../ui/toaster.jsx";
-import * as PropTypes from "prop-types";
 import { QuesCommentList } from "./QuesCommentList.jsx";
-
-QuesCommentList.propTypes = { commentList: PropTypes.arrayOf(PropTypes.any) };
 
 export function QuesCommentContainer({ quesId, writer }) {
   const [commentList, setCommentList] = useState([]);
+  const [reCommentList, setReCommentList] = useState([]);
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
@@ -23,6 +21,21 @@ export function QuesCommentContainer({ quesId, writer }) {
         })
         .catch((e) => {
           console.log(e, "안됨");
+        });
+    }
+  }, [processing]);
+
+  useEffect(() => {
+    if (!processing) {
+      axios
+        .get(`/api/comment/quesReCommentList/${quesId}`)
+        .then((res) => res.data)
+        .then((data) => {
+          setReCommentList(data);
+          console.log(data, "자식댓글됨");
+        })
+        .catch((e) => {
+          console.log(e, "자식댓글안됨");
         });
     }
   }, [processing]);
@@ -76,6 +89,22 @@ export function QuesCommentContainer({ quesId, writer }) {
       .finally(() => setProcessing(false));
   }
 
+  function handleReCommentClick(parentId, reComment, secret) {
+    setProcessing(true);
+    axios
+      .post(`/api/comment/reQuesAdd`, {
+        quesId: quesId,
+        parentId: parentId,
+        comment: reComment,
+        secret: secret,
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        console.log(data);
+      })
+      .finally(() => setProcessing(false));
+  }
+
   function handleEditClick(id, comment) {
     console.log(id, comment);
     setProcessing(true);
@@ -101,9 +130,11 @@ export function QuesCommentContainer({ quesId, writer }) {
         <QuesCommentInput quesId={quesId} onSaveClick={handleSaveClick} />
         <QuesCommentList
           commentList={commentList}
+          reCommentList={reCommentList}
           writer={writer}
           onDeleteClick={handleDeleteClick}
           onEditClick={handleEditClick}
+          onReComment={handleReCommentClick} // 답글 이벤트 전달
         />
       </Stack>
     </Box>
