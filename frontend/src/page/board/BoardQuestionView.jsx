@@ -131,7 +131,7 @@ export function BoardQuestionView() {
           </DialogRoot>
         )}
       </Flex>
-      <QuesCommentContainer quesId={question.id} />
+      <QuesCommentContainer quesId={question.id} writer={question.writer} />
     </Box>
   );
 }

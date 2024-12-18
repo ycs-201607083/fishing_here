@@ -30,7 +30,10 @@ export function QuesCommentInput({ quesId, onSaveClick }) {
         onChange={(e) => setComment(e.target.value)}
       />
       <Flex>
-        <Checkbox onCheckedChange={(e) => setSecret(e.checked)}>
+        <Checkbox
+          checked={secret}
+          onChange={(e) => setSecret(e.target.checked)}
+        >
           비밀글
         </Checkbox>
         <Spacer />
