@@ -1,21 +1,31 @@
 import { Box, Stack } from "@chakra-ui/react";
 import { CommentInput } from "./CommentInput.jsx";
 import { CommentList } from "./CommentList.jsx";
+import axios from "axios";
+import { useEffect } from "react";
 
 export function CommentContainer({ boardId }) {
   const [commentList, setCommentList] = useState([]);
+  const [processing, setProcessing] = useState(false);
   useEffect(() => {
-    axios
-      .get(`/api/comment/list/${boardId}`)
-      .then((res) => res.data)
-      .then((data) => setCommentList(data));
-  }, []);
+    if (!processing) {
+      axios
+        .get(`/api/comment/list/${boardId}`)
+        .then((res) => res.data)
+        .then((data) => setCommentList(data));
+    }
+  }, [processing]);
 
   function handleSaveClick(comment) {
-    axios.post("/api/comment/add", {
-      boardId: boardId,
-      comment: comment,
-    });
+    setProcessing(true);
+    axios
+      .post("/api/comment/add", {
+        boardId: boardId,
+        comment: comment,
+      })
+      .finally(() => {
+        setProcessing(false);
+      });
   }
 
   return (
