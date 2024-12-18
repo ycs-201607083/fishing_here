@@ -258,7 +258,7 @@ export function BoardView() {
         <hr />
       </Stack>
       <hr />
-      <CommentContainer boardId={board.id} />
+      <CommentContainer boardId={board.number} />
     </Box>
   );
 }
