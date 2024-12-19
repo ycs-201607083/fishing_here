@@ -3,6 +3,8 @@ import { Button } from "../ui/button.jsx";
 import { QuesDeleteButton } from "./QuesDeleteButton.jsx";
 import React, { useContext, useState } from "react";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
+import { RiArrowDropUpFill } from "react-icons/ri";
+import { FaLock } from "react-icons/fa6";
 
 export function QuesReCommentItem({
   reComment,
@@ -24,7 +26,7 @@ export function QuesReCommentItem({
     <Box>
       <Card.Root>
         <Card.Header
-          bgColor={"gray.100"}
+          bgColor={"gray.300"}
           borderRadius={"6px 6px 0px 0px"}
           borderBottom="1px dashed #000"
           pt={2}
@@ -32,7 +34,9 @@ export function QuesReCommentItem({
         >
           <Card.Title>
             <Flex>
-              <Box>{reComment.writer}</Box>
+              {reComment.secret ? <FaLock /> : ""}
+              <RiArrowDropUpFill size={30} />
+              <Box pl={3}>{reComment.writer}</Box>
               <Spacer />
               <Box fontSize={"12px"}>{reComment.inserted}</Box>
             </Flex>

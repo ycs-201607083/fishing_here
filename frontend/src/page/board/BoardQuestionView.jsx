@@ -64,7 +64,7 @@ export function BoardQuestionView() {
   return (
     <Box mx={"auto"} w={"60%"}>
       <Heading fontSize={"30px"} pb={5} color={"blue.800"}>
-        공지사항
+        Q&A
       </Heading>
       <hr />
       <Text fontWeight={"bold"} fontSize={"20px"} pt={10} pb={5}>
@@ -77,7 +77,9 @@ export function BoardQuestionView() {
       </Flex>
       <hr />
       <ImageFileView files={question.fileList || []} />
-      <Text h="200px">{question.content}</Text>
+      <Text pt={10} pb={10}>
+        {question.content}
+      </Text>
       <Flex>
         <Button onClick={handleClickPrev}>
           <FaArrowLeft /> 목록

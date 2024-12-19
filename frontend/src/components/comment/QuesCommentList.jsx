@@ -1,7 +1,6 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { QuesCommentItem } from "./QuesCommentItem.jsx";
 import { QuesReCommentItem } from "./QuesReCommentItem.jsx";
-import { RiArrowDropUpFill } from "react-icons/ri";
 
 export function QuesCommentList({
   quesId,
@@ -29,10 +28,6 @@ export function QuesCommentList({
             .filter((reComment) => reComment.parentId === comment.id)
             .map((reComment) => (
               <Box key={reComment.id} pl={6} pt={2}>
-                <Flex>
-                  <RiArrowDropUpFill size={30} />
-                </Flex>
-
                 <QuesReCommentItem
                   quesId={quesId}
                   reComment={reComment}

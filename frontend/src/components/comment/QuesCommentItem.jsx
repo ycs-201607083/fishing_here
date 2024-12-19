@@ -4,6 +4,7 @@ import { Box, Card, Flex, Spacer, Textarea } from "@chakra-ui/react";
 import { Button } from "../ui/button.jsx";
 import { QuesDeleteButton } from "./QuesDeleteButton.jsx";
 import { QuesReCommentInput } from "./QuesReCommentInput.jsx";
+import { FaLock } from "react-icons/fa6";
 
 export function QuesCommentItem({
   quesId,
@@ -36,7 +37,8 @@ export function QuesCommentItem({
         >
           <Card.Title>
             <Flex>
-              <Box>{comment.writer}</Box>
+              {comment.secret ? <FaLock /> : ""}
+              <Box pl={3}>{comment.writer}</Box>
               <Spacer />
               <Box fontSize={"12px"}>{comment.inserted}</Box>
             </Flex>
