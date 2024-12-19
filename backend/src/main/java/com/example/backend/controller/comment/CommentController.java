@@ -1,5 +1,6 @@
 package com.example.backend.controller.comment;
 
+import com.example.backend.dto.chart.ChartData;
 import com.example.backend.dto.comment.Comment;
 import com.example.backend.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,15 @@ public class CommentController {
             throw new IllegalArgumentException("Board ID is required.");
         }
         service.add(comment, auth);
+
+        // 차트 데이터도 저장
+        if (comment.getChartLabel() != null && comment.getChartValue() != null) {
+            ChartData chartData = new ChartData();
+            chartData.setBoardId(comment.getBoardId());
+            chartData.setLabel(comment.getChartLabel());
+            chartData.setValue(comment.getChartValue());
+            service.addchart(chartData);
+        }
     }
 
     @PostMapping("edit/{id}")
@@ -45,4 +55,6 @@ public class CommentController {
             service.edit(id, comment.getComment());
         }
     }
+
+
 }
