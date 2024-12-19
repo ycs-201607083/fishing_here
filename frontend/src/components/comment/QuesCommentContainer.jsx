@@ -89,22 +89,6 @@ export function QuesCommentContainer({ quesId, writer }) {
       .finally(() => setProcessing(false));
   }
 
-  // function handleReCommentClick(parentId, reComment, secret) {
-  //   setProcessing(true);
-  //   axios
-  //     .post(`/api/comment/reQuesAdd`, {
-  //       quesId: quesId,
-  //       parentId: parentId,
-  //       comment: reComment,
-  //       secret: secret,
-  //     })
-  //     .then((res) => res.data)
-  //     .then((data) => {
-  //       console.log(data);
-  //     })
-  //     .finally(() => setProcessing(false));
-  // }
-
   function handleEditClick(id, comment) {
     console.log(id, comment);
     setProcessing(true);
@@ -135,7 +119,6 @@ export function QuesCommentContainer({ quesId, writer }) {
           contentWriter={writer}
           onDeleteClick={handleDeleteClick}
           onEditClick={handleEditClick}
-          // onReCommentAdd={handleReCommentClick} // 답글 이벤트 전달
         />
       </Stack>
     </Box>

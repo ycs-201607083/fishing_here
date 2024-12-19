@@ -1,15 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { QuesCommentItem } from "./QuesCommentItem.jsx";
-
-function QuesReCommentItem({
-  reComment,
-  contentWriter,
-  onDeleteClick,
-  onEditClick,
-  // onReCommentAdd,
-}) {
-  return null;
-}
+import { QuesReCommentItem } from "./QuesReCommentItem.jsx";
 
 export function QuesCommentList({
   quesId,
@@ -18,7 +9,6 @@ export function QuesCommentList({
   contentWriter,
   onDeleteClick,
   onEditClick,
-  // onReCommentAdd,
 }) {
   return (
     <Box>
@@ -30,7 +20,6 @@ export function QuesCommentList({
             contentWriter={contentWriter}
             onDeleteClick={onDeleteClick}
             onEditClick={onEditClick}
-            // onReCommentAdd={onReCommentAdd}
           />
           {reCommentList
             .filter((reComment) => reComment.parentId === comment.id)
