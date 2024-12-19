@@ -71,40 +71,78 @@ export function QuesCommentContainer({ quesId, writer }) {
 
   function handleDeleteClick(id, isChild) {
     setProcessing(true);
-    axios
-      .delete(`/api/comment/quesRemove/${id}`)
-      .then((res) => res.data.message)
-      .then((message) => {
-        toaster.create({
-          type: message.type,
-          description: message.text,
-        });
-      })
-      .catch(() => {
-        toaster.create({
-          type: message.type,
-          description: message.text,
-        });
-      })
-      .finally(() => setProcessing(false));
+    if (!isChild) {
+      axios
+        .delete(`/api/comment/quesRemove/${id}`)
+        .then((res) => res.data.message)
+        .then((message) => {
+          toaster.create({
+            type: message.type,
+            description: message.text,
+          });
+        })
+        .catch(() => {
+          toaster.create({
+            type: message.type,
+            description: message.text,
+          });
+        })
+        .finally(() => setProcessing(false));
+    } else {
+      axios
+        .delete(`/api/comment/reQuesRemove/${id}`)
+        .then((res) => res.data.message)
+        .then((message) => {
+          toaster.create({
+            type: message.type,
+            description: message.text,
+          });
+        })
+        .catch(() => {
+          toaster.create({
+            type: message.type,
+            description: message.text,
+          });
+        })
+        .finally(() => setProcessing(false));
+    }
   }
 
   function handleEditClick(id, comment, isChild) {
-    console.log(id, comment);
     setProcessing(true);
-    axios
-      .put("/api/comment/quesEdit", {
-        id,
-        comment,
-      })
-      .then((res) => res.data.message)
-      .then((message) => {
-        toaster.create({
-          type: message.type,
-          description: message.text,
-        });
-      })
-      .finally(() => setProcessing(false));
+    if (!isChild) {
+      axios
+        .put("/api/comment/quesEdit", {
+          id,
+          comment,
+        })
+        .then((res) => res.data.message)
+        .then((message) => {
+          toaster.create({
+            type: message.type,
+            description: message.text,
+          });
+        })
+        .finally(() => setProcessing(false));
+    } else {
+      console.log(comment);
+      axios
+        .put("/api/comment/reQuesEdit", {
+          id,
+          comment,
+        })
+        .then((res) => res.data.message)
+        .then((message) => {
+          toaster.create({
+            type: message.type,
+            description: message.text,
+          });
+        })
+        .catch((e) => {
+          console.log(e, "자식안됨");
+        })
+        .finally(() => setProcessing(false));
+    }
   }
 
   return (
