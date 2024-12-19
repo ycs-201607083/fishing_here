@@ -14,7 +14,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Checkbox } from "../ui/checkbox";
 
 function DeleteButton({ onClick }) {
   const [open, setOpen] = useState(false);
@@ -65,24 +64,13 @@ export function QuesCommentItem({
   onDeleteClick,
   onEditClick,
   onReComment,
-  isChild,
 }) {
   const { hasAccess } = useContext(AuthenticationContext);
   const [isEdit, setIsEdit] = useState(false);
-  const [reCommentOpen, setReCommentOpen] = useState(false); // 답글 작성 상태
   const [editComment, setEditComment] = useState(comment.comment);
-  const [reComment, setReComment] = useState(""); // 답글 내용
-  const [secret, setSecret] = useState(false);
 
   const canViewComment =
     !comment.secret || hasAccess(contentWriter) || hasAccess(comment.writer);
-
-  const handleReplyClick = () => {
-    onReComment(comment.id, reComment, secret); // 부모 컴포넌트로 답글 데이터 전달
-    setReComment(""); // 답글 입력창 초기화
-    setReCommentOpen(false); // 답글 창 닫기
-    setSecret(false);
-  };
 
   return (
     <Box pt={2}>
@@ -117,17 +105,6 @@ export function QuesCommentItem({
           )}
         </Card.Body>
         <Card.Footer justifyContent="flex-end" mt={-5}>
-          {!isChild && (
-            <Button
-              colorPalette={"green"}
-              variant={"ghost"}
-              fontWeight={"bold"}
-              size="xs"
-              onClick={() => setReCommentOpen(true)}
-            >
-              답글달기
-            </Button>
-          )}
           {hasAccess(comment.writer) &&
             (isEdit ? (
               <>
@@ -172,38 +149,6 @@ export function QuesCommentItem({
             ))}
         </Card.Footer>
       </Card.Root>
-      {/*대댓글 달기*/}
-      {reCommentOpen && (
-        <Box mt={4} pl={4} borderLeft="2px solid #ddd">
-          <Textarea
-            value={reComment}
-            onChange={(e) => setReComment(e.target.value)}
-            placeholder="답글을 입력하세요"
-            size="sm"
-          />
-          <Flex justifyContent="flex-end" mt={2}>
-            <Checkbox
-              checked={secret}
-              onChange={(e) => setSecret(e.target.checked)}
-            >
-              비밀글
-            </Checkbox>
-
-            <Button colorPalette={"blue"} size="xs" onClick={handleReplyClick}>
-              작성
-            </Button>
-            <Button
-              size="xs"
-              onClick={() => {
-                setReComment("");
-                setReCommentOpen(false);
-              }}
-            >
-              취소
-            </Button>
-          </Flex>
-        </Box>
-      )}
     </Box>
   );
 }

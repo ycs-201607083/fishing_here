@@ -131,7 +131,7 @@ export function QuesCommentContainer({ quesId, writer }) {
         <QuesCommentList
           commentList={commentList}
           reCommentList={reCommentList}
-          writer={writer}
+          contentWriter={writer}
           onDeleteClick={handleDeleteClick}
           onEditClick={handleEditClick}
           onReComment={handleReCommentClick} // 답글 이벤트 전달

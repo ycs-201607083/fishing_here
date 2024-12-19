@@ -1,10 +1,23 @@
 import { Box } from "@chakra-ui/react";
 import { QuesCommentItem } from "./QuesCommentItem.jsx";
+import * as PropTypes from "prop-types";
+
+function QuesReCommentItem({
+  reComment,
+  contentWriter,
+  onDeleteClick,
+  onEditClick,
+  onReComment,
+}) {
+  return null;
+}
+
+QuesReCommentItem.propTypes = { isChild: PropTypes.bool };
 
 export function QuesCommentList({
   commentList,
   reCommentList,
-  writer,
+  contentWriter,
   onDeleteClick,
   onEditClick,
   onReComment,
@@ -15,23 +28,21 @@ export function QuesCommentList({
         <Box key={comment.id}>
           <QuesCommentItem
             comment={comment}
-            contentWriter={writer}
+            contentWriter={contentWriter}
             onDeleteClick={onDeleteClick}
             onEditClick={onEditClick}
             onReComment={onReComment}
-            isChild={false}
           />
           {reCommentList
             .filter((reComment) => reComment.parentId === comment.id)
             .map((reComment) => (
               <Box key={reComment.id} pl={6}>
-                <QuesCommentItem
-                  comment={reComment}
-                  contentWriter={writer}
+                <QuesReCommentItem
+                  reComment={reComment}
+                  contentWriter={contentWriter}
                   onDeleteClick={onDeleteClick}
                   onEditClick={onEditClick}
                   onReComment={onReComment}
-                  isChild={true}
                 />
               </Box>
             ))}
