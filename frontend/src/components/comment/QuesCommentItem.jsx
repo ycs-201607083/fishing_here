@@ -63,7 +63,6 @@ export function QuesCommentItem({
   contentWriter /*본문 글쓴이*/,
   onDeleteClick,
   onEditClick,
-  onReComment,
 }) {
   const { hasAccess } = useContext(AuthenticationContext);
   const [isEdit, setIsEdit] = useState(false);
