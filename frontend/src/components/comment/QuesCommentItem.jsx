@@ -23,7 +23,7 @@ export function QuesCommentItem({
   const [reCommentOpen, setReCommentOpen] = useState(false);
 
   const canViewComment =
-    !comment.secret || hasAccess(contentWriter) || hasAccess(comment.writer);
+    !comment.secret || hasAccess(comment.writer) || hasAccess(contentWriter);
 
   return (
     <Box pt={2}>
@@ -60,61 +60,64 @@ export function QuesCommentItem({
           )}
         </Card.Body>
         <Card.Footer justifyContent="flex-end" mt={-5}>
-          {isAuthenticated &&
-            (isEdit ? (
-              <>
+          {isEdit ? (
+            <>
+              <Button
+                colorPalette="blue"
+                variant="ghost"
+                fontWeight="bold"
+                size="xs"
+                onClick={() => {
+                  onEditClick(comment.id, editComment, isChild);
+                  setIsEdit(false);
+                }}
+              >
+                저장
+              </Button>
+              <Button
+                colorPalette="red"
+                variant="ghost"
+                fontWeight="bold"
+                size="xs"
+                onClick={() => {
+                  setIsEdit(false);
+                  setEditComment(comment.comment);
+                }}
+              >
+                취소
+              </Button>
+            </>
+          ) : (
+            <>
+              {isAuthenticated && (
                 <Button
-                  colorPalette="blue"
+                  colorPalette="green"
                   variant="ghost"
                   fontWeight="bold"
                   size="xs"
-                  onClick={() => {
-                    onEditClick(comment.id, editComment, isChild);
-                    setIsEdit(false);
-                  }}
+                  onClick={() => setReCommentOpen(true)}
                 >
-                  저장
+                  답글달기
                 </Button>
-                <Button
-                  colorPalette="red"
-                  variant="ghost"
-                  fontWeight="bold"
-                  size="xs"
-                  onClick={() => {
-                    setIsEdit(false);
-                    setEditComment(comment.comment);
-                  }}
-                >
-                  취소
-                </Button>
-              </>
-            ) : (
-              <>
-                {isAuthenticated && (
+              )}
+              {hasAccess(comment.writer) && (
+                <>
                   <Button
-                    colorPalette="green"
+                    colorPalette="blue"
                     variant="ghost"
                     fontWeight="bold"
                     size="xs"
-                    onClick={() => setReCommentOpen(true)}
+                    onClick={() => setIsEdit(true)}
                   >
-                    답글달기
+                    수정
                   </Button>
-                )}
-                <Button
-                  colorPalette="blue"
-                  variant="ghost"
-                  fontWeight="bold"
-                  size="xs"
-                  onClick={() => setIsEdit(true)}
-                >
-                  수정
-                </Button>
-                <QuesDeleteButton
-                  onClick={() => onDeleteClick(comment.id, isChild)}
-                />
-              </>
-            ))}
+                  <QuesDeleteButton
+                    onClick={() => onDeleteClick(comment.id, isChild)}
+                  />
+                </>
+              )}
+            </>
+          )}
         </Card.Footer>
       </Card.Root>
 

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
-public interface CommentMapper {
+public interface QuestionCommentMapper {
     @Insert("""
             INSERT INTO questionComment
             (ques_id,writer,comment,secret)
@@ -77,4 +77,22 @@ public interface CommentMapper {
             WHERE id = #{id}
             """)
     int deleteReQuesComment(Integer id);
+
+    @Delete("""
+            DELETE FROM quesReComment
+            WHERE parent_id = #{id}
+            """)
+    int deleteChildComment(Integer id);
+
+    @Delete("""
+            DELETE FROM questionComment
+            WHERE ques_id=#{id}
+            """)
+    int deleteByQuesIdComments(int id);
+
+    @Delete("""
+            DELETE FROM quesReComment
+            WHERE ques_id=#{id}
+            """)
+    int deleteByQuesIdChildComments(int id);
 }

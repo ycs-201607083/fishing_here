@@ -19,8 +19,8 @@ export function QuesReCommentItem({
 
   const canViewComment =
     !reComment.secret ||
-    hasAccess(contentWriter) ||
-    hasAccess(reComment.writer);
+    hasAccess(reComment.writer) ||
+    hasAccess(contentWriter);
 
   return (
     <Box>

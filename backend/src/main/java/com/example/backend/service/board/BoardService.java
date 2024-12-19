@@ -2,6 +2,7 @@ package com.example.backend.service.board;
 
 import com.example.backend.dto.board.*;
 import com.example.backend.mapper.board.BoardMapper;
+import com.example.backend.mapper.comment.QuestionCommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class BoardService {
 
     final S3Client s3;
+    final QuestionCommentMapper questionCommentMapper;
     private final BoardMapper mapper;
     @Value("${image.src.prefix}")
     String imageSrcPrefix;
@@ -427,6 +429,9 @@ public class BoardService {
 
         //db 에서 지우기
         mapper.deleteFileByQuesId(id);
+        //댓글 대댓글 지우기
+        questionCommentMapper.deleteByQuesIdChildComments(id);
+        questionCommentMapper.deleteByQuesIdComments(id);
         //게시글 지우기
         int cnt = mapper.deleteByQuesId(id);
 

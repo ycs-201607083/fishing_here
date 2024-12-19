@@ -2,7 +2,7 @@ package com.example.backend.service.comment;
 
 import com.example.backend.dto.comment.QuestionComment;
 import com.example.backend.dto.comment.QuestionReComment;
-import com.example.backend.mapper.comment.CommentMapper;
+import com.example.backend.mapper.comment.QuestionCommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentService {
 
-    final CommentMapper mapper;
+    final QuestionCommentMapper mapper;
 
     public void quesAdd(QuestionComment comment, Authentication auth) {
         comment.setWriter(auth.getName());
@@ -39,6 +39,7 @@ public class CommentService {
     }
 
     public boolean removeQuesComment(Integer id) {
+        mapper.deleteChildComment(id);
         int cnt = mapper.deleteQuesComment(id);
         return cnt == 1;
     }
