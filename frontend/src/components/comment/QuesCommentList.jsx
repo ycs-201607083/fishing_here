@@ -28,7 +28,7 @@ export function QuesCommentList({
           {reCommentList
             .filter((reComment) => reComment.parentId === comment.id)
             .map((reComment) => (
-              <Box key={reComment.id} pl={6}>
+              <Box key={reComment.id} pl={6} pt={2}>
                 <Flex>
                   <RiArrowDropUpFill size={30} />
                 </Flex>
