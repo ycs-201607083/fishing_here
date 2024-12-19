@@ -1,6 +1,5 @@
 import { Box } from "@chakra-ui/react";
 import { QuesCommentItem } from "./QuesCommentItem.jsx";
-import * as PropTypes from "prop-types";
 
 function QuesReCommentItem({
   reComment,
