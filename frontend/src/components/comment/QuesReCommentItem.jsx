@@ -9,6 +9,7 @@ export function QuesReCommentItem({
   contentWriter,
   onDeleteClick,
   onEditClick,
+  isChild,
 }) {
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
   const [isEdit, setIsEdit] = useState(false);
@@ -62,7 +63,7 @@ export function QuesReCommentItem({
                   fontWeight="bold"
                   size="xs"
                   onClick={() => {
-                    onEditClick(reComment.id, editComment);
+                    onEditClick(reComment.id, editComment, isChild);
                     setIsEdit(false);
                   }}
                 >
@@ -92,7 +93,9 @@ export function QuesReCommentItem({
                 >
                   수정
                 </Button>
-                <QuesDeleteButton onClick={() => onDeleteClick(reComment.id)} />
+                <QuesDeleteButton
+                  onClick={() => onDeleteClick(reComment.id, isChild)}
+                />
               </>
             ))}
         </Card.Footer>

@@ -11,6 +11,7 @@ export function QuesCommentItem({
   comment,
   onDeleteClick,
   onEditClick,
+  isChild,
 }) {
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
   const [isEdit, setIsEdit] = useState(false);
@@ -65,7 +66,7 @@ export function QuesCommentItem({
                   fontWeight="bold"
                   size="xs"
                   onClick={() => {
-                    onEditClick(comment.id, editComment);
+                    onEditClick(comment.id, editComment, isChild);
                     setIsEdit(false);
                   }}
                 >
@@ -106,7 +107,9 @@ export function QuesCommentItem({
                 >
                   수정
                 </Button>
-                <QuesDeleteButton onClick={() => onDeleteClick(comment.id)} />
+                <QuesDeleteButton
+                  onClick={() => onDeleteClick(comment.id, isChild)}
+                />
               </>
             ))}
         </Card.Footer>

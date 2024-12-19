@@ -20,6 +20,7 @@ export function QuesCommentList({
             contentWriter={contentWriter}
             onDeleteClick={onDeleteClick}
             onEditClick={onEditClick}
+            isChild={false}
           />
           {reCommentList
             .filter((reComment) => reComment.parentId === comment.id)
@@ -31,6 +32,7 @@ export function QuesCommentList({
                   contentWriter={contentWriter}
                   onDeleteClick={onDeleteClick}
                   onEditClick={onEditClick}
+                  isChild={true}
                 />
               </Box>
             ))}

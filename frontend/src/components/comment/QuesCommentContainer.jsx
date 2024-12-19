@@ -40,7 +40,7 @@ export function QuesCommentContainer({ quesId, writer }) {
     }
   }, [processing]);
 
-  function handleSaveClick(comment, secret) {
+  function handleSaveClick(comment, secret, isChild) {
     console.log(quesId, comment, secret);
     setProcessing(true);
     axios
@@ -69,7 +69,7 @@ export function QuesCommentContainer({ quesId, writer }) {
       });
   }
 
-  function handleDeleteClick(id) {
+  function handleDeleteClick(id, isChild) {
     setProcessing(true);
     axios
       .delete(`/api/comment/quesRemove/${id}`)
@@ -89,7 +89,7 @@ export function QuesCommentContainer({ quesId, writer }) {
       .finally(() => setProcessing(false));
   }
 
-  function handleEditClick(id, comment) {
+  function handleEditClick(id, comment, isChild) {
     console.log(id, comment);
     setProcessing(true);
     axios
