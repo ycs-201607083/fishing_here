@@ -11,6 +11,7 @@ export function QuesCommentItem({
   comment,
   onDeleteClick,
   onEditClick,
+  onReCommentSaveClick,
   isChild,
 }) {
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
@@ -120,6 +121,8 @@ export function QuesCommentItem({
         <QuesReCommentInput
           quesId={quesId}
           parentId={comment.id}
+          onClick={onReCommentSaveClick}
+          reCommentOpen={setReCommentOpen}
           onReCommentComplete={() => setReCommentOpen(false)}
         />
       )}

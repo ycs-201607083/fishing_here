@@ -69,6 +69,31 @@ export function QuesCommentContainer({ quesId, writer }) {
       });
   }
 
+  function handleReCommentSave(parentId, reCommentText, checkSecret) {
+    setProcessing(true);
+    axios
+      .post(`/api/comment/reQuesAdd`, {
+        quesId: quesId,
+        parentId: parentId,
+        comment: reCommentText,
+        secret: checkSecret,
+      })
+      .then((res) => res.data.message)
+      .then((message) => {
+        toaster.create({
+          type: message.type,
+          description: message.text,
+        });
+      })
+      .catch((e) => {
+        toaster.create({
+          type: "error",
+          description: "대댓글 작성 중 오류가 발생했습니다.",
+        });
+      })
+      .finally(() => setProcessing(false));
+  }
+
   function handleDeleteClick(id, isChild) {
     setProcessing(true);
     if (!isChild) {
@@ -157,6 +182,7 @@ export function QuesCommentContainer({ quesId, writer }) {
           contentWriter={writer}
           onDeleteClick={handleDeleteClick}
           onEditClick={handleEditClick}
+          onReCommentSaveClick={handleReCommentSave}
         />
       </Stack>
     </Box>
