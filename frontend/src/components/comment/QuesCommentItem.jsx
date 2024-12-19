@@ -2,13 +2,12 @@ import React, { useContext, useState } from "react";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 import { Box, Card, Flex, Spacer, Textarea } from "@chakra-ui/react";
 import { Button } from "../ui/button.jsx";
-import { Checkbox } from "../ui/checkbox";
-import axios from "axios";
 import { QuesDeleteButton } from "./QuesDeleteButton.jsx";
+import { QuesReCommentInput } from "./QuesReCommentInput.jsx";
 
 export function QuesCommentItem({
-  quesId /*본문 번호*/,
-  contentWriter /*본문 글쓴이*/,
+  quesId,
+  contentWriter,
   comment,
   onDeleteClick,
   onEditClick,
@@ -17,25 +16,11 @@ export function QuesCommentItem({
   const [isEdit, setIsEdit] = useState(false);
   const [editComment, setEditComment] = useState(comment.comment);
 
+  // 대댓글 입력 상태
   const [reCommentOpen, setReCommentOpen] = useState(false);
-  const [checkSecret, setCheckSecret] = useState(false);
 
   const canViewComment =
     !comment.secret || hasAccess(contentWriter) || hasAccess(comment.writer);
-
-  function handleReCommentClick() {
-    axios
-      .post(`/api/comment/reQuesAdd`, {
-        quesId: quesId,
-        parentId: comment.id,
-        comment: comment.comment,
-        secret: checkSecret,
-      })
-      .then((res) => res.data)
-      .then((data) => {
-        console.log(data);
-      });
-  }
 
   return (
     <Box pt={2}>
@@ -75,9 +60,9 @@ export function QuesCommentItem({
             (isEdit ? (
               <>
                 <Button
-                  colorPalette={"blue"}
-                  variant={"ghost"}
-                  fontWeight={"bold"}
+                  colorPalette="blue"
+                  variant="ghost"
+                  fontWeight="bold"
                   size="xs"
                   onClick={() => {
                     onEditClick(comment.id, editComment);
@@ -87,9 +72,9 @@ export function QuesCommentItem({
                   저장
                 </Button>
                 <Button
-                  colorPalette={"red"}
-                  variant={"ghost"}
-                  fontWeight={"bold"}
+                  colorPalette="red"
+                  variant="ghost"
+                  fontWeight="bold"
                   size="xs"
                   onClick={() => {
                     setIsEdit(false);
@@ -103,9 +88,9 @@ export function QuesCommentItem({
               <>
                 {isAuthenticated && (
                   <Button
-                    colorPalette={"green"}
-                    variant={"ghost"}
-                    fontWeight={"bold"}
+                    colorPalette="green"
+                    variant="ghost"
+                    fontWeight="bold"
                     size="xs"
                     onClick={() => setReCommentOpen(true)}
                   >
@@ -113,9 +98,9 @@ export function QuesCommentItem({
                   </Button>
                 )}
                 <Button
-                  colorPalette={"blue"}
-                  variant={"ghost"}
-                  fontWeight={"bold"}
+                  colorPalette="blue"
+                  variant="ghost"
+                  fontWeight="bold"
                   size="xs"
                   onClick={() => setIsEdit(true)}
                 >
@@ -126,40 +111,14 @@ export function QuesCommentItem({
             ))}
         </Card.Footer>
       </Card.Root>
-      {/*대댓글 달기*/}
+
+      {/** 대댓글 입력 창 */}
       {reCommentOpen && (
-        <Box mt={4} pl={4} borderLeft="2px solid #ddd">
-          <Textarea resize={"none"} />
-          <Flex justifyContent="flex-end" mt={2}>
-            <Checkbox
-              checked={checkSecret}
-              onChange={(e) => setCheckSecret(e.target.checked)}
-            >
-              비밀글
-            </Checkbox>
-            <Spacer />
-            <Button
-              colorPalette={"blue"}
-              variant={"ghost"}
-              fontWeight={"bold"}
-              size="xs"
-              onClick={handleReCommentClick}
-            >
-              저장
-            </Button>
-            <Button
-              colorPalette={"red"}
-              variant={"ghost"}
-              fontWeight={"bold"}
-              size="xs"
-              onClick={() => {
-                setReCommentOpen(false);
-              }}
-            >
-              취소
-            </Button>
-          </Flex>
-        </Box>
+        <QuesReCommentInput
+          quesId={quesId}
+          parentId={comment.id}
+          onReCommentComplete={() => setReCommentOpen(false)}
+        />
       )}
     </Box>
   );
