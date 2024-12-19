@@ -1,64 +1,10 @@
 import React, { useContext, useState } from "react";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
-import { Box, Card, Flex, Spacer, Text, Textarea } from "@chakra-ui/react";
+import { Box, Card, Flex, Spacer, Textarea } from "@chakra-ui/react";
 import { Button } from "../ui/button.jsx";
-
-import {
-  DialogActionTrigger,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
 import { Checkbox } from "../ui/checkbox";
 import axios from "axios";
-
-function DeleteButton({ onClick }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <DialogRoot
-      open={open}
-      onOpenChange={(e) => setOpen(e.open)}
-      placement={"center"}
-      role="alertdialog"
-    >
-      <DialogTrigger asChild>
-        <Button
-          colorPalette={"red"}
-          variant={"ghost"}
-          fontWeight={"bold"}
-          size="xs"
-        >
-          삭제
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>삭제 확인</DialogTitle>
-        </DialogHeader>
-        <DialogBody>
-          <Text>댓글을 삭제하시겠습니까?</Text>
-        </DialogBody>
-        <DialogFooter>
-          <DialogActionTrigger asChild>
-            <Button colorPalette={"blue"}>
-              <Text fontSize={"18px"}>취소</Text>
-            </Button>
-          </DialogActionTrigger>
-          <Button colorPalette={"red"} variant={"outline"} onClick={onClick}>
-            <Text fontSize={"18px"}>삭제</Text>
-          </Button>
-        </DialogFooter>
-        <DialogCloseTrigger />
-      </DialogContent>
-    </DialogRoot>
-  );
-}
+import { QuesDeleteButton } from "./QuesDeleteButton.jsx";
 
 export function QuesCommentItem({
   quesId /*본문 번호*/,
@@ -69,20 +15,21 @@ export function QuesCommentItem({
 }) {
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
   const [isEdit, setIsEdit] = useState(false);
-  const [reCommentOpen, setReCommentOpen] = useState(false);
   const [editComment, setEditComment] = useState(comment.comment);
+
+  const [reCommentOpen, setReCommentOpen] = useState(false);
   const [checkSecret, setCheckSecret] = useState(false);
 
   const canViewComment =
     !comment.secret || hasAccess(contentWriter) || hasAccess(comment.writer);
 
-  function handleReCommentClick(parentId, reComment, secret) {
+  function handleReCommentClick() {
     axios
       .post(`/api/comment/reQuesAdd`, {
         quesId: quesId,
-        parentId: parentId,
-        comment: reComment,
-        secret: secret,
+        parentId: comment.id,
+        comment: comment.comment,
+        secret: checkSecret,
       })
       .then((res) => res.data)
       .then((data) => {
@@ -174,7 +121,7 @@ export function QuesCommentItem({
                 >
                   수정
                 </Button>
-                <DeleteButton onClick={() => onDeleteClick(comment.id)} />
+                <QuesDeleteButton onClick={() => onDeleteClick(comment.id)} />
               </>
             ))}
         </Card.Footer>
@@ -184,7 +131,10 @@ export function QuesCommentItem({
         <Box mt={4} pl={4} borderLeft="2px solid #ddd">
           <Textarea resize={"none"} />
           <Flex justifyContent="flex-end" mt={2}>
-            <Checkbox onChange={() => setCheckSecret(e.target.click)}>
+            <Checkbox
+              checked={checkSecret}
+              onChange={(e) => setCheckSecret(e.target.checked)}
+            >
               비밀글
             </Checkbox>
             <Spacer />
