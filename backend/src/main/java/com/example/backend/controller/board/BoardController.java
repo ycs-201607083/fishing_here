@@ -22,7 +22,6 @@ public class BoardController {
     @GetMapping("boardMain")
     public List<Announcement> boardMain() {
         return service.mainBanner();
-//        return null;
     }
 
     @GetMapping("fishingAddress")

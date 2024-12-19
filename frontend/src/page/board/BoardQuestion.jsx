@@ -58,7 +58,7 @@ export function BoardQuestion() {
   return (
     <Stack w="70%" mx={"auto"}>
       <Heading fontSize={"30px"} pb={5} color={"blue.800"}>
-        Q&A
+        질문게시판
       </Heading>
       <hr />
       <Table.Root size="sm" interactive>

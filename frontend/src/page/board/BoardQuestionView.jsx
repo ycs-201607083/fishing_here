@@ -64,7 +64,7 @@ export function BoardQuestionView() {
   return (
     <Box mx={"auto"} w={"60%"}>
       <Heading fontSize={"30px"} pb={5} color={"blue.800"}>
-        Q&A
+        질문게시판
       </Heading>
       <hr />
       <Text fontWeight={"bold"} fontSize={"20px"} pt={10} pb={5}>

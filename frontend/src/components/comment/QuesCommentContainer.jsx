@@ -17,7 +17,6 @@ export function QuesCommentContainer({ quesId, writer }) {
         .then((res) => res.data)
         .then((data) => {
           setCommentList(data);
-          console.log(data, "됨");
         })
         .catch((e) => {
           console.log(e, "안됨");
@@ -32,7 +31,6 @@ export function QuesCommentContainer({ quesId, writer }) {
         .then((res) => res.data)
         .then((data) => {
           setReCommentList(data);
-          console.log(data, "자식댓글됨");
         })
         .catch((e) => {
           console.log(e, "자식댓글안됨");
@@ -41,7 +39,6 @@ export function QuesCommentContainer({ quesId, writer }) {
   }, [processing]);
 
   function handleSaveClick(comment, secret, isChild) {
-    console.log(quesId, comment, secret);
     setProcessing(true);
     axios
       .post("/api/comment/quesAdd", {
@@ -85,7 +82,7 @@ export function QuesCommentContainer({ quesId, writer }) {
           description: message.text,
         });
       })
-      .catch((e) => {
+      .catch(() => {
         toaster.create({
           type: "error",
           description: "대댓글 작성 중 오류가 발생했습니다.",
@@ -148,9 +145,14 @@ export function QuesCommentContainer({ quesId, writer }) {
             description: message.text,
           });
         })
+        .catch((message) => {
+          toaster.create({
+            type: message.type,
+            description: message.text,
+          });
+        })
         .finally(() => setProcessing(false));
     } else {
-      console.log(comment);
       axios
         .put("/api/comment/reQuesEdit", {
           id,
@@ -163,8 +165,11 @@ export function QuesCommentContainer({ quesId, writer }) {
             description: message.text,
           });
         })
-        .catch((e) => {
-          console.log(e, "자식안됨");
+        .catch((message) => {
+          toaster.create({
+            type: message.type,
+            description: message.text,
+          });
         })
         .finally(() => setProcessing(false));
     }

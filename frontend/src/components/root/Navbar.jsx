@@ -103,7 +103,7 @@ export function Navbar() {
             <TextItem>커뮤니티</TextItem>
           </NavItem>{" "}
           <NavItem onClick={() => navigate("/board/question")}>
-            <TextItem>QnA</TextItem>
+            <TextItem>질문게시판</TextItem>
           </NavItem>
         </Flex>
       </Flex>
