@@ -38,9 +38,9 @@ public class CommentService {
         return cnt == 1;
     }
 
-    public boolean removeQuesComment(Integer comment) {
-        int cnt = mapper.deleteQuesComment(comment);
-        return true;
+    public boolean removeQuesComment(Integer id) {
+        int cnt = mapper.deleteQuesComment(id);
+        return cnt == 1;
     }
 
     public Boolean reQuesAdd(QuestionReComment comment, Authentication auth) {
@@ -52,5 +52,21 @@ public class CommentService {
 
     public List<QuestionReComment> quesReCommList(Integer quesId) {
         return mapper.selectByQuesIdReComment(quesId);
+    }
+
+    public boolean updateReQuesComment(QuestionReComment comment) {
+        int cnt = mapper.updateReQuesComment(comment);
+        return cnt == 1;
+    }
+
+    public boolean hasQuesReCommAccess(Integer id, Authentication auth) {
+        QuestionComment comment = mapper.selectByQuesReCommentId(id);
+
+        return comment.getWriter().equals(auth.getName());
+    }
+
+    public boolean removeReQuesComment(Integer id) {
+        int cnt = mapper.deleteReQuesComment(id);
+        return cnt == 1;
     }
 }

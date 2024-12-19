@@ -57,7 +57,7 @@ export function QuesCommentItem({
           )}
         </Card.Body>
         <Card.Footer justifyContent="flex-end" mt={-5}>
-          {hasAccess(comment.writer) &&
+          {isAuthenticated &&
             (isEdit ? (
               <>
                 <Button

@@ -32,6 +32,28 @@ public class CommentController {
         return service.quesReCommList(quesId);
     }
 
+    @PutMapping("reQuesEdit")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> reQuesCommEdit(
+            @RequestBody QuestionReComment comment,
+            Authentication auth) {
+
+        if (service.hasQuesReCommAccess(comment.getId(), auth)) {
+            if (service.updateReQuesComment(comment)) {
+                return ResponseEntity.ok().body(Map.of("message",
+                        Map.of("type", "success",
+                                "text", "댓글이 수정되었습니다.")));
+            } else {
+                return ResponseEntity.internalServerError().body(Map.of("message",
+                        Map.of("type", "error",
+                                "text", "댓글이 수정되지 않았습니다.")));
+            }
+        } else {
+            return ResponseEntity.internalServerError().body(
+                    Map.of("message",
+                            Map.of("type", "error", "text", "권한이 없습니다.")));
+        }
+    }
 
     @PostMapping("quesAdd")
     @PreAuthorize("isAuthenticated()")
@@ -77,6 +99,29 @@ public class CommentController {
 
         if (service.hasQuesCommAccess(id, auth)) {
             if (service.removeQuesComment(id)) {
+                return ResponseEntity.ok().body(Map.of("message",
+                        Map.of("type", "success",
+                                "text", "댓글이 삭제되었습니다.")));
+            } else {
+                return ResponseEntity.internalServerError().body(Map.of("message",
+                        Map.of("type", "error",
+                                "text", "댓글이 삭제되지 않았습니다.")));
+            }
+        } else {
+            return ResponseEntity.internalServerError().body(
+                    Map.of("message",
+                            Map.of("type", "error", "text", "권한이 없습니다.")));
+        }
+    }
+
+    @DeleteMapping("reQuesRemove/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> reQuesRemove(
+            @PathVariable Integer id,
+            Authentication auth) {
+
+        if (service.hasQuesReCommAccess(id, auth)) {
+            if (service.removeReQuesComment(id)) {
                 return ResponseEntity.ok().body(Map.of("message",
                         Map.of("type", "success",
                                 "text", "댓글이 삭제되었습니다.")));

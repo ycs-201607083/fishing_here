@@ -57,4 +57,24 @@ public interface CommentMapper {
             ORDER BY id;
             """)
     List<QuestionReComment> selectByQuesIdReComment(Integer quesId);
+
+    @Update("""
+            UPDATE quesReComment
+            SET comment = #{comment}
+            WHERE id= #{id}
+            """)
+    int updateReQuesComment(QuestionReComment comment);
+
+    @Select("""
+            SELECT *
+            FROM quesReComment
+            WHERE id=#{id}
+            """)
+    QuestionComment selectByQuesReCommentId(Integer id);
+
+    @Delete("""
+            DELETE FROM quesReComment
+            WHERE id = #{id}
+            """)
+    int deleteReQuesComment(Integer id);
 }
