@@ -44,7 +44,7 @@ public class CommentController {
             chartData.setBoardId(comment.getBoardId());
             chartData.setLabel(comment.getChartLabel());
             chartData.setValue(comment.getChartValue());
-            service.addchart(chartData);
+//            service.addchart(chartData);
         }
     }
 

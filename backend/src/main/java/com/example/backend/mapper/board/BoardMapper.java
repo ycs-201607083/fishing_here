@@ -170,6 +170,37 @@ public interface BoardMapper {
     Board selectById(int number);
 
     @Select("""
+              SELECT 
+                        board_number number,
+                        board_title title, 
+                        board_writer writer, 
+                        board_date AS date,
+                        board_content content,
+                        board_site site,
+                        board_view_count viewCount
+                FROM board
+                  WHERE board_number IN (
+                    SELECT board_id
+                      FROM (
+                              SELECT board_id
+                              FROM board_like
+                              GROUP BY board_id
+                              ORDER BY COUNT(board_id) DESC
+                              LIMIT 3
+                           ) AS top_boards
+                       );
+            """)
+    List<Board> findTopBoardsByLike();
+
+    @Select("""
+               SELECT board_id AS number, COUNT(board_id) AS likeCount
+               FROM board_like
+               GROUP BY board_id
+               ORDER BY likeCount DESC
+            """)
+    List<Board> findLikeCount();
+
+    @Select("""
             SELECT name 
             FROM board_file
             WHERE board_id = #{number}
@@ -329,5 +360,6 @@ public interface BoardMapper {
             WHERE member_id = #{id}
             """)
     List<Board> findBoardsByMemberId(String id);
+
 
 }

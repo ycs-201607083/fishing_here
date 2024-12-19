@@ -46,8 +46,12 @@ export function BoardList() {
   const [type, setType] = useState("all"); // 검색 타입 (전체, 제목, 본문 중 선택)
   // 검색 타입(장소)
   const [site, setSite] = useState("allSite");
-  // 조회수 탑 5개 받기
+  // 조회수 탑 3개 받기
   const [topBoards, setTopBoards] = useState([]);
+  // 좋아요 탑 3개 받기
+  const [likeTopBoards, setLikeTopBoards] = useState([]);
+  // like 횟수
+  const [likeCount, setLikeCount] = useState();
 
   const [searchPage, setSearchPage] = useSearchParams();
   const [count, setCount] = useState(0);
@@ -58,11 +62,32 @@ export function BoardList() {
   useEffect(() => {
     fetchBoardList();
     fetchTopBoards();
+    fetchLikeTopBoards();
+    howManyLike();
   }, [searchParams, type, site, searchPage]);
+
+  const howManyLike = async () => {
+    try {
+      const response = await axios.get("/api/board/likeCount");
+      setLikeCount(response.data);
+      setLikeTopBoards(response.data);
+    } catch (error) {
+      console.error("좋아요 갯수 카운트 실패");
+    }
+  };
+
+  const fetchLikeTopBoards = async () => {
+    try {
+      const response = await axios.get("/api/board/top-like"); // 상위 3개 좋아요 API 호출
+      setLikeTopBoards(response.data); // 데이터 저장
+    } catch (error) {
+      console.error("인기 게시글 데이터를 가져오는 데 실패했습니다.");
+    }
+  };
 
   const fetchTopBoards = async () => {
     try {
-      const response = await axios.get("/api/board/top-views"); // 상위 10개 조회수 API 호출
+      const response = await axios.get("/api/board/top-views"); // 상위 3개 조회수 API 호출
       setTopBoards(response.data); // 데이터 저장
     } catch (error) {
       console.error("인기 게시글 데이터를 가져오는 데 실패했습니다.");
@@ -213,6 +238,7 @@ export function BoardList() {
       </HStack>
 
       {/* 조회수 상위 3개 데이터 표시 */}
+
       <div className="slider-container">
         <Slider
           autoplay={true} // 자동 슬라이드 활성화
@@ -257,7 +283,7 @@ export function BoardList() {
                           {board.site}
                         </Text>
                         <Text fontSize="sm" color="gray.500">
-                          Views: {board.viewCount}
+                          Views:{board.viewCount}
                         </Text>
                       </HStack>
                       <Card.Title
@@ -296,9 +322,10 @@ export function BoardList() {
               justifyContent="center"
               p={4}
             >
+              {/*인기 게시글 top3*/}
               <h3 style={{ color: "#0288d1" }}>인기 게시글 Top 3</h3>
               <SimpleGrid columns={3} gap="20px" mt={4} dots:true>
-                {topBoards.slice(0, 3).map((board) => (
+                {likeTopBoards.slice(0, 3).map((board) => (
                   <Card.Root
                     key={board.number}
                     width="200px"
@@ -310,8 +337,8 @@ export function BoardList() {
                     <Card.Body gap="2">
                       <Image
                         rounded="md"
-                        src="https://bit.ly/dan-abramov"
-                        alt="Dan Abramov"
+                        src="https://via.placeholder.com/150"
+                        alt={`게시글 ${board.number}`}
                         style={{
                           width: "100%",
                           height: "100px",
@@ -322,8 +349,9 @@ export function BoardList() {
                         <Text fontSize="sm" color="#0288d1" noOfLines={1}>
                           {board.site}
                         </Text>
+
                         <Text fontSize="sm" color="gray.500">
-                          Like: {board.viewCount}
+                          Like: {board.likeCount}
                         </Text>
                       </HStack>
                       <Card.Title

@@ -45,6 +45,14 @@ public class BoardService {
         return mapper.findTopBoardsByViews();
     }
 
+    public List<Board> getTopBoardsByLike() {
+        return mapper.findTopBoardsByLike();
+    }
+
+    public List<Board> getLikeCount() {
+        return mapper.findLikeCount();
+    }
+
     public void increaseViewCount(Integer number) {
         mapper.updateViewCount(number);
     }
@@ -319,4 +327,5 @@ public class BoardService {
     public List<Board> getBoardsByMemberId(String id) {
         return mapper.findBoardsByMemberId(id);
     }
+
 }
