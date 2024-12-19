@@ -14,6 +14,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { Checkbox } from "../ui/checkbox";
+import axios from "axios";
 
 function DeleteButton({ onClick }) {
   const [open, setOpen] = useState(false);
@@ -59,18 +61,34 @@ function DeleteButton({ onClick }) {
 }
 
 export function QuesCommentItem({
-  comment,
+  quesId /*본문 번호*/,
   contentWriter /*본문 글쓴이*/,
+  comment,
   onDeleteClick,
   onEditClick,
 }) {
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
   const [isEdit, setIsEdit] = useState(false);
-  const [inputReCommentCheck, setInputReCommentCheck] = useState(false);
+  const [reCommentOpen, setReCommentOpen] = useState(false);
   const [editComment, setEditComment] = useState(comment.comment);
+  const [checkSecret, setCheckSecret] = useState(false);
 
   const canViewComment =
     !comment.secret || hasAccess(contentWriter) || hasAccess(comment.writer);
+
+  function handleReCommentClick(parentId, reComment, secret) {
+    axios
+      .post(`/api/comment/reQuesAdd`, {
+        quesId: quesId,
+        parentId: parentId,
+        comment: reComment,
+        secret: secret,
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        console.log(data);
+      });
+  }
 
   return (
     <Box pt={2}>
@@ -142,7 +160,7 @@ export function QuesCommentItem({
                     variant={"ghost"}
                     fontWeight={"bold"}
                     size="xs"
-                    onClick={() => setInputReCommentCheck(true)}
+                    onClick={() => setReCommentOpen(true)}
                   >
                     답글달기
                   </Button>
@@ -161,10 +179,36 @@ export function QuesCommentItem({
             ))}
         </Card.Footer>
       </Card.Root>
-      {inputReCommentCheck && (
-        <Box>
-          <Textarea></Textarea>
-          <Button></Button>
+      {/*대댓글 달기*/}
+      {reCommentOpen && (
+        <Box mt={4} pl={4} borderLeft="2px solid #ddd">
+          <Textarea resize={"none"} />
+          <Flex justifyContent="flex-end" mt={2}>
+            <Checkbox onChange={() => setCheckSecret(e.target.click)}>
+              비밀글
+            </Checkbox>
+            <Spacer />
+            <Button
+              colorPalette={"blue"}
+              variant={"ghost"}
+              fontWeight={"bold"}
+              size="xs"
+              onClick={handleReCommentClick}
+            >
+              저장
+            </Button>
+            <Button
+              colorPalette={"red"}
+              variant={"ghost"}
+              fontWeight={"bold"}
+              size="xs"
+              onClick={() => {
+                setReCommentOpen(false);
+              }}
+            >
+              취소
+            </Button>
+          </Flex>
         </Box>
       )}
     </Box>

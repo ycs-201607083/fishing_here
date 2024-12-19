@@ -6,35 +6,38 @@ function QuesReCommentItem({
   contentWriter,
   onDeleteClick,
   onEditClick,
-  onReCommentAdd,
+  // onReCommentAdd,
 }) {
   return null;
 }
 
 export function QuesCommentList({
+  quesId,
   commentList,
   reCommentList,
   contentWriter,
   onDeleteClick,
   onEditClick,
-  onReCommentAdd,
+  // onReCommentAdd,
 }) {
   return (
     <Box>
       {commentList.map((comment) => (
         <Box key={comment.id}>
           <QuesCommentItem
+            quesId={quesId}
             comment={comment}
             contentWriter={contentWriter}
             onDeleteClick={onDeleteClick}
             onEditClick={onEditClick}
-            onReCommentAdd={onReCommentAdd}
+            // onReCommentAdd={onReCommentAdd}
           />
           {reCommentList
             .filter((reComment) => reComment.parentId === comment.id)
             .map((reComment) => (
               <Box key={reComment.id} pl={6}>
                 <QuesReCommentItem
+                  quesId={quesId}
                   reComment={reComment}
                   contentWriter={contentWriter}
                   onDeleteClick={onDeleteClick}
