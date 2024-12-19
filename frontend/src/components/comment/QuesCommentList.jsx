@@ -6,12 +6,10 @@ function QuesReCommentItem({
   contentWriter,
   onDeleteClick,
   onEditClick,
-  onReComment,
+  onReCommentAdd,
 }) {
   return null;
 }
-
-QuesReCommentItem.propTypes = { isChild: PropTypes.bool };
 
 export function QuesCommentList({
   commentList,
@@ -19,7 +17,7 @@ export function QuesCommentList({
   contentWriter,
   onDeleteClick,
   onEditClick,
-  onReComment,
+  onReCommentAdd,
 }) {
   return (
     <Box>
@@ -30,7 +28,7 @@ export function QuesCommentList({
             contentWriter={contentWriter}
             onDeleteClick={onDeleteClick}
             onEditClick={onEditClick}
-            onReComment={onReComment}
+            onReCommentAdd={onReCommentAdd}
           />
           {reCommentList
             .filter((reComment) => reComment.parentId === comment.id)
@@ -41,7 +39,6 @@ export function QuesCommentList({
                   contentWriter={contentWriter}
                   onDeleteClick={onDeleteClick}
                   onEditClick={onEditClick}
-                  onReComment={onReComment}
                 />
               </Box>
             ))}

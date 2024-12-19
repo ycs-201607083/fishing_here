@@ -134,7 +134,7 @@ export function QuesCommentContainer({ quesId, writer }) {
           contentWriter={writer}
           onDeleteClick={handleDeleteClick}
           onEditClick={handleEditClick}
-          onReComment={handleReCommentClick} // 답글 이벤트 전달
+          onReCommentAdd={handleReCommentClick} // 답글 이벤트 전달
         />
       </Stack>
     </Box>

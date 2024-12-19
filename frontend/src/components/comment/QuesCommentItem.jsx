@@ -64,8 +64,9 @@ export function QuesCommentItem({
   onDeleteClick,
   onEditClick,
 }) {
-  const { hasAccess } = useContext(AuthenticationContext);
+  const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
   const [isEdit, setIsEdit] = useState(false);
+  const [inputReCommentCheck, setInputReCommentCheck] = useState(false);
   const [editComment, setEditComment] = useState(comment.comment);
 
   const canViewComment =
@@ -94,6 +95,7 @@ export function QuesCommentItem({
             isEdit ? (
               <Textarea
                 value={editComment}
+                resize="none"
                 onChange={(e) => setEditComment(e.target.value)}
               />
             ) : (
@@ -134,6 +136,17 @@ export function QuesCommentItem({
               </>
             ) : (
               <>
+                {isAuthenticated && (
+                  <Button
+                    colorPalette={"green"}
+                    variant={"ghost"}
+                    fontWeight={"bold"}
+                    size="xs"
+                    onClick={() => setInputReCommentCheck(true)}
+                  >
+                    답글달기
+                  </Button>
+                )}
                 <Button
                   colorPalette={"blue"}
                   variant={"ghost"}
@@ -148,6 +161,12 @@ export function QuesCommentItem({
             ))}
         </Card.Footer>
       </Card.Root>
+      {inputReCommentCheck && (
+        <Box>
+          <Textarea></Textarea>
+          <Button></Button>
+        </Box>
+      )}
     </Box>
   );
 }
