@@ -361,5 +361,9 @@ public interface BoardMapper {
             """)
     List<Board> findBoardsByMemberId(String id);
 
-
+    @Delete("""
+                DELETE FROM comment
+                WHERE board_id = #{boardId}
+            """)
+    int deleteCommentsByBoardId(int boardId);
 }

@@ -32,7 +32,11 @@ public class CommentService {
     }
 
     public void remove(Integer id) {
-        mapper.deleteById(id);
+        // 1. 게시글의 모든 댓글 삭제
+        mapper.deleteCommentsByBoardId(id);
+        // 2. 게시글 삭제
+        mapper.deleteBoardById(id);
+
     }
 
     public void edit(Integer id, String commentContent) {
