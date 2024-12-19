@@ -28,16 +28,19 @@ export function CommentContainer({ boardId }) {
     }
   }, [processing, boardId]);
 
-  function handleSaveClick(comment) {
+  function handleSaveClick(comment, chartLabel, chartValue) {
     if (!boardId) {
       console.error("Cannot save comment: boardId is undefined.");
       return;
     }
+
     setProcessing(true);
     axios
       .post("/api/comment/add", {
-        boardId: boardId,
-        comment: comment,
+        boardId,
+        comment,
+        chartLabel,
+        chartValue,
       })
       .then(() => console.log("Comment added successfully"))
       .catch((err) => console.error("Failed to add comment:", err)) // 디버깅 로그 추가
