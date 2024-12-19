@@ -31,12 +31,12 @@ function TextItem({ children, ...rest }) {
   );
 }
 
+export const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
+export const openModal = () => setIsModalOpen(true);
+export const closeModal = () => setIsModalOpen(false);
+
 export function Navbar() {
   const navigate = useNavigate();
-
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
 
   const { id, kakaoId, isAdmin, isAuthenticated, logout } = useContext(
     AuthenticationContext,

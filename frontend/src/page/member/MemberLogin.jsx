@@ -16,10 +16,11 @@ export function MemberLogin({ closeModal }) {
   const REST_API_KEY = import.meta.env.VITE_KAKAO_LOGIN_API_KEY;
   const REDIRECT_URI = import.meta.env.VITE_KAKAO_LOGIN_REDIRECT_URL;
   const navigate = useNavigate();
-  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code&account_email`;
 
   const handleLogin = () => {
     window.location.href = kakaoURL;
+    console.log("MemberLogin:", window.location.href); // 현재 URL 확인
   };
 
   function handleLoginClick() {
@@ -27,7 +28,6 @@ export function MemberLogin({ closeModal }) {
       .post("/api/member/login", { id, password })
       .then((res) => res.data)
       .then((data) => {
-        // 토스트 띄우고
         toaster.create({
           type: data.message.type,
           description: data.message.text,
@@ -38,7 +38,6 @@ export function MemberLogin({ closeModal }) {
       })
       .catch((e) => {
         const message = e.response.data.message;
-        // 토스트 띄우고
         toaster.create({
           type: message.type,
           description: message.text,
@@ -46,6 +45,11 @@ export function MemberLogin({ closeModal }) {
       })
       .finally();
   }
+
+  const ClickSignupPage = () => {
+    closeModal();
+    navigate("/member/signup");
+  };
 
   return (
     <div className="modal-overlay" onClick={closeModal}>
@@ -92,7 +96,7 @@ export function MemberLogin({ closeModal }) {
               wrap="wrap" // 화면 크기에 맞춰 버튼들이 줄바꿈 가능하도록
               gap={4} // 버튼들 사이에 간격 추가>
             >
-              <Button size="xs" variant={"ghost"}>
+              <Button size="xs" variant={"ghost"} onClick={ClickSignupPage}>
                 회원가입 바로가기
               </Button>
               <Button onClick={handleLoginClick} w={"53%"} justify={"center"}>
