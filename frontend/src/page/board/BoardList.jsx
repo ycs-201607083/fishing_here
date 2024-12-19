@@ -266,9 +266,6 @@ export function BoardList() {
                       >
                         {board.title}
                       </Card.Title>
-                      <Text fontSize="sm" color="gray.600" mt="1" noOfLines={2}>
-                        {board.content}
-                      </Text>
                     </Card.Body>
                     <Card.Footer justifyContent="flex-end">
                       <Button
@@ -293,13 +290,67 @@ export function BoardList() {
           <div>
             <Box
               mb={8}
-              p={4}
               display="flex"
               flexDirection="column"
               alignItems="center"
               justifyContent="center"
+              p={4}
             >
-              <h3>인기 게시글 Top3</h3>
+              <h3 style={{ color: "#0288d1" }}>인기 게시글 Top 3</h3>
+              <SimpleGrid columns={3} gap="20px" mt={4} dots:true>
+                {topBoards.slice(0, 3).map((board) => (
+                  <Card.Root
+                    key={board.number}
+                    width="200px"
+                    style={{
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <Card.Body gap="2">
+                      <Image
+                        rounded="md"
+                        src="https://bit.ly/dan-abramov"
+                        alt="Dan Abramov"
+                        style={{
+                          width: "100%",
+                          height: "100px",
+                          objectFit: "cover",
+                        }}
+                      />
+                      <HStack justifyContent="space-between" mt="1">
+                        <Text fontSize="sm" color="#0288d1" noOfLines={1}>
+                          {board.site}
+                        </Text>
+                        <Text fontSize="sm" color="gray.500">
+                          Like: {board.viewCount}
+                        </Text>
+                      </HStack>
+                      <Card.Title
+                        mt="2"
+                        style={{ color: "#0288d1", fontSize: "14px" }}
+                      >
+                        {board.title}
+                      </Card.Title>
+                    </Card.Body>
+                    <Card.Footer justifyContent="flex-end">
+                      <Button
+                        variant="outline"
+                        onClick={() => handleRowClick(board.number)}
+                        style={{
+                          backgroundColor: "#0288d1",
+                          color: "white",
+                          padding: "2px 6px",
+                          borderRadius: "16px",
+                          fontSize: "12px",
+                        }}
+                      >
+                        View
+                      </Button>
+                    </Card.Footer>
+                  </Card.Root>
+                ))}
+              </SimpleGrid>
             </Box>
           </div>
         </Slider>
