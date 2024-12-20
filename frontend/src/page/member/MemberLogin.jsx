@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Box, Flex, HStack, IconButton, Input, Stack } from "@chakra-ui/react";
+import { Box, Flex, HStack, Input, Stack } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
 import axios from "axios";
 import { Button } from "../../components/ui/button.jsx";
@@ -102,14 +102,14 @@ export function MemberLogin({ closeModal }) {
               <Button onClick={handleLoginClick} w={"53%"} justify={"center"}>
                 로그인
               </Button>
-              <IconButton
+              {/* <IconButton
                 onClick={handleLogin}
                 colorPalette={"white"}
                 variant={"ghost"}
                 size={"sx"}
               >
                 <img src={"/kakao_login_m.png"} alt={"카카오 로그인"} />
-              </IconButton>
+              </IconButton>*/}
             </Flex>
           </Stack>
         </Box>
