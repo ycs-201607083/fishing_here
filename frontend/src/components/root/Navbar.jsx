@@ -71,7 +71,7 @@ export function Navbar() {
             onClick={() => {
               logout();
               closeModal();
-              navigate("/board/list");
+              navigate("/");
             }}
           >
             로그아웃
