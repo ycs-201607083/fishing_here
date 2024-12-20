@@ -1,9 +1,6 @@
 package com.example.backend.mapper.board;
 
-import com.example.backend.dto.board.Announcement;
-import com.example.backend.dto.board.Board;
-import com.example.backend.dto.board.FishingAddress;
-import com.example.backend.dto.board.KakaoMapAddress;
+import com.example.backend.dto.board.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -331,7 +328,6 @@ public interface BoardMapper {
                     AND member_id=#{name}
             """)
     int deleteLikeByBoardIdAndMemberId(Integer number, String name);
-
 
 
     @Insert("""
