@@ -81,7 +81,6 @@ export function BoardMain() {
       .then((res) => res.data)
       .then((data) => {
         setAnnList(data);
-        console.log(data, "불러옴");
       })
       .catch((e) => {
         console.log(e, "못불러옴");

@@ -2,8 +2,6 @@ import axios from "axios";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
 import React, { useEffect } from "react";
 
-import { LoginKakaoHandler } from "./page/kakao/LoginKakaoHandler.jsx";
-
 import AuthenticationProvider from "./context/AuthenticationProvider.jsx";
 import { BoardMain } from "./page/board/BoardMain.jsx";
 import { RootLayout } from "./page/root/RootLayout.jsx";

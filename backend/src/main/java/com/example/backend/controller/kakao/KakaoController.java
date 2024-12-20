@@ -3,7 +3,9 @@ package com.example.backend.controller.kakao;
 import com.example.backend.service.kakao.KakaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,15 +33,15 @@ public class KakaoController {
         return ResponseEntity.ok(Map.of("kakaoToken", accessToken)); // JSON 형태로 응답
     }
 
-    @PostMapping("/api/oauth/kakao")
-    public ResponseEntity<?> kakaoLoginPost(@RequestBody Map<String, String> request) {
-        String kakaoToken = request.get("kakaoToken");
-
-        // 여기에 카카오 토큰을 사용하여 JWT 발급
-        String jwtToken = service.createJwtToken(kakaoToken);
-
-        return ResponseEntity.ok(Map.of("jwtToken", jwtToken)); // 발급된 JWT 반환
-    }
+//    @PostMapping("/api/oauth/kakao")
+//    public ResponseEntity<?> kakaoLoginPost(@RequestBody Map<String, String> request) {
+//        String kakaoToken = request.get("kakaoToken");
+//
+//        // 여기에 카카오 토큰을 사용하여 JWT 발급
+//        String jwtToken = service.createJwtToken(kakaoToken);
+//
+//        return ResponseEntity.ok(Map.of("jwtToken", jwtToken)); // 발급된 JWT 반환
+//    }
 
 
     @GetMapping("/api/kakao/check-email")

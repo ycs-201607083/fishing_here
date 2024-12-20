@@ -5,8 +5,6 @@ import com.example.backend.mapper.kakao.KakaoMapper;
 import com.nimbusds.jose.shaded.gson.JsonElement;
 import com.nimbusds.jose.shaded.gson.JsonObject;
 import com.nimbusds.jose.shaded.gson.JsonParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
 import java.util.HashMap;
 
 @Transactional
@@ -23,18 +20,17 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class KakaoService {
 
+    final KakaoMapper mapper;
     @Value("${kakao.token-uri}")
     private String tokenUrl;
     @Value("${kakao.redirect.url}")
     private String redirectUrl;
     @Value("${kakao.client.id}")
     private String clientId;
+//    @Value("${kakao.secret.key}")
+//    private String secretKey;
     @Value("${kakao.user-info-uri}")
     private String userInfoUri;
-    @Value("${kakao.secret.key}")
-    private String secretKey;
-
-    final KakaoMapper mapper;
 
     public String getKakaoAccessToken(String code) {
         String accessToken = "";
@@ -161,15 +157,15 @@ public class KakaoService {
         return kakaoMember != null; // 존재하면 true 반환
     }
 
-    public String createJwtToken(String kakaoToken) {
-        // JWT 만료 시간을 설정 (예: 1시간)
-        long expirationTime = 1000 * 60 * 60; // 1시간
-
-        return Jwts.builder()
-                .setSubject(kakaoToken) // 카카오 토큰을 subject로 설정
-                .setIssuedAt(new Date()) // 발급 시간
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // 만료 시간
-                .signWith(SignatureAlgorithm.HS256, secretKey) // 비밀 키로 서명
-                .compact();
-    }
+//    public String createJwtToken(String kakaoToken) {
+//        // JWT 만료 시간을 설정 (예: 1시간)
+//        long expirationTime = 1000 * 60 * 60; // 1시간
+//
+//        return Jwts.builder()
+//                .setSubject(kakaoToken) // 카카오 토큰을 subject로 설정
+//                .setIssuedAt(new Date()) // 발급 시간
+//                .setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // 만료 시간
+//                .signWith(SignatureAlgorithm.HS256, secretKey) // 비밀 키로 서명
+//                .compact();
+//    }
 }
