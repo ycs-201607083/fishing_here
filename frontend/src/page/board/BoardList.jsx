@@ -352,10 +352,8 @@ export function BoardList() {
 
                         <Text fontSize="sm" color="gray.500">
                           Like:
-                          {
-                            likeCount.find((l) => l.number == board.number)
-                              .likeCount
-                          }
+                          {likeCount.find((l) => l.number === board.number)
+                            ?.likeCount || 0}
                         </Text>
                       </HStack>
                       <Card.Title
