@@ -3,6 +3,7 @@ import axios from "axios";
 import {
   Box,
   Flex,
+  Heading,
   HStack,
   Image,
   Input,
@@ -28,6 +29,8 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import { useAddress } from "../../context/AddressContext.jsx";
+import { ToggleTip } from "../../components/ui/toggle-tip";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
 import { Doughnut } from "react-chartjs-2";
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
@@ -92,7 +95,6 @@ function ImageFileView({ files }) {
   );
 }
 
-CommentContainer.propTypes = {};
 
 /* 차트 설정 */
 function ChartView({ chartData }) {
@@ -111,7 +113,6 @@ function ChartView({ chartData }) {
 
 export function BoardView() {
   const [board, setBoard] = useState(null);
-  const { number } = useParams();
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
   const navigate = useNavigate();
   const [map, setMap] = useState(null);
@@ -119,18 +120,36 @@ export function BoardView() {
   const [lati, setLat] = useState(null);
   const [lngi, setLng] = useState(null);
   const { address, lng, lat } = useAddress();
+  const [viewCnt, setViewCnt] = useState(null);
+  const [like, setLike] = useState({ like: false, count: 0 });
+  const [likeTooltipOpen, setLikeTooltipOpen] = useState(false);
+
+  const { number } = useParams();
+
+  useEffect(() => {
+    axios
+      .get(`/api/board/like/${number}`)
+      .then((res) => res.data)
+      .then((data) => setLike(data));
+  }, []);
   const [chartData, setChartData] = useState({ labels: [], values: [] }); // 차트 데이터 추가
 
   useEffect(() => {
+    // 조회수 증가 요청
     // 게시물 데이터 가져오기
     axios
-      .get(`/api/board/view/${number}`)
-      .then((res) => {
-        setBoard(res.data);
-        console.log("data?????", res.data);
+      .post(`/api/board/view/increment/${number}`)
+      .then(() => {
+        // 조회수 증가 후 게시물 데이터 로드
+        return axios.get(`/api/board/view/${number}`);
       })
-      .catch((e) => console.error(e));
-
+      .then((res) => {
+        setBoard(res.data); // 게시물 데이터 설정
+        setViewCnt(res.data.viewCount); // 증가된 조회수 설정
+      })
+      .catch((e) => {
+        console.log("Error fetching board data:", e);
+      });
     // 차트 데이터 가져오기
     axios
       .get(`/api/chart/${number}`)
@@ -199,6 +218,8 @@ export function BoardView() {
     });
   }, [board]); // board가 변경될 때마다 실행
 
+  useEffect(() => {}, [board]);
+
   if (board === null) {
     return (
       <Box>
@@ -222,6 +243,22 @@ export function BoardView() {
       });
   };
 
+  const handleLikeClick = () => {
+    if (isAuthenticated) {
+      axios
+        .post("/api/board/like", {
+          number: number,
+        })
+        .then((res) => res.data)
+        .then((data) => setLike(data))
+        .catch()
+        .finally();
+    } else {
+      //tooltip 보여주기
+      setLikeTooltipOpen(!likeTooltipOpen);
+    }
+  };
+
   return (
     <Box
       mx={"auto"}
@@ -231,6 +268,22 @@ export function BoardView() {
     >
       <Flex>
         <MyHeading me={"auto"}>{number} 번 게시물</MyHeading>
+        <HStack>
+          <Box onClick={handleLikeClick}>
+            <ToggleTip
+              open={likeTooltipOpen}
+              content={"로그인 후 좋아요를 클릭해주세요."}
+            >
+              <Heading>
+                {like.like || <GoHeart />}
+                {like.like && <GoHeartFill />}
+              </Heading>
+            </ToggleTip>
+          </Box>
+          <Box>
+            <Heading>{like.count}</Heading>
+          </Box>
+        </HStack>
       </Flex>
       <Field>조회수:{board.viewCount}</Field>
       <Stack gap={5}>

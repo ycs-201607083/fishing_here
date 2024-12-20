@@ -1,9 +1,7 @@
 package com.example.backend.controller.kakao;
 
 import com.example.backend.service.kakao.KakaoService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,36 +12,51 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-//@RequestMapping("/api/kakao")
 public class KakaoController {
-
-    @Value("${kakao.client.id}")
-    private String kakaoClientId;
-    @Value("${kakao.redirect.url}")
-    private String kakaoRedirectUrl;
-    @Value("${kakao.token-uri}")
-    private String kakaoTokenUri;
-    @Value("${kakao.user-info-uri}")
-    private String kakaoUserInfoUri;
-
-    private final KakaoService kakaoService;
+    private final KakaoService service;
 
 
     @GetMapping("/api/oauth/kakao")
-    public ResponseEntity<?> kakaoLogin(
-            @RequestParam("code") String code,
-            HttpSession session) {
-        String accessToken = kakaoService.getKakaoAccessToken(code);
-        HashMap<String, Object> userInfo = kakaoService.getUserInfo(accessToken);
-        HashMap<String, Object> response = new HashMap<>();
+    public ResponseEntity<?> kakaoLogin(@RequestParam("code") String code) {
+        // 카카오 토큰 받기
+        String accessToken = service.getKakaoAccessToken(code);
+        // 사용자 정보 받기
+        HashMap<String, Object> userInfo = service.getUserInfo(accessToken);
 
-        //클라이언트의 이메일이 존재할 때 세션에 대한 해당 이메일과 토큰 등록
-       /* if (userInfo.get("nickname") != null) {
-            session.setAttribute("userId", userInfo.get("email"));
-            session.setAttribute("access_Token", accessToken);
-        }*/
+        String email = (String) userInfo.get("email");
+        String nickname = (String) userInfo.get("nickname");
+
+        System.out.println("email = " + email);
+        System.out.println("nickname = " + nickname);
+        System.out.println("accessToken = " + accessToken);
+
+        return ResponseEntity.ok(Map.of("kakaoToken", accessToken)); // JSON 형태로 응답
+    }
+
+//    @PostMapping("/api/oauth/kakao")
+//    public ResponseEntity<?> kakaoLoginPost(@RequestBody Map<String, String> request) {
+//        String kakaoToken = request.get("kakaoToken");
+//
+//        // 여기에 카카오 토큰을 사용하여 JWT 발급
+//        String jwtToken = service.createJwtToken(kakaoToken);
+//
+//        return ResponseEntity.ok(Map.of("jwtToken", jwtToken)); // 발급된 JWT 반환
+//    }
 
 
-        return ResponseEntity.ok(Map.of("token", accessToken)); // JSON 형태로 응답response;
+    @GetMapping("/api/kakao/check-email")
+    public ResponseEntity<?> checkEmail(
+            @RequestParam("email") String email,
+            @RequestParam("accessToken") String accessToken) {
+        //이메일을 사용하여 기존 회원 여부 확인
+        boolean isExistingMember = service.checkEmailExists(email);
+
+        if (isExistingMember) {
+            //기존 회원이면 로그인
+            return ResponseEntity.ok(Map.of("kakaoToken", accessToken, "message", "로그인 성공"));
+        } else {
+            // 신규 회원이면 회원가입 처리 (카카오 회원가입 페이지로 이동)
+            return ResponseEntity.ok(Map.of("kakaoToken", accessToken, "message", "회원가입 필요"));
+        }
     }
 }

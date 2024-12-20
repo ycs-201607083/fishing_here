@@ -1,11 +1,9 @@
 package com.example.backend.controller.board;
 
-import com.example.backend.dto.board.Announcement;
-import com.example.backend.dto.board.Board;
-import com.example.backend.dto.board.FishingAddress;
-import com.example.backend.dto.board.KakaoMapAddress;
+import com.example.backend.dto.board.*;
 import com.example.backend.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -25,7 +23,6 @@ public class BoardController {
     @GetMapping("boardMain")
     public List<Announcement> boardMain() {
         return service.mainBanner();
-//        return null;
     }
 
     @GetMapping("fishingAddress")
@@ -33,10 +30,102 @@ public class BoardController {
         return service.selectFishingAddress();
     }
 
+
+    @GetMapping("question")
+    public Map<String, Object> divide(@RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return service.listQuestion(page);
+    }
+
+    @PostMapping("questionAdd")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> questionAdd(
+            Question question,
+            @RequestParam(value = "files[]", required = false) MultipartFile[] files,
+            Authentication auth) {
+
+        if (service.validateQues(question)) {
+            if (service.addQues(question, auth, files)) {
+                return ResponseEntity.ok().body(
+                        Map.of("message",
+                                Map.of("type", "success", "text", question.getId() + "번 게시글이 등록되었습니다."),
+                                "data", question));
+            } else {
+                return ResponseEntity.internalServerError().body(
+                        Map.of("message",
+                                Map.of("type", "warning", "text", "등록되지 않았습니다..")));
+            }
+
+        } else {
+            return ResponseEntity.badRequest().body(
+                    Map.of("message",
+                            Map.of("type", "warning", "text", "제목과 본문을  입력해주세요.")));
+        }
+    }
+
+    @GetMapping("questionView/{id}")
+    public Question questionView(@PathVariable int id) {
+        return service.getQuesView(id);
+    }
+
+    @PutMapping("updateQuestion")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> updateQuestion(Question question,
+                                                              @RequestParam(value = "removeFiles[]", required = false) List<String> removeFiles,
+                                                              @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] updateFiles,
+                                                              Authentication auth) {
+
+        if (service.hasAccessQues(question.getId(), auth)) {
+            if (service.validateQues(question)) {
+                if (service.updateQues(question, removeFiles, updateFiles)) {
+                    return ResponseEntity.ok()
+                            .body(Map.of("message", Map.of("type", "success",
+                                            "text", question.getId() + "번 게시물이 수정 되었습니다."),
+                                    "data", question));
+                } else {
+                    return ResponseEntity.internalServerError()
+                            .body(Map.of("message", Map.of("type", "error",
+                                    "text", "게시글이 수정되지 않았습니다.")));
+                }
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", Map.of("type", "error",
+                                "text", "제목이나 본문이 비어있습니다.")));
+            }
+
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error"
+                            , "text", "수정 권한이 없습니다.")));
+        }
+    }
+
+    @DeleteMapping("deleteQues/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> deleteQuestion(@PathVariable int id, Authentication auth) {
+        if (service.hasAccessQues(id, auth)) {
+            if (service.removeQues(id)) {
+                return ResponseEntity.ok()
+                        .body(Map.of("message", Map.of("type", "success",
+                                "text", id + "번 게시물이 삭제 되었습니다.")));
+
+            } else {
+                return ResponseEntity.internalServerError()
+                        .body(Map.of("message", Map.of("type", "error",
+                                "text", "게시물이 삭제 되지 않았습니다.")));
+            }
+        } else {
+            return ResponseEntity.status(403)
+                    .body(Map.of("message", Map.of("type", "error",
+                            "text", "권한이 없습니다.")));
+        }
+    }
+
+
     @GetMapping("announcement")
     public Map<String, Object> announcement(@RequestParam(value = "page", defaultValue = "1") Integer page) {
         return service.listAnnouncement(page);
     }
+
 
     @GetMapping("viewAnn/{id}")
     public Announcement announcementView(@PathVariable int id) {
@@ -246,4 +335,32 @@ public class BoardController {
         List<Board> boards = service.getBoardsByMemberId(id);
         return ResponseEntity.ok(boards);
     }
+
+    @PostMapping("view/increment/{number}")
+    public ResponseEntity<?> incrementViewCount(@PathVariable int number) {
+        try {
+            int updatedViewCount = service.getViewCount(number);
+
+            // 증가된 조회수를 클라이언트에 반환
+            return ResponseEntity.ok(Map.of("viewCount", updatedViewCount));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("조회수 증가 실패");
+        }
+    }
+
+    @GetMapping("like/{number}")
+    public Map<String, Object> getLike(@PathVariable int number,
+                                       Authentication auth) {
+        return service.getLike(number, auth);
+    }
+
+    @PostMapping("like")
+    @PreAuthorize("isAuthenticated()")
+    public Map<String, Object> like(@RequestBody Board board,
+                                    Authentication authentication) {
+        return service.like(board, authentication);
+    }
+
+
 }

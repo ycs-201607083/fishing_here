@@ -1,12 +1,10 @@
 package com.example.backend.mapper.board;
 
-import com.example.backend.dto.board.Announcement;
-import com.example.backend.dto.board.Board;
-import com.example.backend.dto.board.FishingAddress;
-import com.example.backend.dto.board.KakaoMapAddress;
+import com.example.backend.dto.board.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface BoardMapper {
@@ -216,6 +214,20 @@ public interface BoardMapper {
 
 
     @Select("""
+            SELECT *
+            FROM question
+            ORDER BY id DESC
+            LIMIT #{offset},10
+            """)
+    List<Question> selectALlQuestion(int offset);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM question
+            """)
+    int getQuestionCount();
+
+    @Select("""
             SELECT COUNT(*)
             FROM announcement
             """)
@@ -360,6 +372,96 @@ public interface BoardMapper {
             WHERE member_id = #{id}
             """)
     List<Board> findBoardsByMemberId(String id);
+
+    @Select("""
+                    SELECT board_view_count viewCount
+                    FROM board
+                    WHERE board_number = #{number}
+            """)
+    int selectViewCount(int number);
+
+    @Select("""
+                    SELECT *
+                    FROM board_like
+                    WHERE board_id = #{number} AND member_id = #{name}
+            """)
+    Map<String, Object> selectLikeByBoardIdAndMemberNumber(int number, String name);
+
+    @Select("""
+                    SELECT COUNT(*)
+                    FROM board_like
+                    WHERE board_id = #{number}
+            """)
+    int countLike(int number);
+
+    @Insert("""
+                    INSERT INTO board_like
+                    VALUES (#{number}, #{name})
+            """)
+    void insertLike(Integer number, String name);
+
+    @Delete("""
+                    DELETE FROM board_like
+                    WHERE board_id=#{number}
+                    AND member_id=#{name}
+            """)
+    int deleteLikeByBoardIdAndMemberId(Integer number, String name);
+
+
+    @Insert("""
+            INSERT INTO question
+            (title,content,writer)
+            VALUES(#{title},#{content},#{writer})
+            """)
+    @Options(keyProperty = "id", useGeneratedKeys = true)
+    int insertQues(Question question);
+
+    @Insert("""
+            INSERT INTO ques_file
+            VALUES (#{id},#{fileName})
+            """)
+    int insertQuesFile(Integer id, String fileName);
+
+    @Select("""
+            SELECT *
+            FROM question
+            WHERE id = #{id}
+            """)
+    Question selectByQuesId(int id);
+
+    @Select("""
+            SELECT name
+            FROM ques_file
+            WHERE id = #{id}
+            """)
+    List<String> selectFilesByQuesId(int id);
+
+    @Delete("""
+            DELETE FROM ques_file
+            WHERE id = #{id}
+            AND name=#{name}
+            """)
+    int deleteFileByQuesIdAndName(Integer id, String name);
+
+    @Update("""
+            UPDATE question
+            SET title=#{title},
+                content=#{content}
+            WHERE id =#{id}
+            """)
+    int updateQuestion(Question question);
+
+    @Delete("""
+            DELETE FROM ques_file
+            WHERE id = #{id}
+            """)
+    int deleteFileByQuesId(int id);
+
+    @Delete("""
+            DELETE FROM question
+            WHERE id =#{id}
+            """)
+    int deleteByQuesId(int id);
 
     @Delete("""
                 DELETE FROM comment

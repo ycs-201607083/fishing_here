@@ -59,11 +59,11 @@ export function MemberSignup() {
         address,
       })
       .then(() => {
-        console.log("잘됨");
+        console.log("잘됨 성공");
         navigate("/");
       })
       .catch(() => {
-        console.log("안됨");
+        console.log("안됨 왜?");
       });
   }
 
