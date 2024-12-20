@@ -1,9 +1,6 @@
 package com.example.backend.mapper.board;
 
-import com.example.backend.dto.board.Announcement;
-import com.example.backend.dto.board.Board;
-import com.example.backend.dto.board.FishingAddress;
-import com.example.backend.dto.board.KakaoMapAddress;
+import com.example.backend.dto.board.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -136,6 +133,20 @@ public interface BoardMapper {
             """)
     int deleteById(int number);
 
+
+    @Select("""
+            SELECT *
+            FROM question
+            ORDER BY id DESC
+            LIMIT #{offset},10
+            """)
+    List<Question> selectALlQuestion(int offset);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM question
+            """)
+    int getQuestionCount();
 
     @Select("""
             SELECT COUNT(*)
@@ -282,4 +293,59 @@ public interface BoardMapper {
             WHERE member_id = #{id}
             """)
     List<Board> findBoardsByMemberId(String id);
+
+    @Insert("""
+            INSERT INTO question
+            (title,content,writer)
+            VALUES(#{title},#{content},#{writer})
+            """)
+    @Options(keyProperty = "id", useGeneratedKeys = true)
+    int insertQues(Question question);
+
+    @Insert("""
+            INSERT INTO ques_file
+            VALUES (#{id},#{fileName})
+            """)
+    int insertQuesFile(Integer id, String fileName);
+
+    @Select("""
+            SELECT *
+            FROM question
+            WHERE id = #{id}
+            """)
+    Question selectByQuesId(int id);
+
+    @Select("""
+            SELECT name
+            FROM ques_file
+            WHERE id = #{id}
+            """)
+    List<String> selectFilesByQuesId(int id);
+
+    @Delete("""
+            DELETE FROM ques_file
+            WHERE id = #{id}
+            AND name=#{name}
+            """)
+    int deleteFileByQuesIdAndName(Integer id, String name);
+
+    @Update("""
+            UPDATE question
+            SET title=#{title},
+                content=#{content}
+            WHERE id =#{id}
+            """)
+    int updateQuestion(Question question);
+
+    @Delete("""
+            DELETE FROM ques_file
+            WHERE id = #{id}
+            """)
+    int deleteFileByQuesId(int id);
+
+    @Delete("""
+            DELETE FROM question
+            WHERE id =#{id}
+            """)
+    int deleteByQuesId(int id);
 }

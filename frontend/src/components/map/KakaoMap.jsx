@@ -83,11 +83,10 @@ export function KakaoMap() {
       .get("/api/board/fishingAddress")
       .then((res) => res.data)
       .then((data) => {
-        console.log(data, "낚시터");
         setAddressList(data);
       })
-      .catch(() => {
-        console.log("안됨");
+      .catch((e) => {
+        console.log(e, "안됨");
       });
   }, []);
 

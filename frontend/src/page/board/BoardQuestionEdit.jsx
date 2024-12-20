@@ -1,4 +1,8 @@
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
+import axios from "axios";
+import { toaster } from "../../components/ui/toaster.jsx";
 import {
   Box,
   Card,
@@ -12,11 +16,9 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { Field } from "../../components/ui/field.jsx";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import { ImagDeleteView } from "../../components/root/ImagDeleteView.jsx";
 import { Button } from "../../components/ui/button.jsx";
 import { FaArrowLeft } from "react-icons/fa6";
-import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 import {
   DialogActionTrigger,
   DialogBody,
@@ -28,13 +30,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../components/ui/dialog";
-import { toaster } from "../../components/ui/toaster.jsx";
-import { ImagDeleteView } from "../../components/root/ImagDeleteView.jsx";
 
-export function BoardAnnouncementEdit() {
+export function BoardQuestionEdit() {
   const { id } = useParams();
   const { hasAccess } = useContext(AuthenticationContext);
-  const [announcement, setAnnouncement] = useState(null);
+  const [question, setQuestion] = useState(null);
   const [removeFiles, setRemoveFiles] = useState([]);
   const [uploadFiles, setUploadFiles] = useState([]);
   const [progress, setProgress] = useState(false);
@@ -43,9 +43,12 @@ export function BoardAnnouncementEdit() {
 
   useEffect(() => {
     axios
-      .get(`/api/board/viewAnn/${id}`)
+      .get(`/api/board/questionView/${id}`)
       .then((res) => {
-        setAnnouncement(res.data);
+        setQuestion(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -53,10 +56,10 @@ export function BoardAnnouncementEdit() {
   const handleSaveClick = () => {
     setProgress(true);
     axios
-      .putForm("/api/board/updateAnn", {
-        id: announcement.id,
-        title: announcement.title,
-        content: announcement.content,
+      .putForm("/api/board/updateQuestion", {
+        id: question.id,
+        title: question.title,
+        content: question.content,
         uploadFiles,
         removeFiles,
       })
@@ -67,7 +70,7 @@ export function BoardAnnouncementEdit() {
           type: message.type,
           description: message.text,
         });
-        navigate(`/board/viewAnn/${id}`);
+        navigate(`/board/questionView/${id}`);
       })
       .catch((e) => {
         const message = e.data.message;
@@ -95,10 +98,9 @@ export function BoardAnnouncementEdit() {
   };
 
   let disabled = false;
-  if (announcement !== null) {
+  if (question !== null) {
     disabled = !(
-      announcement.title.trim().length > 0 &&
-      announcement.content.trim().length > 0
+      question.title.trim().length > 0 && question.content.trim().length > 0
     );
   }
 
@@ -138,7 +140,7 @@ export function BoardAnnouncementEdit() {
     filedInputInvalid = true;
   }
 
-  if (announcement === null) {
+  if (question === null) {
     return <Spinner />;
   }
   return (
@@ -146,24 +148,24 @@ export function BoardAnnouncementEdit() {
       <Stack gap={5}>
         <Field label="제목">
           <Input
-            value={announcement.title}
+            value={question.title}
             placeholder="제목을 입력해 주세요"
             onChange={(e) =>
-              setAnnouncement({ ...announcement, title: e.target.value })
+              setQuestion({ ...question, title: e.target.value })
             }
           />
         </Field>
         <ImagDeleteView
-          files={announcement.fileList}
+          files={question.fileList}
           onRemoveSwitchClick={handleRemoveClick}
         />
         <Field label="본문">
           <Textarea
-            value={announcement.content}
+            value={question.content}
             placeholder="내용을 입력해 주세요"
             h={"300px"}
             onChange={(e) =>
-              setAnnouncement({ ...announcement, content: e.target.value })
+              setQuestion({ ...question, content: e.target.value })
             }
           />
         </Field>
@@ -190,7 +192,7 @@ export function BoardAnnouncementEdit() {
         </Button>
         <Spacer />
 
-        {hasAccess(announcement.writer) && (
+        {hasAccess(question.writer) && (
           <DialogRoot placement={"bottom"} role="alertdialog">
             <DialogTrigger asChild>
               <Button
@@ -232,6 +234,6 @@ export function BoardAnnouncementEdit() {
       </Flex>
     </Box>
   );
-}
 
-export default BoardAnnouncementEdit;
+  return null;
+}
