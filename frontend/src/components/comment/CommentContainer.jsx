@@ -51,8 +51,10 @@ export function CommentContainer({ boardId }) {
 
   function handleDeleteClick(id) {
     setProcessing(true);
-    axios
-      .delete(`/api/comment/remove/${id}`)
+    axios({
+      method: "DELETE", // HTTP 메서드 명시
+      url: `/api/comment/remove/${id}`,
+    })
       .then(() => console.log("Comment deleted successfully"))
       .catch((err) => console.error("Failed to delete comment:", err)) // 디버깅 로그 추가
       .finally(() => {
