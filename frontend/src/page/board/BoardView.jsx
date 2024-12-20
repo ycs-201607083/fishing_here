@@ -95,7 +95,6 @@ function ImageFileView({ files }) {
   );
 }
 
-
 /* 차트 설정 */
 function ChartView({ chartData }) {
   const data = {
