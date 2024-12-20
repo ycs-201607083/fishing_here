@@ -31,6 +31,12 @@ import { toaster } from "../../components/ui/toaster.jsx";
 import { useAddress } from "../../context/AddressContext.jsx";
 import { ToggleTip } from "../../components/ui/toggle-tip";
 import { GoHeart, GoHeartFill } from "react-icons/go";
+import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
+import { Doughnut } from "react-chartjs-2";
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
+
+// 차트에 필요한 요소를 등록.
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 function ImageFileView({ files }) {
   const [selectedImage, setSelectedImage] = useState(null); // 클릭된 이미지 상태 관리
@@ -89,6 +95,21 @@ function ImageFileView({ files }) {
   );
 }
 
+/* 차트 설정 */
+function ChartView({ chartData }) {
+  const data = {
+    labels: chartData.labels,
+    datasets: [
+      {
+        data: chartData.values,
+        backgroundColor: ["red", "blue", "yellow", "green", "purple"],
+        hoverOffset: 4,
+      },
+    ],
+  };
+  return <Doughnut data={data} />;
+}
+
 export function BoardView() {
   const [board, setBoard] = useState(null);
   const { hasAccess, isAuthenticated } = useContext(AuthenticationContext);
@@ -110,9 +131,11 @@ export function BoardView() {
       .then((res) => res.data)
       .then((data) => setLike(data));
   }, []);
+  const [chartData, setChartData] = useState({ labels: [], values: [] }); // 차트 데이터 추가
 
   useEffect(() => {
     // 조회수 증가 요청
+    // 게시물 데이터 가져오기
     axios
       .post(`/api/board/view/increment/${number}`)
       .then(() => {
@@ -126,7 +149,33 @@ export function BoardView() {
       .catch((e) => {
         console.log("Error fetching board data:", e);
       });
+    // 차트 데이터 가져오기
+    axios
+      .get(`/api/chart/${number}`)
+      .then((res) => {
+        setChartData(res.data); // 서버에서 받은 데이터로 차트 업데이트
+      })
+      .catch((e) => console.error("Failed to fetch chart data:", e));
   }, [number]);
+
+  // 새로운 차트 데이터 저장
+  const handleChartSave = (chartLabel, chartValue) => {
+    axios
+      .post(`/api/chart/add`, {
+        boardId: number,
+        label: chartLabel,
+        value: chartValue,
+      })
+      .then(() => {
+        // 차트 데이터를 갱신
+        setChartData((prev) => ({
+          labels: [...prev.labels, chartLabel],
+          values: [...prev.values, chartValue],
+        }));
+        console.log("Chart data saved successfully.");
+      })
+      .catch((e) => console.error("Failed to save chart data:", e));
+  };
 
   useEffect(() => {
     setAddr(address);
@@ -235,7 +284,7 @@ export function BoardView() {
           </Box>
         </HStack>
       </Flex>
-      <Field>조회수:{viewCnt}</Field>
+      <Field>조회수:{board.viewCount}</Field>
       <Stack gap={5}>
         <Field label="제목" readOnly>
           <Input value={board.title} />
@@ -263,6 +312,30 @@ export function BoardView() {
             ></Box>
           </Field>
         ) : null}
+
+        {/* 차트 추가 */}
+        <Field label="명당 어종별 어획량 차트">
+          <ChartView chartData={chartData} />
+        </Field>
+
+        {/* 차트 데이터 입력 UI */}
+        <Field label="어획량 데이터 추가">
+          <Input
+            placeholder="해산물 입력"
+            onChange={(e) => setChartLabel(e.target.value)}
+          />
+          <Input
+            placeholder="실제 잡은 해산물 수 입력"
+            type="number"
+            onChange={(e) => setChartValue(e.target.value)}
+          />
+          <Button
+            colorPalette="blue"
+            onClick={() => handleChartSave(chartLabel, chartValue)}
+          >
+            차트 저장
+          </Button>
+        </Field>
 
         <Field label="작성자" readOnly>
           <Input value={board.writer} />
@@ -307,6 +380,8 @@ export function BoardView() {
         )}
         <hr />
       </Stack>
+      <hr />
+      <CommentContainer boardId={board.number} />
     </Box>
   );
 }

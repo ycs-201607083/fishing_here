@@ -65,6 +65,53 @@ public interface BoardMapper {
                               Integer offset);
 
     @Select("""
+                <script>
+                SELECT COUNT(*) 
+                FROM board
+                WHERE 
+                    <choose>
+                        <when test="site == 'allSite'">
+                            board_site IN ('민물낚시', '바다낚시')
+                        </when>
+                        <when test="site == 'riverSite'">
+                            board_site = '민물낚시'
+                        </when>
+                        <when test="site == 'seaSite'">
+                            board_site = '바다낚시'
+                        </when>
+                        <otherwise>
+                            1=1-- site 값이 없을 경우 전체 검색
+                        </otherwise>
+                    </choose>
+                    <if test="keyword != null and keyword != ''">
+                        AND (
+                            <choose>
+                                <when test="type == 'title'">
+                                    board_title LIKE CONCAT('%', #{keyword}, '%')
+                                </when>
+                                <when test="type == 'content'">
+                                    board_content LIKE CONCAT('%', #{keyword}, '%')
+                                </when>
+                                <when test="type == 'writer'">
+                                    board_writer LIKE CONCAT('%', #{keyword}, '%')
+                                </when>
+                                <otherwise>
+                                    (board_title LIKE CONCAT('%', #{keyword}, '%') OR 
+                                     board_content LIKE CONCAT('%', #{keyword}, '%') OR 
+                                     board_writer LIKE CONCAT('%', #{keyword}, '%'))
+                                </otherwise>
+                            </choose>
+                        )
+                    </if>
+                </script>
+            """)
+        // 검색 조건에 따른 게시글 개수를 반환
+    Integer countBoardsBySearch(@Param("keyword") String keyword,
+                                @Param("type") String type,
+                                @Param("site") String site);
+
+
+    @Select("""
                 SELECT
                     board_number AS number,
                     board_title AS title,
@@ -119,6 +166,37 @@ public interface BoardMapper {
                                     WHERE board_number = #{number}
             """)
     Board selectById(int number);
+
+    @Select("""
+              SELECT 
+                        board_number number,
+                        board_title title, 
+                        board_writer writer, 
+                        board_date AS date,
+                        board_content content,
+                        board_site site,
+                        board_view_count viewCount
+                FROM board
+                  WHERE board_number IN (
+                    SELECT board_id
+                      FROM (
+                              SELECT board_id
+                              FROM board_like
+                              GROUP BY board_id
+                              ORDER BY COUNT(board_id) DESC
+                              LIMIT 3
+                           ) AS top_boards
+                       );
+            """)
+    List<Board> findTopBoardsByLike();
+
+    @Select("""
+               SELECT board_id AS number, COUNT(board_id) AS likeCount
+               FROM board_like
+               GROUP BY board_id
+               ORDER BY likeCount DESC
+            """)
+    List<Board> findLikeCount();
 
     @Select("""
             SELECT name 
@@ -384,4 +462,10 @@ public interface BoardMapper {
             WHERE id =#{id}
             """)
     int deleteByQuesId(int id);
+
+    @Delete("""
+                DELETE FROM comment
+                WHERE board_id = #{boardId}
+            """)
+    int deleteCommentsByBoardId(int boardId);
 }

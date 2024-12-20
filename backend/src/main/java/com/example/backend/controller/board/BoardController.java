@@ -227,6 +227,16 @@ public class BoardController {
         return service.getTopBoardsByViews();
     }
 
+    @GetMapping("/top-like")
+    public List<Board> getTopBoardsByLikes() {
+        return service.getTopBoardsByLike();
+    }
+
+    @GetMapping("/likeCount")
+    public List<Board> getLikeCount() {
+        return service.getLikeCount();
+    }
+
     @PostMapping("/list/{number}")
     public void increaseViewCount(@PathVariable Integer number) {
         service.increaseViewCount(number);

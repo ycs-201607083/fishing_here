@@ -8,7 +8,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Field } from "../../components/ui/field.jsx";
 import {
@@ -23,6 +23,7 @@ import {
 } from "../../components/ui/dialog.jsx";
 import { toaster } from "../../components/ui/toaster.jsx";
 import DaumPostcodeEmbed from "react-daum-postcode";
+import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 
 export function MemberEdit() {
   const { id } = useParams();
@@ -46,6 +47,8 @@ export function MemberEdit() {
 
   //우편번호 api
   const [isOpen, setIsOpen] = useState(false);
+  // 보안
+  const { hasAccess } = useContext(AuthenticationContext);
 
   useEffect(() => {
     axios.get(`/api/member/${id}`).then((res) => {
@@ -68,6 +71,7 @@ export function MemberEdit() {
         address,
         email,
         oldPassword,
+        phone,
       })
       .then((res) => {
         const message = res.data.message;
@@ -146,131 +150,137 @@ export function MemberEdit() {
   return (
     <Box px="20px" mx={"auto"} w={{ md: "500px" }}>
       <h3>회원 정보</h3>
-      <Stack gap={5} p="5" bg="blue.200">
-        <Field readOnly label={"아이디"}>
-          <Input readOnly defaultValue={member.id} style={{ color: "gray" }} />
-        </Field>
-        <Field label={"암호"}>
-          <Input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            variant="subtle"
-          />
-        </Field>
-        <Field readOnly label={"이름"}>
-          <Input
-            readOnly
-            style={{ color: "gray" }}
-            value={member.name}
-            maxW="550px"
-          />
-        </Field>
-        <Field label={"이메일"}>
-          <Input
-            value={email}
-            onChange={handleEmailChange}
-            maxW="550px"
-            variant="subtle"
-          />
-          <Span style={{ color: emailError ? "green" : "red" }}>
-            {emailMessage}
-          </Span>
-        </Field>
-        <Field label={"전화번호"}>
-          <Input
-            value={phone}
-            onChange={regPhoneNumber}
-            variant="subtle"
-            maxW="550px"
-          />
-        </Field>
-        <Field readOnly label={"생일"}>
-          <Input
-            readOnly
-            value={member.birth}
-            style={{ color: "gray" }}
-            maxW="550px"
-          />
-        </Field>
-        <Box>
-          <Field label={"우편번호"}>
-            <Group>
-              <Input
-                value={post}
-                readOnly
-                onChange={(e) => setPost(e.target.value)}
-                variant="subtle"
-                maxW="550px"
-              />
-              <Button onClick={handleApi}>우편번호 찾기</Button>
-            </Group>
-          </Field>
-
-          <Field label={"상세주소"}>
+      {hasAccess(member.id) && (
+        <Stack gap={5} p="5" bg="blue.200">
+          <Field readOnly label={"아이디"}>
             <Input
-              value={address}
               readOnly
-              onChange={(e) => setAddress(e.target.value)}
+              defaultValue={member.id}
+              style={{ color: "gray" }}
+            />
+          </Field>
+          <Field label={"암호"}>
+            <Input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              variant="subtle"
+            />
+          </Field>
+          <Field readOnly label={"이름"}>
+            <Input
+              readOnly
+              style={{ color: "gray" }}
+              value={member.name}
+              maxW="550px"
+            />
+          </Field>
+          <Field label={"이메일"}>
+            <Input
+              value={email}
+              onChange={handleEmailChange}
+              maxW="550px"
+              variant="subtle"
+            />
+            <Span style={{ color: emailError ? "green" : "red" }}>
+              {emailMessage}
+            </Span>
+          </Field>
+          <Field label={"전화번호"}>
+            <Input
+              value={phone}
+              onChange={regPhoneNumber}
               variant="subtle"
               maxW="550px"
             />
           </Field>
-          {isOpen && (
-            <Field mt="5">
-              <DaumPostcodeEmbed
-                onComplete={handleComplete}
-                onClose={handleClose}
-              />
-              <Button onClick={handleButtonClose} w={{ md: "100%" }}>
-                닫기
-              </Button>
+          <Field readOnly label={"생일"}>
+            <Input
+              readOnly
+              value={member.birth}
+              style={{ color: "gray" }}
+              maxW="550px"
+            />
+          </Field>
+          <Box>
+            <Field label={"우편번호"}>
+              <Group>
+                <Input
+                  value={post}
+                  readOnly
+                  onChange={(e) => setPost(e.target.value)}
+                  variant="subtle"
+                  maxW="550px"
+                />
+                <Button onClick={handleApi}>우편번호 찾기</Button>
+              </Group>
             </Field>
-          )}
-        </Box>
-        <Field readOnly label={"가입일시"}>
-          <Input
-            defaultValue={member.id}
-            style={{ color: "gray" }}
-            value={member.inserted}
-            maxW="550px"
-          />
-        </Field>
-        <Box>
-          <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
-            <DialogTrigger asChild>
-              <Button colorPalette={"blue"} mx={"auto"} w={{ md: "100%" }}>
-                저장
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>회원 정보 변경 확인</DialogTitle>
-              </DialogHeader>
-              <DialogBody>
-                <Stack gap={5}>
-                  <Field label={"기존 암호"}>
-                    <Input
-                      placeholder={"기존 암호를 입력해주세요."}
-                      value={oldPassword}
-                      onChange={(e) => setOldPassword(e.target.value)}
-                    />
-                  </Field>
-                </Stack>
-              </DialogBody>
-              <DialogFooter>
-                <DialogActionTrigger>
-                  <Button variant={"outline"}>취소</Button>
-                </DialogActionTrigger>
-                <Box>
-                  <Button colorPalette={"blue"} onClick={handleSaveClick}>
-                    저장
-                  </Button>
-                </Box>
-              </DialogFooter>
-            </DialogContent>
-          </DialogRoot>
-        </Box>
-      </Stack>
+
+            <Field label={"상세주소"}>
+              <Input
+                value={address}
+                readOnly
+                onChange={(e) => setAddress(e.target.value)}
+                variant="subtle"
+                maxW="550px"
+              />
+            </Field>
+            {isOpen && (
+              <Field mt="5">
+                <DaumPostcodeEmbed
+                  onComplete={handleComplete}
+                  onClose={handleClose}
+                />
+                <Button onClick={handleButtonClose} w={{ md: "100%" }}>
+                  닫기
+                </Button>
+              </Field>
+            )}
+          </Box>
+          <Field readOnly label={"가입일시"}>
+            <Input
+              defaultValue={member.id}
+              style={{ color: "gray" }}
+              value={member.inserted}
+              maxW="550px"
+            />
+          </Field>
+          <Box>
+            <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
+              <DialogTrigger asChild>
+                <Button colorPalette={"blue"} mx={"auto"} w={{ md: "100%" }}>
+                  저장
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>회원 정보 변경 확인</DialogTitle>
+                </DialogHeader>
+                <DialogBody>
+                  <Stack gap={5}>
+                    <Field label={"기존 암호"}>
+                      <Input
+                        placeholder={"기존 암호를 입력해주세요."}
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                      />
+                    </Field>
+                  </Stack>
+                </DialogBody>
+                <DialogFooter>
+                  <DialogActionTrigger>
+                    <Button variant={"outline"}>취소</Button>
+                  </DialogActionTrigger>
+                  <Box>
+                    <Button colorPalette={"blue"} onClick={handleSaveClick}>
+                      저장
+                    </Button>
+                  </Box>
+                </DialogFooter>
+              </DialogContent>
+            </DialogRoot>
+          </Box>
+        </Stack>
+      )}
     </Box>
   );
 }
