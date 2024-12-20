@@ -84,11 +84,10 @@ export function Navbar() {
         color={"blue.800"}
         fontSize={"40px"}
         h={"100px"}
-        w={"100%"}
         _hover={{ cursor: "pointer" }}
         onClick={() => navigate("/")}
       >
-        <Image src={mainTitle} />
+        <Image w="200px" src={mainTitle} />
       </Center>
 
       <Flex
@@ -107,6 +106,9 @@ export function Navbar() {
           </NavItem>
           <NavItem onClick={() => navigate("/board/list")}>
             <TextItem>커뮤니티</TextItem>
+          </NavItem>{" "}
+          <NavItem onClick={() => navigate("/board/question")}>
+            <TextItem>질문게시판</TextItem>
           </NavItem>
         </Flex>
       </Flex>
