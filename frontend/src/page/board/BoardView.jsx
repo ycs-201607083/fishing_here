@@ -44,7 +44,7 @@ function ImageFileView({ files }) {
   const handleImageClick = (src) => {
     setSelectedImage(src); // 클릭된 이미지 설정
   };
-
+  // 수정
   const handleBackgroundClick = () => {
     setSelectedImage(null); // 이미지 닫기
   };
