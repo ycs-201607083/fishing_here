@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { Box, Center, Flex, Image, Spacer, Text } from "@chakra-ui/react";
-import { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 import mainTitle from "/src/components/Image/mainTitle.png";
+import "../css/Modal.css";
+import { MemberLogin } from "../../page/member/MemberLogin.jsx";
 
 function NavItem({ children, ...rest }) {
   return (
@@ -30,6 +32,10 @@ function TextItem({ children, ...rest }) {
 }
 
 export function Navbar() {
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   const navigate = useNavigate();
 
   const { id, kakaoId, isAdmin, isAuthenticated, logout } = useContext(
@@ -48,9 +54,7 @@ export function Navbar() {
         {isAuthenticated || (
           <NavItem onClick={() => navigate("/member/signup")}>회원가입</NavItem>
         )}
-        {isAuthenticated || (
-          <NavItem onClick={() => navigate("member/login")}>로그인</NavItem>
-        )}
+        {!isAuthenticated && <NavItem onClick={openModal}>로그인</NavItem>}
 
         {isAuthenticated && (
           <NavItem
@@ -66,7 +70,8 @@ export function Navbar() {
           <NavItem
             onClick={() => {
               logout();
-              navigate("/member/login");
+              closeModal();
+              navigate("/board/list");
             }}
           >
             로그아웃
@@ -107,6 +112,8 @@ export function Navbar() {
           </NavItem>
         </Flex>
       </Flex>
+      {/* 로그인 모달 */}
+      {isModalOpen && <MemberLogin closeModal={closeModal} />}
     </Box>
   );
 }

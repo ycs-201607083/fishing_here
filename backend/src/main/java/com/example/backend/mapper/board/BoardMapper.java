@@ -1,9 +1,13 @@
 package com.example.backend.mapper.board;
 
-import com.example.backend.dto.board.*;
+import com.example.backend.dto.board.Announcement;
+import com.example.backend.dto.board.Board;
+import com.example.backend.dto.board.FishingAddress;
+import com.example.backend.dto.board.KakaoMapAddress;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface BoardMapper {
@@ -293,6 +297,42 @@ public interface BoardMapper {
             WHERE member_id = #{id}
             """)
     List<Board> findBoardsByMemberId(String id);
+
+    @Select("""
+                    SELECT board_view_count viewCount
+                    FROM board
+                    WHERE board_number = #{number}
+            """)
+    int selectViewCount(int number);
+
+    @Select("""
+                    SELECT *
+                    FROM board_like
+                    WHERE board_id = #{number} AND member_id = #{name}
+            """)
+    Map<String, Object> selectLikeByBoardIdAndMemberNumber(int number, String name);
+
+    @Select("""
+                    SELECT COUNT(*)
+                    FROM board_like
+                    WHERE board_id = #{number}
+            """)
+    int countLike(int number);
+
+    @Insert("""
+                    INSERT INTO board_like
+                    VALUES (#{number}, #{name})
+            """)
+    void insertLike(Integer number, String name);
+
+    @Delete("""
+                    DELETE FROM board_like
+                    WHERE board_id=#{number}
+                    AND member_id=#{name}
+            """)
+    int deleteLikeByBoardIdAndMemberId(Integer number, String name);
+
+
 
     @Insert("""
             INSERT INTO question

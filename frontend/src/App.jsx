@@ -23,6 +23,8 @@ import { MemberEdit } from "./page/member/MemberEdit.jsx";
 import { BoardWritten } from "./page/board/BoardWritten.jsx";
 import { AddressProvider, useAddress } from "./context/AddressContext.jsx";
 import { BoardEdit } from "./page/board/BoardEdit.jsx";
+import KakaoSignup from "./page/kakao/KakaoSignup.jsx";
+import { KaKaoLogin } from "./page/kakao/KaKaoLogin.jsx";
 import { BoardQuestion } from "./page/board/BoardQuestion.jsx";
 import { BoardQuestionAdd } from "./page/board/BoardQuestionAdd.jsx";
 import { BoardQuestionView } from "./page/board/BoardQuestionView.jsx";
@@ -30,13 +32,9 @@ import { BoardQuestionEdit } from "./page/board/BoardQuestionEdit.jsx";
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem("token");
-  // const kakaoToken = localStorage.getItem("kakaoToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  // else if (kakaoToken) {
-  //   config.headers.Authorization = `Bearer ${kakaoToken}`;
-  // }
 
   return config;
 });
@@ -80,7 +78,7 @@ const router = createBrowserRouter([
       },
       {
         path: "kakao/auth",
-        element: <LoginKakaoHandler />,
+        element: <KaKaoLogin />,
       },
       {
         path: "/manager/List",
@@ -113,6 +111,10 @@ const router = createBrowserRouter([
       {
         path: "board/edit/:number",
         element: <BoardEdit />,
+      },
+      {
+        path: "member/kakao/signup",
+        element: <KakaoSignup />,
       },
       {
         path: "board/question",

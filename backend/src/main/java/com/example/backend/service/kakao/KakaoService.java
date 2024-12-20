@@ -1,8 +1,12 @@
 package com.example.backend.service.kakao;
 
+import com.example.backend.dto.kakao.KakaoMember;
+import com.example.backend.mapper.kakao.KakaoMapper;
 import com.nimbusds.jose.shaded.gson.JsonElement;
 import com.nimbusds.jose.shaded.gson.JsonObject;
 import com.nimbusds.jose.shaded.gson.JsonParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 
 @Transactional
@@ -26,6 +31,10 @@ public class KakaoService {
     private String clientId;
     @Value("${kakao.user-info-uri}")
     private String userInfoUri;
+    @Value("${kakao.secret.key}")
+    private String secretKey;
+
+    final KakaoMapper mapper;
 
     public String getKakaoAccessToken(String code) {
         String accessToken = "";
@@ -36,9 +45,10 @@ public class KakaoService {
             URL url = new URL(requestURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
+            //필수 헤더 세팅
+            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+            conn.setDoOutput(true); //OutputStream으로 POST 데이터를 넘겨주겠다는 옵션.
             //post요청을 위해 기본값이 false인 setDoOutput을 true로 설정
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
             conn.setRequestProperty("Authorization", "Bearer " + code);     //전송할 header작성, accessToken전송
 
             //post요청에 필요로 요구하는 파라미터 스트림을 통해 전송
@@ -54,25 +64,23 @@ public class KakaoService {
 
             //결과 코드가 200이라면
             int responseCode = conn.getResponseCode();
-            if (responseCode != 200) {
-                System.out.println("Error: Response Code " + responseCode);
-                return null; // 오류 발생 시 처리
+            BufferedReader br;
+            if (responseCode >= 200 && responseCode < 300) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
             }
 
-            
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String line = "";
-            String result = "";
-
+            StringBuilder responseSb = new StringBuilder();
             while ((line = br.readLine()) != null) {
-                result += line;
+                responseSb.append(line);
             }
-            System.out.println("response body : " + result);
+            String result = responseSb.toString();
 
-            //Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
-
             accessToken = element.getAsJsonObject().get("access_token").getAsString();
             refreshToken = element.getAsJsonObject().get("refresh_token").getAsString();
 
@@ -98,6 +106,7 @@ public class KakaoService {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET"); // GET 메서드로 요청
             conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+            conn.setRequestProperty("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
             // 응답 코드 확인
             int responseCode = conn.getResponseCode();
@@ -106,44 +115,61 @@ public class KakaoService {
                 return null; // 오류 발생 시 처리
             }
 
-            // 응답 읽기
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder result = new StringBuilder();
-            String line;
+            BufferedReader br;
+            if (responseCode >= 200 && responseCode <= 300) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+
+            String line = "";
+            StringBuilder responseSb = new StringBuilder();
             while ((line = br.readLine()) != null) {
-                result.append(line);
+                responseSb.append(line);
             }
+            String result = responseSb.toString();
 
-            // 응답 디버깅 출력
-            System.out.println("Response body: " + result);
-
-            // JSON 파싱
             JsonParser parser = new JsonParser();
-            JsonObject element = parser.parse(result.toString()).getAsJsonObject();
+            JsonElement element = parser.parse(result);
 
-            // JSON 데이터에서 필요한 값 추출
-            JsonObject properties = element.has("properties") ? element.getAsJsonObject("properties") : null;
-            JsonObject kakaoAccount = element.has("kakao_account") ? element.getAsJsonObject("kakao_account") : null;
+            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+            JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
 
-            // 닉네임 추출 (null 안전 처리)
-            if (properties != null && properties.has("nickname") && !properties.get("nickname").isJsonNull()) {
-                userInfo.put("nickname", properties.get("nickname").getAsString());
-            } else {
-                userInfo.put("nickname", "Unknown"); // 기본값 설정
-            }
+            String nickname = properties.getAsJsonObject().get("nickname").getAsString();
+            String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
 
-            // 이메일 추출 (null 안전 처리)
-            if (kakaoAccount != null && kakaoAccount.has("email") && !kakaoAccount.get("email").isJsonNull()) {
-                userInfo.put("email", kakaoAccount.get("email").getAsString());
-            } else {
-                userInfo.put("email", "No Email"); // 기본값 설정
-            }
+            userInfo.put("nickname", nickname);
+            userInfo.put("email", email);
 
-        } catch (IOException e) {
+            br.close();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
         return userInfo;
     }
 
+    public boolean addKakao(KakaoMember kakaoMember) {
+        int cnt = mapper.insertKakaoLogin(kakaoMember);
+
+        return cnt == 1;
+    }
+
+    // 이메일이 존재하는지 확인
+    public boolean checkEmailExists(String email) {
+        KakaoMember kakaoMember = mapper.selectByEmail(email); // 이메일로 회원 조회
+        return kakaoMember != null; // 존재하면 true 반환
+    }
+
+    public String createJwtToken(String kakaoToken) {
+        // JWT 만료 시간을 설정 (예: 1시간)
+        long expirationTime = 1000 * 60 * 60; // 1시간
+
+        return Jwts.builder()
+                .setSubject(kakaoToken) // 카카오 토큰을 subject로 설정
+                .setIssuedAt(new Date()) // 발급 시간
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // 만료 시간
+                .signWith(SignatureAlgorithm.HS256, secretKey) // 비밀 키로 서명
+                .compact();
+    }
 }

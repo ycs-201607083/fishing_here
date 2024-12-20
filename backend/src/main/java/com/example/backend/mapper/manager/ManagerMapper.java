@@ -2,6 +2,7 @@ package com.example.backend.mapper.manager;
 
 import com.example.backend.dto.board.Board;
 import com.example.backend.dto.member.Member;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -23,4 +24,16 @@ public interface ManagerMapper {
                     ORDER BY board_number;
             """)
     List<Board> selectBoardAll();
+
+    @Delete("""
+                    DELETE FROM member
+                    WHERE member_id = #{id}
+            """)
+    int selectRemoveId(String id);
+
+    @Delete("""
+                DELETE FROM board
+                WHERE board_number = #{number}
+            """)
+    int selectRemoveNum(int number);
 }
