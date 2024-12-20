@@ -1,4 +1,4 @@
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, Heading, Stack } from "@chakra-ui/react";
 import { CommentInput } from "./CommentInput.jsx";
 import { CommentList } from "./CommentList.jsx";
 import { useEffect, useState } from "react";
@@ -63,9 +63,9 @@ export function CommentContainer({ boardId }) {
   }
 
   return (
-    <Box>
-      <Stack gap={5}>
-        <h3>댓글</h3>
+    <Box pt={5}>
+      <Heading>댓글</Heading>
+      <Stack gap={2}>
         <CommentInput boardId={boardId} onSaveClick={handleSaveClick} />
         <CommentList
           boardId={boardId}
