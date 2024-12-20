@@ -183,23 +183,21 @@ export function ManagementPage() {
                     <Table.Cell>{board.date}</Table.Cell>
                     <Table.Cell>{board.site}</Table.Cell>
                     <Table.Cell>
-                      <Table.Cell>
-                        <CloseButton
-                          colorPalette="red"
-                          size="sm"
-                          variant={"solid"}
-                          onClick={(e) => {
-                            e.stopPropagation(); // 클릭 이벤트 전파 방지
-                            if (
-                              window.confirm(
-                                `"${board.number}" 게시물을 삭제하시겠습니까?`,
-                              )
-                            ) {
-                              handleBoardDeleteClick(board.number); // `member.id`를 전달
-                            }
-                          }}
-                        ></CloseButton>
-                      </Table.Cell>
+                      <CloseButton
+                        colorPalette="red"
+                        size="sm"
+                        variant={"solid"}
+                        onClick={(e) => {
+                          e.stopPropagation(); // 클릭 이벤트 전파 방지
+                          if (
+                            window.confirm(
+                              `"${board.number}" 게시물을 삭제하시겠습니까?`,
+                            )
+                          ) {
+                            handleBoardDeleteClick(board.number); // `member.id`를 전달
+                          }
+                        }}
+                      ></CloseButton>
                     </Table.Cell>
                   </Table.Row>
                 ))
