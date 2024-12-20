@@ -85,16 +85,12 @@ public class CommentService {
     }
 
     public boolean hasAccess(Integer id, Authentication auth) {
-        Comment comment = mapper.selectById(id);
-        return comment.getMemberId().equals(auth.getName());
+        Comment comment = mapper.selectById(id); // 댓글 조회
+        return comment != null && comment.getMemberId().equals(auth.getName()); // 작성자 확인
     }
 
     public void remove(Integer id) {
-        // 1. 게시글의 모든 댓글 삭제
-        mapper.deleteCommentsByBoardId(id);
-        // 2. 게시글 삭제
-        mapper.deleteBoardById(id);
-
+        mapper.deleteCommentById(id);
     }
 
     public void edit(Integer id, String commentContent) {
