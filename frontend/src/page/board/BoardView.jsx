@@ -150,12 +150,12 @@ export function BoardView() {
         console.log("Error fetching board data:", e);
       });
     // 차트 데이터 가져오기
-    axios
-      .get(`/api/chart/${number}`)
-      .then((res) => {
-        setChartData(res.data); // 서버에서 받은 데이터로 차트 업데이트
-      })
-      .catch((e) => console.error("Failed to fetch chart data:", e));
+    // axios
+    //   .get(`/api/chart/${number}`)
+    //   .then((res) => {
+    //     setChartData(res.data); // 서버에서 받은 데이터로 차트 업데이트
+    //   })
+    //   .catch((e) => console.error("Failed to fetch chart data:", e));
   }, [number]);
 
   // 새로운 차트 데이터 저장
