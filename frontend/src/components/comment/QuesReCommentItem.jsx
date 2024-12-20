@@ -7,6 +7,7 @@ import { RiArrowDropUpFill } from "react-icons/ri";
 import { FaLock } from "react-icons/fa6";
 
 export function QuesReCommentItem({
+  parentComment,
   reComment,
   contentWriter,
   onDeleteClick,
@@ -20,7 +21,8 @@ export function QuesReCommentItem({
   const canViewComment =
     !reComment.secret ||
     hasAccess(reComment.writer) ||
-    hasAccess(contentWriter);
+    hasAccess(contentWriter) ||
+    hasAccess(parentComment.writer);
 
   return (
     <Box>

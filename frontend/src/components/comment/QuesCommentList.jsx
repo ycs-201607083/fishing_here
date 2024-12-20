@@ -30,6 +30,7 @@ export function QuesCommentList({
               <Box key={reComment.id} pl={6} pt={2}>
                 <QuesReCommentItem
                   quesId={quesId}
+                  parentComment={comment}
                   reComment={reComment}
                   contentWriter={contentWriter}
                   onDeleteClick={onDeleteClick}
