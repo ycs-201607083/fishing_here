@@ -10,18 +10,20 @@ export function CommentInput({ boardId, onSaveClick }) {
   const { isAuthenticated } = useContext(AuthenticationContext);
 
   const handleSave = () => {
-    if (!boardId) {
-      console.error("Cannot save comment: boardId is undefined."); // 디버깅 추가
-      return;
-    }
+    if (window.confirm("댓글을 저장하시겠습니까?")) {
+      if (!boardId) {
+        console.error("Cannot save comment: boardId is undefined."); // 디버깅 추가
+        return;
+      }
 
-    if (comment.trim()) {
-      onSaveClick(comment, chartLabel, chartValue);
-      setComment("");
-      setChartLabel("");
-      setChartValue("");
-    } else {
-      alert("댓글을 입력하세요.");
+      if (comment.trim()) {
+        onSaveClick(comment, chartLabel, chartValue);
+        setComment("");
+        setChartLabel("");
+        setChartValue("");
+      } else {
+        alert("댓글을 입력하세요.");
+      }
     }
   };
 
