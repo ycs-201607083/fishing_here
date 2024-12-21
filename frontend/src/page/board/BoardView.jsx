@@ -32,6 +32,8 @@ import { useAddress } from "../../context/AddressContext.jsx";
 import { ToggleTip } from "../../components/ui/toggle-tip";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
+
+// 차트 임포트
 import { Doughnut } from "react-chartjs-2";
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
 
@@ -95,8 +97,11 @@ function ImageFileView({ files }) {
   );
 }
 
-/* 차트 설정 */
+/*---------------- 차트 설정 -------------------*/
 function ChartView({ chartData }) {
+  if (chartData.labels.length === 0) {
+    return <Box>차트 데이터가 없습니다.</Box>;
+  }
   const data = {
     labels: chartData.labels,
     datasets: [
@@ -125,13 +130,15 @@ export function BoardView() {
 
   const { number } = useParams();
 
+  // ------------- 차트 데이터 추가 --------------
+  const [chartData, setChartData] = useState({ labels: [], values: [] });
+
   useEffect(() => {
     axios
       .get(`/api/board/like/${number}`)
       .then((res) => res.data)
       .then((data) => setLike(data));
   }, []);
-  const [chartData, setChartData] = useState({ labels: [], values: [] }); // 차트 데이터 추가
 
   useEffect(() => {
     // 조회수 증가 요청
@@ -149,16 +156,19 @@ export function BoardView() {
       .catch((e) => {
         console.log("Error fetching board data:", e);
       });
-    // 차트 데이터 가져오기
-    // axios
-    //   .get(`/api/chart/${number}`)
-    //   .then((res) => {
-    //     setChartData(res.data); // 서버에서 받은 데이터로 차트 업데이트
-    //   })
-    //   .catch((e) => console.error("Failed to fetch chart data:", e));
   }, [number]);
 
-  // 새로운 차트 데이터 저장
+  //------------ 차트 데이터 관리--------------
+  useEffect(() => {
+    axios
+      .get(`/api/chart/${number}`)
+      .then((res) => {
+        setChartData(res.data); // 서버에서 받은 데이터로 차트 업데이트
+      })
+      .catch((e) => console.error("Failed to fetch chart data:", e));
+  }, [number]);
+
+  // ----------- 새로운 차트 데이터 저장---------
   const handleChartSave = (chartLabel, chartValue) => {
     axios
       .post(`/api/chart/add`, {
