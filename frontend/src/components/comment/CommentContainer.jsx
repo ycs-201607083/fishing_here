@@ -1,4 +1,4 @@
-import { Box, Heading, Stack } from "@chakra-ui/react";
+import { Box, Heading, Spinner, Stack } from "@chakra-ui/react";
 import { CommentInput } from "./CommentInput.jsx";
 import { CommentList } from "./CommentList.jsx";
 import { useEffect, useState } from "react";
@@ -7,26 +7,24 @@ import axios from "axios";
 export function CommentContainer({ boardId }) {
   const [commentList, setCommentList] = useState([]);
   const [processing, setProcessing] = useState(false);
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
-  // boardId가 전달되지 않은 경우 경고 및 기본값 설정
   useEffect(() => {
     if (!boardId) {
       console.error("boardId is undefined. Please check parent component.");
+      return;
     }
-  }, [boardId]);
 
-  useEffect(() => {
-    if (!processing && boardId) {
-      // boardId가 유효한 경우에만 호출
-      axios
-        .get(`/api/comment/list/${boardId}`)
-        .then((res) => res.data)
-        .then((data) => setCommentList(data))
-        .catch((err) => {
-          console.error("Failed to fetch comment list:", err); // 디버깅 로그 추가
-        });
-    }
-  }, [processing, boardId]);
+    setLoading(true); // 로딩 시작
+    axios
+      .get(`/api/comment/list/${boardId}`)
+      .then((res) => res.data)
+      .then((data) => setCommentList(data))
+      .catch((err) => {
+        console.error("Failed to fetch comment list:", err);
+      })
+      .finally(() => setLoading(false)); // 로딩 종료
+  }, [boardId]);
 
   function handleSaveClick(comment, chartLabel, chartValue) {
     if (!boardId) {
@@ -42,24 +40,34 @@ export function CommentContainer({ boardId }) {
         chartLabel,
         chartValue,
       })
-      .then(() => console.log("Comment added successfully"))
-      .catch((err) => console.error("Failed to add comment:", err)) // 디버깅 로그 추가
-      .finally(() => {
-        setProcessing(false);
-      });
+      .then((newComment) => {
+        setCommentList((prevList) => [...prevList, newComment]); // 목록에 추가
+        console.log("Comment added successfully");
+      })
+      .catch((err) => {
+        console.error("Failed to add comment:", err);
+      })
+      .finally(() => setProcessing(false));
   }
 
   function handleDeleteClick(id) {
     setProcessing(true);
-    axios({
-      method: "DELETE", // HTTP 메서드 명시
-      url: `/api/comment/remove/${id}`,
-    })
-      .then(() => console.log("Comment deleted successfully"))
-      .catch((err) => console.error("Failed to delete comment:", err)) // 디버깅 로그 추가
-      .finally(() => {
-        setProcessing(false);
-      });
+    axios
+      .delete(`/api/comment/remove/${id}`)
+      .then(() => {
+        setCommentList((prevList) =>
+          prevList.filter((comment) => comment.id !== id),
+        ); // 목록에서 제거
+        console.log("Comment deleted successfully");
+      })
+      .catch((err) => {
+        console.error("Failed to delete comment:", err);
+      })
+      .finally(() => setProcessing(false));
+  }
+
+  if (loading) {
+    return <Spinner />;
   }
 
   return (
