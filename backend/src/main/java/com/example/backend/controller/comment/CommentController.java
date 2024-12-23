@@ -1,6 +1,6 @@
 package com.example.backend.controller.comment;
 
-import com.example.backend.dto.chart.ChartData;
+
 import com.example.backend.dto.comment.Comment;
 import com.example.backend.dto.comment.QuestionComment;
 import com.example.backend.dto.comment.QuestionReComment;
@@ -167,14 +167,7 @@ public class CommentController {
         }
         service.add(comment, auth);
 
-        // 차트 데이터도 저장
-        if (comment.getChartLabel() != null && comment.getChartValue() != null) {
-            ChartData chartData = new ChartData();
-            chartData.setBoardId(comment.getBoardId());
-            chartData.setLabel(comment.getChartLabel());
-            chartData.setValue(comment.getChartValue());
-//            service.addchart(chartData);
-        }
+
     }
 
     @PostMapping("edit/{id}")
