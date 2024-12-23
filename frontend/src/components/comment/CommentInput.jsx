@@ -5,8 +5,6 @@ import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx"
 
 export function CommentInput({ boardId, onSaveClick }) {
   const [comment, setComment] = useState("");
-  const [chartLabel, setChartLabel] = useState("");
-  const [chartValue, setChartValue] = useState("");
   const { isAuthenticated } = useContext(AuthenticationContext);
 
   const handleSave = () => {
@@ -17,10 +15,8 @@ export function CommentInput({ boardId, onSaveClick }) {
       }
 
       if (comment.trim()) {
-        onSaveClick(comment, chartLabel, chartValue);
+        onSaveClick(comment);
         setComment("");
-        setChartLabel("");
-        setChartValue("");
         window.location.reload(); // 댓글 저장 후 페이지 새로 고침
       } else {
         alert("댓글을 입력하세요.");

@@ -26,7 +26,7 @@ export function CommentContainer({ boardId }) {
       .finally(() => setLoading(false)); // 로딩 종료
   }, [boardId]);
 
-  function handleSaveClick(comment, chartLabel, chartValue) {
+  function handleSaveClick(comment) {
     if (!boardId) {
       console.error("Cannot save comment: boardId is undefined.");
       return;
@@ -37,8 +37,6 @@ export function CommentContainer({ boardId }) {
       .post("/api/comment/add", {
         boardId,
         comment,
-        chartLabel,
-        chartValue,
       })
       .then((newComment) => {
         setCommentList((prevList) => [...prevList, newComment]); // 목록에 추가
