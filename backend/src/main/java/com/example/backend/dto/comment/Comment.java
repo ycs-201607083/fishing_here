@@ -12,7 +12,5 @@ public class Comment {
     private String comment;
     private LocalDateTime inserted;
 
-    // 차트 데이터 추가
-    private String chartLabel;
-    private Integer chartValue;
+
 }
