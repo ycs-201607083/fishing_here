@@ -41,18 +41,7 @@ export function CommentInput({ boardId, onSaveClick }) {
         }
         onChange={(e) => setComment(e.target.value)}
       />
-      {/*<Input*/}
-      {/*  value={chartLabel}*/}
-      {/*  onChange={(e) => setChartLabel(e.target.value)}*/}
-      {/*  placeholder="가장 많이 잡힌 해산물의 명을 입력하세요."*/}
-      {/*/>*/}
-      {/*<Input*/}
-      {/*  type="number"*/}
-      {/*  value={chartValue}*/}
-      {/*  onChange={(e) => setChartValue(e.target.value)}*/}
-      {/*  placeholder="잡힌 해산물의 수를 입력하세요."*/}
-      {/*  min={0}*/}
-      {/*/>*/}
+
       <Spacer />
       <Button onClick={handleSave} ml={650}>
         댓글 쓰기
