@@ -121,7 +121,7 @@ export function BoardView() {
       .catch((e) => {
         console.log("Error fetching board data:", e);
       });
-  }, [number]);
+  }, [board]);
 
   useEffect(() => {
     axios
@@ -253,7 +253,7 @@ export function BoardView() {
               <Heading>{like.count}</Heading>
             </Box>
           </HStack>
-          <Text whiteSpace={"nowrap"}>조회수 : {board.viewCount}</Text>
+          <Text>조회수 : {viewCnt}</Text>
         </Flex>
       </Stack>
       <hr />
