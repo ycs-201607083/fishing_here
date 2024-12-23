@@ -295,9 +295,9 @@ export function BoardList() {
                         mt="2"
                         style={{ color: "#0288d1", fontSize: "14px" }}
                       >
-                        제목 : {board.title}
+                        {board.title}
                       </Card.Title>
-                      작성자 :{board.writer}
+                      {board.writer}
                     </Card.Body>
                     <Card.Footer justifyContent="flex-end">
                       <Button
@@ -370,9 +370,9 @@ export function BoardList() {
                         mt="2"
                         style={{ color: "#0288d1", fontSize: "14px" }}
                       >
-                        제목:{board.title}
+                        {board.title}
                       </Card.Title>
-                      작성자 :{board.writer}
+                      {board.writer}
                     </Card.Body>
                     <Card.Footer justifyContent="flex-end">
                       <Button
@@ -601,7 +601,8 @@ export function BoardList() {
                     textAlign: "center",
                   }}
                 >
-                  {board.likeCount}
+                  {likeCount.find((l) => l.number === board.number)
+                    ?.likeCount || "0"}
                 </Table.Cell>
 
                 <Table.Cell
