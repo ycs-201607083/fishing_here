@@ -267,9 +267,21 @@ export function MemberEdit() {
           <Box>
             <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
               <DialogTrigger asChild>
-                <Button colorPalette={"blue"} mx={"auto"} w={{ md: "100%" }}>
+                <button
+                  style={{
+                    backgroundColor: "#6276c6",
+                    color: "#fff",
+                    padding: "10px 20px",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    width: "385px", // 폭 고정
+                    display: "block", // 블록 요소 설정
+                    margin: "0 auto", // 가운데 정렬
+                  }}
+                >
                   저장
-                </Button>
+                </button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -291,9 +303,22 @@ export function MemberEdit() {
                     <Button variant={"outline"}>취소</Button>
                   </DialogActionTrigger>
                   <Box>
-                    <Button colorPalette={"blue"} onClick={handleSaveClick}>
+                    <button
+                      style={{
+                        backgroundColor: "#6276c6",
+                        color: "#fff",
+                        padding: "10px 20px",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        width: "385px", // 폭 고정
+                        display: "block", // 블록 요소 설정
+                        margin: "0 auto", // 가운데 정렬
+                      }}
+                      onClick={handleSaveClick}
+                    >
                       저장
-                    </Button>
+                    </button>
                   </Box>
                 </DialogFooter>
               </DialogContent>
