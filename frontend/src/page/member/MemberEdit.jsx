@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Group,
+  Heading,
   Input,
   Span,
   Spinner,
@@ -149,7 +150,7 @@ export function MemberEdit() {
 
   return (
     <Box px="20px" mx={"auto"} w={{ md: "500px" }}>
-      <h3>회원 정보</h3>
+      <Heading>내 정보 수정</Heading>
       {hasAccess(member.id) && (
         <Stack gap={5} p="5" bg="blue.200">
           <Field readOnly label={"아이디"}>
@@ -209,9 +210,39 @@ export function MemberEdit() {
                   readOnly
                   onChange={(e) => setPost(e.target.value)}
                   variant="subtle"
-                  maxW="550px"
                 />
-                <Button onClick={handleApi}>우편번호 찾기</Button>
+                <DialogRoot>
+                  <DialogTrigger asChild>
+                    <Button onClick={() => setIsOpen(true)}>
+                      우편번호 찾기
+                    </Button>
+                  </DialogTrigger>
+                  {isOpen && (
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>우편번호 검색</DialogTitle>
+                      </DialogHeader>
+                      <DialogBody pb="4">
+                        <Field mt="5">
+                          <DaumPostcodeEmbed
+                            onComplete={handleComplete}
+                            onClose={handleClose}
+                          />
+                        </Field>
+                      </DialogBody>
+                      <DialogFooter>
+                        <DialogActionTrigger asChild>
+                          <Button
+                            variant="outline"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            닫기
+                          </Button>
+                        </DialogActionTrigger>
+                      </DialogFooter>
+                    </DialogContent>
+                  )}
+                </DialogRoot>
               </Group>
             </Field>
 
@@ -224,17 +255,6 @@ export function MemberEdit() {
                 maxW="550px"
               />
             </Field>
-            {isOpen && (
-              <Field mt="5">
-                <DaumPostcodeEmbed
-                  onComplete={handleComplete}
-                  onClose={handleClose}
-                />
-                <Button onClick={handleButtonClose} w={{ md: "100%" }}>
-                  닫기
-                </Button>
-              </Field>
-            )}
           </Box>
           <Field readOnly label={"가입일시"}>
             <Input

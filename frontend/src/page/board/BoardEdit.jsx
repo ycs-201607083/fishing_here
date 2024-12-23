@@ -224,7 +224,7 @@ export function BoardEdit() {
     <Box
       mx={"auto"}
       w={{
-        md: "80%",
+        md: "70%",
       }}
     >
       <MyHeading>{number}번 게시물 수정</MyHeading>

@@ -80,7 +80,6 @@ export function BoardList() {
     try {
       const response = await axios.get("/api/board/top-like"); // 상위 3개 좋아요 API 호출
       setLikeTopBoards(response.data); // 데이터 저장
-      console.log("상위 3개 게시물 = ", response.data);
     } catch (error) {
       console.error("인기 게시글 데이터를 가져오는 데 실패했습니다.");
     }
@@ -95,14 +94,11 @@ export function BoardList() {
     }
   };
 
-  console.log(searchPage.toString());
-
   // page 번호
   const pageParam = searchPage.get("page") ? searchPage.get("page") : "1";
   const page = Number(searchParams.get("page") || "1");
 
   const handlePageChange = (e) => {
-    console.log(e.page);
     const nextSearchParams = new URLSearchParams(searchPage);
     nextSearchParams.set("page", e.page);
     setSearchPage(nextSearchParams);
@@ -116,7 +112,6 @@ export function BoardList() {
         //entries() : 키-값 쌍의 반복 가능한 이터레이터
       });
 
-      console.log(response);
       setBoardList(response.data.list);
       setCount(response.data.count);
     } catch (error) {
@@ -127,16 +122,11 @@ export function BoardList() {
     }
   };
 
-  console.log(searchParams.get("keyword"));
-
   /*클릭 시 조회수 증가 처리 추가*/
   const handleRowClick = async (number) => {
-    console.log(`${number}번 게시물 이동`);
-
     try {
       navigate(`/board/view/${number}`);
       await axios.post(`/api/board/list/${number}`);
-      console.log(`${number}번 게시물 클릭으로 조회수 증가`);
     } catch (error) {
       console.error("조회수를 증가시키는 데 실패했습니다.");
     }
@@ -158,85 +148,92 @@ export function BoardList() {
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
       }}
     >
-      <HStack mb={4} justifyContent="center" style={{ gap: "20px" }}>
-        {/* 드롭다운 - 낚시 장소 */}
-        <NativeSelectRoot
-          style={{
-            width: "175px",
-            maxHeight: "50px",
-            fontSize: "14px",
-            padding: "5px",
-            border: "1px solid #0288d1",
-            borderRadius: "4px",
-          }}
+      <Center>
+        <HStack
+          mb={4}
+          w={"80%"}
+          justifyContent="center"
+          style={{ gap: "20px" }}
         >
-          <NativeSelectField
-            value={site}
-            onChange={(e) => setSite(e.target.value)}
+          {/* 드롭다운 - 낚시 장소 */}
+          <NativeSelectRoot
+            style={{
+              width: "175px",
+              maxHeight: "50px",
+              fontSize: "14px",
+              padding: "5px",
+              border: "1px solid #0288d1",
+              borderRadius: "4px",
+            }}
           >
-            <option value={"allSite"}>민물/바다</option>
-            <option value={"riverSite"}>민물낚시</option>
-            <option value={"seaSite"}>바다낚시</option>
-          </NativeSelectField>
-        </NativeSelectRoot>
+            <NativeSelectField
+              value={site}
+              onChange={(e) => setSite(e.target.value)}
+            >
+              <option value={"allSite"}>민물/바다</option>
+              <option value={"riverSite"}>민물낚시</option>
+              <option value={"seaSite"}>바다낚시</option>
+            </NativeSelectField>
+          </NativeSelectRoot>
 
-        {/* 드롭다운 - 검색 타입 */}
-        <NativeSelectRoot
-          style={{
-            width: "150px",
-            maxHeight: "50px",
-            fontSize: "14px",
-            padding: "5px",
-            border: "1px solid #0288d1",
-            borderRadius: "4px",
-          }}
-        >
-          <NativeSelectField
-            value={type}
-            onChange={(e) => setType(e.target.value)}
+          {/* 드롭다운 - 검색 타입 */}
+          <NativeSelectRoot
+            style={{
+              width: "150px",
+              maxHeight: "50px",
+              fontSize: "14px",
+              padding: "5px",
+              border: "1px solid #0288d1",
+              borderRadius: "4px",
+            }}
           >
-            <option value={"all"}>전체</option>
-            <option value={"title"}>제목</option>
-            <option value={"content"}>본문</option>
-            <option value={"writer"}>작성자</option>
-          </NativeSelectField>
-        </NativeSelectRoot>
+            <NativeSelectField
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+            >
+              <option value={"all"}>전체</option>
+              <option value={"title"}>제목</option>
+              <option value={"content"}>본문</option>
+              <option value={"writer"}>작성자</option>
+            </NativeSelectField>
+          </NativeSelectRoot>
 
-        {/* 검색창 */}
-        <Input
-          placeholder="검색어를 입력하세요"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          style={{
-            maxWidth: "700px",
-            width: "100%",
-            maxHeight: "50px",
-            height: "50px",
-            padding: "8px",
-            fontSize: "14px",
-            border: "1px solid #0288d1",
-            borderRadius: "20px",
-            backgroundColor: "#ffffff",
-          }}
-        />
+          {/* 검색창 */}
+          <Input
+            placeholder="검색어를 입력하세요"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            style={{
+              maxWidth: "700px",
+              width: "100%",
+              maxHeight: "50px",
+              height: "50px",
+              padding: "8px",
+              fontSize: "14px",
+              border: "1px solid #0288d1",
+              borderRadius: "20px",
+              backgroundColor: "#ffffff",
+            }}
+          />
 
-        {/* 검색 버튼 */}
-        <IconButton
-          aria-label="Search database"
-          onClick={(e) => setSearchParams({ type, keyword, site })} // **
-          style={{
-            maxHeight: "50px",
-            height: "30px",
-            padding: "5px",
-            color: "white",
-            border: "none",
-            borderRadius: "20px",
-            cursor: "pointer",
-          }}
-        >
-          <LuSearch />
-        </IconButton>
-      </HStack>
+          {/* 검색 버튼 */}
+          <IconButton
+            aria-label="Search database"
+            onClick={(e) => setSearchParams({ type, keyword, site })} // **
+            style={{
+              maxHeight: "50px",
+              height: "30px",
+              padding: "5px",
+              color: "white",
+              border: "none",
+              borderRadius: "20px",
+              cursor: "pointer",
+            }}
+          >
+            <LuSearch />
+          </IconButton>
+        </HStack>
+      </Center>
 
       {/* 조회수 상위 3개 데이터 표시 */}
 

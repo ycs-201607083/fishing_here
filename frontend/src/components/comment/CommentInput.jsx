@@ -1,4 +1,4 @@
-import { Box, Spacer, Textarea } from "@chakra-ui/react";
+import { Box, Textarea } from "@chakra-ui/react";
 import { Button } from "../ui/button.jsx";
 import { useContext, useState } from "react";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
@@ -38,11 +38,7 @@ export function CommentInput({ boardId, onSaveClick }) {
         }
         onChange={(e) => setComment(e.target.value)}
       />
-
-      <Spacer />
-      <Button onClick={handleSave} ml={650}>
-        댓글 쓰기
-      </Button>
+      <Button onClick={handleSave}>댓글 쓰기</Button>
     </Box>
   );
 }

@@ -6,14 +6,12 @@ import {
   Heading,
   HStack,
   Image,
-  Input,
+  Spacer,
   Spinner,
   Stack,
   Text,
-  Textarea,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import { MyHeading } from "../../components/root/MyHeading.jsx";
 import { AuthenticationContext } from "../../context/AuthenticationProvider.jsx";
 import { Field } from "../../components/ui/field.jsx";
 import { Button } from "../../components/ui/button.jsx";
@@ -47,7 +45,7 @@ function ImageFileView({ files }) {
   return (
     <>
       {/* 이미지 목록 */}
-      <Stack direction="row" wrap="wrap" spacing={4}>
+      <Stack wrap="wrap" spacing={4} alignItems="center">
         {files.map((file) => (
           <Image
             key={file.name}
@@ -219,44 +217,55 @@ export function BoardView() {
     <Box
       mx={"auto"}
       w={{
-        md: "80%",
+        md: "60%",
       }}
     >
-      <Flex>
-        <MyHeading me={"auto"}>{number} 번 게시물</MyHeading>
-        <HStack>
-          <Box onClick={handleLikeClick}>
-            <ToggleTip
-              open={likeTooltipOpen}
-              content={"로그인 후 좋아요를 클릭해주세요."}
-            >
-              <Heading>
-                {like.like || <GoHeart />}
-                {like.like && <GoHeartFill />}
-              </Heading>
-            </ToggleTip>
-          </Box>
-          <Box>
-            <Heading>{like.count}</Heading>
-          </Box>
-        </HStack>
-      </Flex>
-      <Field>조회수:{board.viewCount}</Field>
-      <Stack gap={5}>
-        <Field label="제목" readOnly>
-          <Input value={board.title} />
-        </Field>
-        <Field label="내용" readOnly>
-          <Textarea resize={"none"} h={400} value={board.content} />
-        </Field>
+      <Heading fontSize={"30px"} pb={5} color={"blue.800"}>
+        커뮤니티 게시판
+      </Heading>
+
+      <Stack>
+        <Text fontWeight={"bold"} fontSize={"12px"} pt={8}>
+          {board.site}
+        </Text>
+        <Text fontWeight={"bold"} fontSize={"25px"} pt={1} pb={5}>
+          {board.title}
+        </Text>
+        <Flex pb={30}>
+          <Text>작성자 : {board.writer}</Text>
+          <Spacer />
+          <Text>작성일 : {board.date}</Text>
+        </Flex>
+        <Flex ml={"85%"} gap={10}>
+          <HStack>
+            <Box onClick={handleLikeClick}>
+              <ToggleTip
+                open={likeTooltipOpen}
+                content={"로그인 후 좋아요를 클릭해주세요."}
+              >
+                <Heading>
+                  {like.like || <GoHeart />}
+                  {like.like && <GoHeartFill />}
+                </Heading>
+              </ToggleTip>
+            </Box>
+            <Box>
+              <Heading>{like.count}</Heading>
+            </Box>
+          </HStack>
+          <Text>조회수 : {board.viewCount}</Text>
+        </Flex>
+      </Stack>
+      <hr />
+      <Stack gap={5} mt={50}>
+        <Text>{board.content} </Text>
 
         {/*포토*/}
         <ImageFileView files={board.fileList} />
 
         {/*카카오맵*/}
-
         {board?.kakaoAddress ? (
-          <Field>
+          <Field alignItems="center">
             <Text>공유 명당 주소 : {board.kakaoAddress.addressName}</Text>
             <Box
               bg={"bg"}
@@ -264,33 +273,30 @@ export function BoardView() {
               borderRadius={"md"}
               borderWidth="2px"
               borderColor="black"
-              style={{ width: "100%", height: "400px" }}
+              style={{ width: "50%", height: "300px" }}
               id="map"
             ></Box>
           </Field>
         ) : null}
 
-        <Field label="작성자" readOnly>
-          <Input value={board.writer} />
-        </Field>
-        <Field label="낚시 종류" readOnly>
-          <Input value={board.site} />
-        </Field>
-        <Field label="작성일시" readOnly>
-          <Input value={board.date} />
-        </Field>
-
         {hasAccess(board.writer) && (
           <HStack>
             <Button
-              colorPalette={"cyan"}
+              colorPalette={"blue"}
+              variant={"ghost"}
               onClick={() => navigate(`/board/edit/${number}`)}
             >
-              수정
+              <Text fontSize={"18px"} fontWeight={"bold"}>
+                수정
+              </Text>
             </Button>
             <DialogRoot>
               <DialogTrigger asChild>
-                <Button colorPalette={"red"}>삭제</Button>
+                <Button colorPalette={"red"} variant={"ghost"}>
+                  <Text fontSize={"18px"} fontWeight={"bold"}>
+                    삭제
+                  </Text>
+                </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
