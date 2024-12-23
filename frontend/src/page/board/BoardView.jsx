@@ -253,7 +253,7 @@ export function BoardView() {
               <Heading>{like.count}</Heading>
             </Box>
           </HStack>
-          <Text>조회수 : {board.viewCount}</Text>
+          <Text whiteSpace={"nowrap"}>조회수 : {board.viewCount}</Text>
         </Flex>
       </Stack>
       <hr />
