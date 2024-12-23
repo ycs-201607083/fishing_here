@@ -117,18 +117,22 @@ export function BoardView() {
     // 게시물 데이터 가져오기
     axios
       .post(`/api/board/view/increment/${number}`)
-      .then(() => {
-        // 조회수 증가 후 게시물 데이터 로드
-        return axios.get(`/api/board/view/${number}`);
-      })
       .then((res) => {
-        setBoard(res.data); // 게시물 데이터 설정
         setViewCnt(res.data.viewCount); // 증가된 조회수 설정
       })
       .catch((e) => {
         console.log("Error fetching board data:", e);
       });
   }, [number]);
+
+  useEffect(() => {
+    axios
+      .get(`/api/board/view/${number}`)
+      .then((res) => res.data)
+      .then((data) => {
+        setBoard(data);
+      });
+  }, []);
 
   useEffect(() => {
     setAddr(address);

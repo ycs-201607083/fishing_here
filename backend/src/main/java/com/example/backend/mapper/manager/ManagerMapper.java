@@ -21,7 +21,7 @@ public interface ManagerMapper {
     @Select("""
                     SELECT board_number number, board_title title, board_writer writer, board_date date, board_site site
                     from board
-                    ORDER BY board_number;
+                    ORDER BY board_number DESC;
             """)
     List<Board> selectBoardAll();
 
