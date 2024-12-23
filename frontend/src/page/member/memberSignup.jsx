@@ -170,7 +170,13 @@ export function MemberSignup() {
   return (
     <Box mx={"auto"} w={{ md: "500px" }}>
       <MyHeading>회원가입</MyHeading>
-      <Stack gap={5} p="5" bg="blue.200">
+      <Stack
+        gap={5}
+        p="5"
+        border="1px solid black"
+        borderRadius="lg"
+        bg={"blue.100"}
+      >
         <Field label={"아이디"}>
           <Group attached>
             <Input

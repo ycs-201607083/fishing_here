@@ -37,7 +37,7 @@ export function QuesCommentItem({
         >
           <Card.Title>
             <Flex>
-              {comment.secret ? <FaLock /> : ""}
+              {comment.secret ? <FaLock color={"red"} /> : ""}
               <Box pl={3}>{comment.writer}</Box>
               <Spacer />
               <Box fontSize={"12px"}>{comment.inserted}</Box>

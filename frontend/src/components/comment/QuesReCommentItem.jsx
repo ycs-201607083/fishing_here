@@ -36,7 +36,7 @@ export function QuesReCommentItem({
         >
           <Card.Title>
             <Flex>
-              {reComment.secret ? <FaLock /> : ""}
+              {reComment.secret ? <FaLock color={"red"} /> : ""}
               <RiArrowDropUpFill size={30} />
               <Box pl={3}>{reComment.writer}</Box>
               <Spacer />
