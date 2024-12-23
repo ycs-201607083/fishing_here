@@ -9,11 +9,12 @@ export function CommentList({ boardId, commentList, onDeleteClick }) {
   return (
     <Box>
       {commentList.map((comment) => (
-        <CommentItem
-          key={comment.id}
-          comment={comment}
-          onDeleteClick={onDeleteClick} // 수정: 삭제 핸들러 전달
-        />
+        <Box key={comment.id}>
+          <CommentItem
+            comment={comment}
+            onDeleteClick={onDeleteClick} // 수정: 삭제 핸들러 전달
+          />
+        </Box>
       ))}
     </Box>
   );
