@@ -43,6 +43,7 @@ export function CommentContainer({ boardId }) {
       .then((newComment) => {
         setCommentList((prevList) => [...prevList, newComment]); // 목록에 추가
         console.log("Comment added successfully");
+        window.location.reload(); // 댓글 추가 후 페이지 새로 고침
       })
       .catch((err) => {
         console.error("Failed to add comment:", err);
@@ -59,6 +60,7 @@ export function CommentContainer({ boardId }) {
           prevList.filter((comment) => comment.id !== id),
         ); // 목록에서 제거
         console.log("Comment deleted successfully");
+        window.location.reload(); // 댓글 삭제 후 페이지 새로 고침
       })
       .catch((err) => {
         console.error("Failed to delete comment:", err);

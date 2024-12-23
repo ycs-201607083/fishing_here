@@ -17,7 +17,7 @@ export function CommentItem({ comment, onDeleteClick }) {
         .post(`/api/comment/edit/${comment.id}`, { comment: editedComment })
         .then(() => {
           setIsEditing(false);
-          window.location.reload(); // 수정 후 새로고침
+          window.location.reload(); // 댓글 수정 후 페이지 새로 고침
         })
         .catch((error) => {
           console.error("댓글 수정 실패:", error);
@@ -29,6 +29,7 @@ export function CommentItem({ comment, onDeleteClick }) {
     if (window.confirm("댓글을 삭제하시겠습니까?")) {
       // 삭제 확인 메시지
       onDeleteClick(comment.id);
+      window.location.reload(); // 댓글 삭제 후 페이지 새로 고침
     }
   };
 
