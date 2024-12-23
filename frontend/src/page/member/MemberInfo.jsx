@@ -66,7 +66,7 @@ export function MemberInfo() {
     <Box px="20px" mx={"auto"} w={{ md: "500px" }}>
       <h3>회원 정보</h3>
 
-      <Stack gap={5} p="5" bg="blue.200">
+      <Stack gap={5} p="5" bg="blue.200" borderRadius="md">
         <Field label={"아이디"}>
           <Input
             readOnly
@@ -148,40 +148,68 @@ export function MemberInfo() {
             style={{ color: "gray" }}
           />
         </Field>
-        <Box>
+        <Box textAlign="center">
           <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
             <DialogTrigger asChild>
               <div>
                 {hasAccess(member.id) && (
-                  <Box>
-                    <Button
-                      colorPalette={"blue"}
+                  <Box mb={2}>
+                    {" "}
+                    {/* 간격을 2로 줄임 */}
+                    <button
+                      style={{
+                        backgroundColor: "#6276c6",
+                        color: "#fff",
+                        padding: "10px 20px",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        width: "385px", // 폭 고정
+                        display: "block", // 블록 요소 설정
+                        margin: "0 auto", // 가운데 정렬
+                      }}
                       onClick={() => navigate(`/member/edit/${id}`)}
-                      mx={"auto"}
-                      w={{ md: "100%" }}
                     >
                       수정
-                    </Button>
+                    </button>
                   </Box>
                 )}
-                <Box>
-                  <Button
-                    colorPalette={"blue"}
+                <Box mb={2}>
+                  {" "}
+                  {/* 간격을 2로 줄임 */}
+                  <button
+                    style={{
+                      backgroundColor: "#5ed0da",
+                      color: "#fff",
+                      padding: "10px 20px",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                      width: "385px", // 폭 고정
+                      display: "block", // 블록 요소 설정
+                      margin: "0 auto", // 가운데 정렬
+                    }}
                     onClick={() => navigate(`/board/written/${id}`)}
-                    mx={"auto"}
-                    w={{ md: "100%" }}
                   >
                     내 작성글
-                  </Button>
+                  </button>
                 </Box>
                 <Box>
-                  <Button
-                    colorPalette={"orange"}
-                    mx={"auto"}
-                    w={{ md: "100%" }}
+                  <button
+                    style={{
+                      backgroundColor: "#ff5b5b",
+                      color: "#fff",
+                      padding: "10px 20px",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                      width: "385px", // 폭 고정
+                      display: "block", // 블록 요소 설정
+                      margin: "0 auto", // 가운데 정렬
+                    }}
                   >
                     탈퇴
-                  </Button>
+                  </button>
                 </Box>
               </div>
             </DialogTrigger>
@@ -194,8 +222,8 @@ export function MemberInfo() {
                 <p
                   style={{
                     fontSize: "0.8em",
-                    color: "gray",
                     marginTop: "0.5em",
+                    color: "#ff5b5b",
                   }}
                 >
                   비밀번호 입력 시 탈퇴가 완료됩니다.
@@ -214,9 +242,22 @@ export function MemberInfo() {
                 <DialogActionTrigger>
                   <Button variant={"outline"}>취소</Button>
                 </DialogActionTrigger>
-                <Button colorScheme={"orange"} onClick={handleDeleteClick}>
+                <button
+                  style={{
+                    backgroundColor: "#989e7d",
+                    color: "#fff",
+                    padding: "10px 20px",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    width: "385px", // 폭 고정
+                    display: "block", // 블록 요소 설정
+                    margin: "0 auto", // 가운데 정렬
+                  }}
+                  onClick={handleDeleteClick}
+                >
                   탈퇴
-                </Button>
+                </button>
               </DialogFooter>
             </DialogContent>
           </DialogRoot>
