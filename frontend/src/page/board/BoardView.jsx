@@ -244,8 +244,8 @@ export function BoardView() {
                 content={"로그인 후 좋아요를 클릭해주세요."}
               >
                 <Heading>
-                  {like.like || <GoHeart />}
-                  {like.like && <GoHeartFill />}
+                  {like.like || <GoHeart color={"red"} />}
+                  {like.like && <GoHeartFill color={"red"} />}
                 </Heading>
               </ToggleTip>
             </Box>
