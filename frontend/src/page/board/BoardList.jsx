@@ -80,6 +80,7 @@ export function BoardList() {
     try {
       const response = await axios.get("/api/board/top-like"); // 상위 3개 좋아요 API 호출
       setLikeTopBoards(response.data); // 데이터 저장
+      console.log("상위 3개 게시물 = ", response.data);
     } catch (error) {
       console.error("인기 게시글 데이터를 가져오는 데 실패했습니다.");
     }
@@ -270,8 +271,12 @@ export function BoardList() {
                     <Card.Body gap="2">
                       <Image
                         rounded="md"
-                        src="https://bit.ly/dan-abramov"
-                        alt="Dan Abramov"
+                        src={
+                          board.fileList && board.fileList.length > 0
+                            ? board.fileList[0].src
+                            : "https://via.placeholder.com/150"
+                        }
+                        alt={board.title}
                         style={{
                           width: "100%",
                           height: "100px",
@@ -290,8 +295,9 @@ export function BoardList() {
                         mt="2"
                         style={{ color: "#0288d1", fontSize: "14px" }}
                       >
-                        {board.title}
+                        제목 : {board.title}
                       </Card.Title>
+                      작성자 :{board.writer}
                     </Card.Body>
                     <Card.Footer justifyContent="flex-end">
                       <Button
@@ -337,8 +343,12 @@ export function BoardList() {
                     <Card.Body gap="2">
                       <Image
                         rounded="md"
-                        src="https://via.placeholder.com/150"
-                        alt={`게시글 ${board.number}`}
+                        src={
+                          board.fileList && board.fileList.length > 0
+                            ? board.fileList[0].src
+                            : "https://via.placeholder.com/150"
+                        }
+                        alt={"src/components/Image/mainTitle.png"}
                         style={{
                           width: "100%",
                           height: "100px",
@@ -360,8 +370,9 @@ export function BoardList() {
                         mt="2"
                         style={{ color: "#0288d1", fontSize: "14px" }}
                       >
-                        {board.title}
+                        제목:{board.title}
                       </Card.Title>
+                      작성자 :{board.writer}
                     </Card.Body>
                     <Card.Footer justifyContent="flex-end">
                       <Button

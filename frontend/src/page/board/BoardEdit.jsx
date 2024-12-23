@@ -5,7 +5,6 @@ import {
   Card,
   FormatNumber,
   HStack,
-  Icon,
   Image,
   Input,
   Spinner,
@@ -113,6 +112,7 @@ export function BoardEdit() {
         title: board.title,
         content: board.content,
         site: board.site,
+        writer: board.writer,
         removeFiles,
         uploadFiles,
         addressName: address,
@@ -278,7 +278,7 @@ export function BoardEdit() {
           </Box>
           <Box>
             {Array.from(uploadFiles).map((file) => (
-              <Card.Root size={"sm"}>
+              <Card.Root size={"sm"} key={file.name || file.lastModified}>
                 <Card.Body>
                   <HStack>
                     <Text
@@ -287,9 +287,7 @@ export function BoardEdit() {
                       me={"auto"}
                       truncate
                     >
-                      <Icon>
-                        <CiFileOn />
-                      </Icon>
+                      <CiFileOn />
 
                       {file.name}
                     </Text>

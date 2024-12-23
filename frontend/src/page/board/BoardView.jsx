@@ -99,9 +99,6 @@ function ImageFileView({ files }) {
 
 /*---------------- 차트 설정 -------------------*/
 function ChartView({ chartData }) {
-  if (chartData.labels.length === 0) {
-    return <Box>차트 데이터가 없습니다.</Box>;
-  }
   const data = {
     labels: chartData.labels,
     datasets: [
@@ -130,9 +127,6 @@ export function BoardView() {
 
   const { number } = useParams();
 
-  // ------------- 차트 데이터 추가 --------------
-  const [chartData, setChartData] = useState({ labels: [], values: [] });
-
   useEffect(() => {
     axios
       .get(`/api/board/like/${number}`)
@@ -156,10 +150,7 @@ export function BoardView() {
       .catch((e) => {
         console.log("Error fetching board data:", e);
       });
-  }, [number]);
-
-  //------------ 차트 데이터 관리--------------
-  useEffect(() => {
+    // 차트 데이터 가져오기
     axios
       .get(`/api/chart/${number}`)
       .then((res) => {
@@ -168,7 +159,7 @@ export function BoardView() {
       .catch((e) => console.error("Failed to fetch chart data:", e));
   }, [number]);
 
-  // ----------- 새로운 차트 데이터 저장---------
+  // 새로운 차트 데이터 저장
   const handleChartSave = (chartLabel, chartValue) => {
     axios
       .post(`/api/chart/add`, {

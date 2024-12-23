@@ -170,8 +170,8 @@ public interface BoardMapper {
     @Select("""
               SELECT 
                         board_number number,
-                        board_title title, 
-                        board_writer writer, 
+                        board_title title,
+                        board_writer writer,
                         board_date AS date,
                         board_content content,
                         board_site site,

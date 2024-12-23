@@ -44,11 +44,51 @@ public class BoardService {
     }
 
     public List<Board> getTopBoardsByViews() {
-        return mapper.findTopBoardsByViews();
+
+        List<Board> list = mapper.findTopBoardsByViews();
+        List<Board> newList = new ArrayList<>();
+
+        for (Board board : list) {
+            List<String> fileNameList = mapper.selectFilesByBoardId(board.getNumber());
+            List<BoardFile> fileSrcList = fileNameList.stream()
+                    .map(name -> new BoardFile(name, imageSrcPrefix + "/BoardWriter/" + board.getWriter() + "/" + name)).toList();
+            board.setFileList(fileSrcList);
+            newList.add(board);
+        }
+
+        return newList;
     }
 
+
     public List<Board> getTopBoardsByLike() {
-        return mapper.findTopBoardsByLike();
+        List<Board> list = mapper.findTopBoardsByLike();
+        List<Board> newList = new ArrayList<>();
+
+        for (Board board : list) {
+            List<String> fileNameList = mapper.selectFilesByBoardId(board.getNumber());
+            List<BoardFile> fileSrcList = fileNameList.stream()
+                    .map(name -> new BoardFile(name, imageSrcPrefix + "/BoardWriter/" + board.getWriter() + "/" + name))
+                    .toList();
+
+            board.setFileList(fileSrcList);
+
+            newList.add(board);
+        }
+        return newList;
+    }
+
+    public Board get(int number) {
+        Board board = mapper.selectById(number);
+        KakaoMapAddress kakaoAddress = mapper.getKakaoAddress(number);
+        board.setKakaoAddress(kakaoAddress);
+
+        List<String> fileNameList = mapper.selectFilesByBoardId(number);
+        List<BoardFile> fileSrcList = fileNameList
+                .stream()
+                .map(name -> new BoardFile(name, imageSrcPrefix + "/BoardWriter/" + board.getWriter() + "/" + name))
+                .toList();
+        board.setFileList(fileSrcList);
+        return board;
     }
 
     public List<Board> getLikeCount() {
@@ -93,20 +133,6 @@ public class BoardService {
         boolean content = !board.getContent().trim().isEmpty();
 
         return title && content;
-    }
-
-    public Board get(int number) {
-        Board board = mapper.selectById(number);
-        KakaoMapAddress kakaoAddress = mapper.getKakaoAddress(number);
-        board.setKakaoAddress(kakaoAddress);
-
-        List<String> fileNameList = mapper.selectFilesByBoardId(number);
-        List<BoardFile> fileSrcList = fileNameList
-                .stream()
-                .map(name -> new BoardFile(name, imageSrcPrefix + "/BoardWriter/" + board.getWriter() + "/" + name))
-                .toList();
-        board.setFileList(fileSrcList);
-        return board;
     }
 
     public boolean hasAccess(int number, Authentication auth) {
