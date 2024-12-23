@@ -1,4 +1,4 @@
-import { Box, Flex, Table, TableRoot } from "@chakra-ui/react";
+import { Box, Center, Flex, Table, TableRoot } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -84,134 +84,136 @@ export function ManagementPage() {
   }
 
   return (
-    <Flex
-      wrap="wrap" // 공간이 부족할 때 다음 줄로 넘어감
-      p="4" // 패딩
-      bg="gray.100"
-      w={"100%"}
-      h={"90vh"}
-    >
-      <Flex direction="column" w="100%" h="40%">
-        <MyHeading>회원 목록</MyHeading>
-        <Box
-          w="100%"
-          h="100%"
-          overflow="auto" // 스크롤 활성화
-          p="4"
-        >
-          <TableRoot interactive>
-            <Table.Header>
-              <Table.Row>
-                <Table.ColumnHeader>아이디</Table.ColumnHeader>
-                <Table.ColumnHeader>이메일</Table.ColumnHeader>
-                <Table.ColumnHeader>가입일시</Table.ColumnHeader>
-                <Table.ColumnHeader>회원삭제</Table.ColumnHeader>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {memberList.length > 0 ? (
-                memberList.map((member) => (
-                  <Table.Row
-                    onClick={() => handleMemberClick(member.id)}
-                    key={member.id}
-                  >
-                    <Table.Cell>{member.id}</Table.Cell>
-                    <Table.Cell>{member.email}</Table.Cell>
-                    <Table.Cell>{member.inserted}</Table.Cell>
-                    <Table.Cell>
-                      {" "}
-                      <CloseButton
-                        colorPalette="red"
-                        size="sm"
-                        variant={"solid"}
-                        onClick={(e) => {
-                          e.stopPropagation(); // 클릭 이벤트 전파 방지
-                          if (
-                            window.confirm(
-                              `"${member.id}" 회원님을 삭제하시겠습니까?`,
-                            )
-                          ) {
-                            handleMemberDeleteClick(member.id); // `member.id`를 전달
-                          }
-                        }}
-                      ></CloseButton>
+    <Center>
+      <Flex
+        wrap="wrap" // 공간이 부족할 때 다음 줄로 넘어감
+        p="4" // 패딩
+        bg="gray.100"
+        w={"70%"}
+        h={"90vh"}
+      >
+        <Flex direction="column" w="100%" h="40%">
+          <MyHeading>회원 목록</MyHeading>
+          <Box
+            w="100%"
+            h="100%"
+            overflow="auto" // 스크롤 활성화
+            p="4"
+          >
+            <TableRoot interactive>
+              <Table.Header>
+                <Table.Row>
+                  <Table.ColumnHeader>아이디</Table.ColumnHeader>
+                  <Table.ColumnHeader>이메일</Table.ColumnHeader>
+                  <Table.ColumnHeader>가입일시</Table.ColumnHeader>
+                  <Table.ColumnHeader>회원삭제</Table.ColumnHeader>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {memberList.length > 0 ? (
+                  memberList.map((member) => (
+                    <Table.Row
+                      onClick={() => handleMemberClick(member.id)}
+                      key={member.id}
+                    >
+                      <Table.Cell>{member.id}</Table.Cell>
+                      <Table.Cell>{member.email}</Table.Cell>
+                      <Table.Cell>{member.inserted}</Table.Cell>
+                      <Table.Cell>
+                        {" "}
+                        <CloseButton
+                          colorPalette="red"
+                          size="sm"
+                          variant={"solid"}
+                          onClick={(e) => {
+                            e.stopPropagation(); // 클릭 이벤트 전파 방지
+                            if (
+                              window.confirm(
+                                `"${member.id}" 회원님을 삭제하시겠습니까?`,
+                              )
+                            ) {
+                              handleMemberDeleteClick(member.id); // `member.id`를 전달
+                            }
+                          }}
+                        ></CloseButton>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))
+                ) : (
+                  <Table.Row>
+                    <Table.Cell colSpan={4} style={{ textAlign: "center" }}>
+                      <p>회원이 등록되지 않았습니다.</p>
                     </Table.Cell>
                   </Table.Row>
-                ))
-              ) : (
+                )}
+              </Table.Body>
+            </TableRoot>
+          </Box>
+        </Flex>
+
+        <Flex direction="column" w="100%" h="40%">
+          <MyHeading>게시글 목록</MyHeading>
+
+          <Box
+            w="100%"
+            h="100%"
+            overflow="auto" // 스크롤 활성화
+            p="4"
+          >
+            <TableRoot interactive>
+              <Table.Header>
                 <Table.Row>
-                  <Table.Cell colSpan={4} style={{ textAlign: "center" }}>
-                    <p>회원이 등록되지 않았습니다.</p>
-                  </Table.Cell>
+                  <Table.ColumnHeader>게시글 번호</Table.ColumnHeader>
+                  <Table.ColumnHeader>제목</Table.ColumnHeader>
+                  <Table.ColumnHeader>작성자</Table.ColumnHeader>
+                  <Table.ColumnHeader>작성일자</Table.ColumnHeader>
+                  <Table.ColumnHeader>낚시종류</Table.ColumnHeader>
+                  <Table.ColumnHeader>게시글 삭제</Table.ColumnHeader>
                 </Table.Row>
-              )}
-            </Table.Body>
-          </TableRoot>
-        </Box>
-      </Flex>
-
-      <Flex direction="column" w="100%" h="40%">
-        <MyHeading>게시글 목록</MyHeading>
-
-        <Box
-          w="100%"
-          h="100%"
-          overflow="auto" // 스크롤 활성화
-          p="4"
-        >
-          <TableRoot interactive>
-            <Table.Header>
-              <Table.Row>
-                <Table.ColumnHeader>게시글 번호</Table.ColumnHeader>
-                <Table.ColumnHeader>제목</Table.ColumnHeader>
-                <Table.ColumnHeader>작성자</Table.ColumnHeader>
-                <Table.ColumnHeader>작성일자</Table.ColumnHeader>
-                <Table.ColumnHeader>낚시종류</Table.ColumnHeader>
-                <Table.ColumnHeader>게시글 삭제</Table.ColumnHeader>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {boardList.length > 0 ? (
-                boardList.map((board) => (
-                  <Table.Row
-                    onClick={() => handleContentClick(board.number)}
-                    key={board.number}
-                  >
-                    <Table.Cell>{board.number}</Table.Cell>
-                    <Table.Cell>{board.title}</Table.Cell>
-                    <Table.Cell>{board.writer}</Table.Cell>
-                    <Table.Cell>{board.date}</Table.Cell>
-                    <Table.Cell>{board.site}</Table.Cell>
-                    <Table.Cell>
-                      <CloseButton
-                        colorPalette="red"
-                        size="sm"
-                        variant={"solid"}
-                        onClick={(e) => {
-                          e.stopPropagation(); // 클릭 이벤트 전파 방지
-                          if (
-                            window.confirm(
-                              `"${board.number}" 게시물을 삭제하시겠습니까?`,
-                            )
-                          ) {
-                            handleBoardDeleteClick(board.number); // `member.id`를 전달
-                          }
-                        }}
-                      ></CloseButton>
+              </Table.Header>
+              <Table.Body>
+                {boardList.length > 0 ? (
+                  boardList.map((board) => (
+                    <Table.Row
+                      onClick={() => handleContentClick(board.number)}
+                      key={board.number}
+                    >
+                      <Table.Cell>{board.number}</Table.Cell>
+                      <Table.Cell>{board.title}</Table.Cell>
+                      <Table.Cell>{board.writer}</Table.Cell>
+                      <Table.Cell>{board.date}</Table.Cell>
+                      <Table.Cell>{board.site}</Table.Cell>
+                      <Table.Cell>
+                        <CloseButton
+                          colorPalette="red"
+                          size="sm"
+                          variant={"solid"}
+                          onClick={(e) => {
+                            e.stopPropagation(); // 클릭 이벤트 전파 방지
+                            if (
+                              window.confirm(
+                                `"${board.number}" 게시물을 삭제하시겠습니까?`,
+                              )
+                            ) {
+                              handleBoardDeleteClick(board.number); // `member.id`를 전달
+                            }
+                          }}
+                        ></CloseButton>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))
+                ) : (
+                  <Table.Row>
+                    <Table.Cell colSpan={5} style={{ textAlign: "center" }}>
+                      <p>게시글이 등록되지 않았습니다.</p>
                     </Table.Cell>
                   </Table.Row>
-                ))
-              ) : (
-                <Table.Row>
-                  <Table.Cell colSpan={5} style={{ textAlign: "center" }}>
-                    <p>게시글이 등록되지 않았습니다.</p>
-                  </Table.Cell>
-                </Table.Row>
-              )}
-            </Table.Body>
-          </TableRoot>
-        </Box>
+                )}
+              </Table.Body>
+            </TableRoot>
+          </Box>
+        </Flex>
       </Flex>
-    </Flex>
+    </Center>
   );
 }
