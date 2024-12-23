@@ -12,7 +12,7 @@ export function CommentInput({ boardId, onSaveClick }) {
   const handleSave = () => {
     if (window.confirm("댓글을 저장하시겠습니까?")) {
       if (!boardId) {
-        console.error("Cannot save comment: boardId is undefined."); // 디버깅 추가
+        console.error("Cannot save comment: boardId is undefined.");
         return;
       }
 
@@ -21,6 +21,7 @@ export function CommentInput({ boardId, onSaveClick }) {
         setComment("");
         setChartLabel("");
         setChartValue("");
+        window.location.reload(); // 댓글 저장 후 페이지 새로 고침
       } else {
         alert("댓글을 입력하세요.");
       }
