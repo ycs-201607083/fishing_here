@@ -1,9 +1,9 @@
 package com.example.backend.controller.comment;
 
-import com.example.backend.dto.comment.QuestionComment;
-import com.example.backend.dto.comment.QuestionReComment;
 import com.example.backend.dto.chart.ChartData;
 import com.example.backend.dto.comment.Comment;
+import com.example.backend.dto.comment.QuestionComment;
+import com.example.backend.dto.comment.QuestionReComment;
 import com.example.backend.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -141,9 +141,16 @@ public class CommentController {
 
     @DeleteMapping("remove/{id}")
     @PreAuthorize("isAuthenticated()")
-    public void remove(@PathVariable Integer id, Authentication auth) {
-        if (service.hasAccess(id, auth)) {
+    public ResponseEntity<Map<String, Object>> remove(@PathVariable Integer id, Authentication auth) {
+        if (service.hasAccess(id, auth)) { // 댓글 작성자 확인 로직
             service.remove(id);
+            return ResponseEntity.ok(Map.of("message",
+                    Map.of("type", "success",
+                            "text", "댓글이 삭제되었습니다.")));
+        } else {
+            return ResponseEntity.status(403).body(Map.of("message",
+                    Map.of("type", "error",
+                            "text", "권한이 없습니다."))); // 권한 없는 경우 에러 반환
         }
     }
 

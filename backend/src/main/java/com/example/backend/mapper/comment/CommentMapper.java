@@ -36,7 +36,7 @@ public interface CommentMapper {
             WHERE id = #{id}
             """)
     int updateComment(@Param("id") Integer id, @Param("comment") String comment);
-    
+
 
     @Delete("""
                 DELETE FROM comment
@@ -46,9 +46,8 @@ public interface CommentMapper {
 
 
     @Delete("""
-                DELETE FROM board
-                WHERE board_number = #{id}
+                DELETE FROM comment
+                WHERE id = #{id}
             """)
-    int deleteBoardById(Integer id);
-
+    int deleteCommentById(Integer id);
 }

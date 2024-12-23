@@ -141,6 +141,9 @@ public class BoardService {
     }
 
     public boolean remove(int number) {
+        //댓글 지우기
+        mapper.deleteCommentsByBoardId(number);
+
         //첨부파일, 실제파일(s3) 지우기
         List<String> fileName = mapper.selectFilesByBoardId(number);
         Board board = mapper.selectById(number);

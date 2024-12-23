@@ -33,6 +33,13 @@ import { ToggleTip } from "../../components/ui/toggle-tip";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { CommentContainer } from "../../components/comment/CommentContainer.jsx";
 
+// 차트 임포트
+import { Doughnut } from "react-chartjs-2";
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
+
+// 차트에 필요한 요소를 등록.
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 function ImageFileView({ files }) {
   const [selectedImage, setSelectedImage] = useState(null); // 클릭된 이미지 상태 관리
 
@@ -90,7 +97,7 @@ function ImageFileView({ files }) {
   );
 }
 
-/* 차트 설정 */
+/*---------------- 차트 설정 -------------------*/
 function ChartView({ chartData }) {
   const data = {
     labels: chartData.labels,
@@ -102,7 +109,7 @@ function ChartView({ chartData }) {
       },
     ],
   };
-  return;
+  return <Doughnut data={data} />;
 }
 
 export function BoardView() {
@@ -126,7 +133,6 @@ export function BoardView() {
       .then((res) => res.data)
       .then((data) => setLike(data));
   }, []);
-  const [chartData, setChartData] = useState({ labels: [], values: [] }); // 차트 데이터 추가
 
   useEffect(() => {
     // 조회수 증가 요청

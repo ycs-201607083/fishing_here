@@ -51,7 +51,7 @@ export function BoardList() {
   // 좋아요 탑 3개 받기
   const [likeTopBoards, setLikeTopBoards] = useState([]);
   // like 횟수
-  const [likeCount, setLikeCount] = useState();
+  const [likeCount, setLikeCount] = useState([]);
 
   const [searchPage, setSearchPage] = useSearchParams();
   const [count, setCount] = useState(0);
@@ -361,7 +361,9 @@ export function BoardList() {
                         </Text>
 
                         <Text fontSize="sm" color="gray.500">
-                          Like: {board.likeCount}
+                          Like:
+                          {likeCount.find((l) => l.number === board.number)
+                            ?.likeCount || 0}
                         </Text>
                       </HStack>
                       <Card.Title
@@ -518,6 +520,20 @@ export function BoardList() {
                   width: "10%",
                 }}
               >
+                좋아요
+              </Table.ColumnHeader>
+              <Table.ColumnHeader
+                style={{
+                  padding: "8px",
+                  backgroundColor: "#0288d1",
+                  color: "white",
+                  border: "1px solid #ddd",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  borderRadius: "4px",
+                  width: "10%",
+                }}
+              >
                 작성일시
               </Table.ColumnHeader>
             </Table.Row>
@@ -578,6 +594,16 @@ export function BoardList() {
                 >
                   {board.viewCount}
                 </Table.Cell>
+
+                <Table.Cell
+                  style={{
+                    padding: "8px",
+                    textAlign: "center",
+                  }}
+                >
+                  {board.likeCount}
+                </Table.Cell>
+
                 <Table.Cell
                   style={{
                     padding: "8px",
