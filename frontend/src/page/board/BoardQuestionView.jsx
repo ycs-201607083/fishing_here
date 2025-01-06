@@ -27,7 +27,7 @@ export function BoardQuestionView() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/board/questionView/${id}`).then((res) => {
+    axios.get(`/api/ques/questionView/${id}`).then((res) => {
       setQuestion(res.data);
     });
   }, []);
@@ -42,7 +42,7 @@ export function BoardQuestionView() {
 
   const handleDelClick = () => {
     axios
-      .delete(`/api/board/deleteQues/${question.id}`)
+      .delete(`/api/ques/deleteQues/${question.id}`)
       .then((res) => res.data)
       .then((data) => {
         const message = data.message;

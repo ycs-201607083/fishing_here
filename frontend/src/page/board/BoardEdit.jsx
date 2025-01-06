@@ -42,11 +42,6 @@ import {
 } from "../../components/ui/native-select.jsx";
 
 function ImageView({ files, onRemoveSwitchClick }) {
-  const handleImageClick = (src) => {
-    setSelectedImage(src); // 클릭한 이미지 설정
-    onBig();
-  };
-
   return (
     <HStack>
       {files.map((file) => (
@@ -107,7 +102,7 @@ export function BoardEdit() {
     setProgress(true);
 
     axios
-      .putForm(`/api/board/update`, {
+      .putForm(`/api/ann/update`, {
         number: board.number,
         title: board.title,
         content: board.content,
@@ -210,15 +205,6 @@ export function BoardEdit() {
     console.log(checked);
     setCheckedSwitch(checked);
   };
-
-  console.log(
-    "수정된 주소 = ",
-    address,
-    "수정된 경도 = ",
-    lat,
-    "수정된 위도 = ",
-    lng,
-  );
 
   return (
     <Box

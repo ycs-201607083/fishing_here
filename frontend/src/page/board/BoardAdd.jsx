@@ -123,8 +123,6 @@ export function BoardAdd() {
       });
   };
 
-  console.log("files", files);
-
   // files 의 파일명을 component 리스트로 만들기
   const filesList = [];
   let sumOfFileSize = 0;

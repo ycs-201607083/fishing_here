@@ -1,3 +1,4 @@
+/*
 package com.example.backend.controller.kakao;
 
 import com.example.backend.service.kakao.KakaoService;
@@ -59,4 +60,4 @@ public class KakaoController {
             return ResponseEntity.ok(Map.of("kakaoToken", accessToken, "message", "회원가입 필요"));
         }
     }
-}
+}*/

@@ -26,7 +26,7 @@ export function BoardAnnouncementView() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/board/viewAnn/${id}`).then((res) => setAnnView(res.data));
+    axios.get(`/api/ann/viewAnn/${id}`).then((res) => setAnnView(res.data));
   }, []);
 
   if (annView === null) {
@@ -34,12 +34,12 @@ export function BoardAnnouncementView() {
   }
 
   const handleClickPrev = () => {
-    navigate("/board/announcement");
+    navigate("/ann/announcement");
   };
 
   const handleDelClick = () => {
     axios
-      .delete(`/api/board/deleteAnn/${annView.id}`)
+      .delete(`/api/ann/deleteAnn/${annView.id}`)
       .then((res) => res.data)
       .then((data) => {
         const message = data.message;
@@ -47,7 +47,7 @@ export function BoardAnnouncementView() {
           type: message.type,
           description: message.text,
         });
-        navigate("/board/announcement");
+        navigate("/ann/announcement");
       })
       .catch((e) => {
         const message = e.data.message;
@@ -85,7 +85,7 @@ export function BoardAnnouncementView() {
           <Button
             colorPalette={"blue"}
             variant={"ghost"}
-            onClick={() => navigate(`/board/editAnn/${annView.id}`)}
+            onClick={() => navigate(`/ann/editAnn/${annView.id}`)}
           >
             <Text fontSize={"18px"} fontWeight={"bold"}>
               수정

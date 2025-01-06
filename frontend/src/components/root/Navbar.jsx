@@ -98,7 +98,7 @@ export function Navbar() {
         w="100%"
       >
         <Flex gap={10} mx={"auto"}>
-          <NavItem onClick={() => navigate("/board/announcement")}>
+          <NavItem onClick={() => navigate("/ann/announcement")}>
             <TextItem>공지사항</TextItem>
           </NavItem>
           <NavItem onClick={() => navigate("/board/map")}>

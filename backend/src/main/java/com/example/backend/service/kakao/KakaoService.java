@@ -1,3 +1,4 @@
+/*
 package com.example.backend.service.kakao;
 
 import com.example.backend.dto.kakao.KakaoMember;
@@ -169,3 +170,4 @@ public class KakaoService {
 //                .compact();
 //    }
 }
+*/

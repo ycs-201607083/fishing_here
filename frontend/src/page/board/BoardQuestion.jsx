@@ -25,7 +25,7 @@ export function BoardQuestion() {
     // CleanUp : 이전 페이지 요청 취소하고 현재 페이지로 다시 업데이트
     const controller = new AbortController();
     axios
-      .get("/api/board/question", {
+      .get("/api/ques/question", {
         params: searchParams,
         signal: controller.signal,
       })
@@ -41,7 +41,7 @@ export function BoardQuestion() {
   }, [searchParams]);
 
   const handleWriteContent = () => {
-    navigate("/board/questionAdd");
+    navigate("/ques/questionAdd");
   };
 
   function handlePageChange(e) {
@@ -52,7 +52,7 @@ export function BoardQuestion() {
   }
 
   function handleRowClick(id) {
-    navigate(`/board/questionView/${id}`);
+    navigate(`/ques/questionView/${id}`);
   }
 
   return (

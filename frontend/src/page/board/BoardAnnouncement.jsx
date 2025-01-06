@@ -26,7 +26,7 @@ export function BoardAnnouncement() {
     // CleanUp : 이전 페이지 요청 취소하고 현재 페이지로 다시 업데이트
     const controller = new AbortController();
     axios
-      .get("/api/board/announcement", {
+      .get("/api/ann/announcement", {
         params: searchParams,
         signal: controller.signal,
       })
@@ -49,11 +49,11 @@ export function BoardAnnouncement() {
   }
 
   const handleWriteContent = () => {
-    navigate("/board/annAdd");
+    navigate("/ann/annAdd");
   };
 
   function handleRowClick(id) {
-    navigate(`/board/viewAnn/${id}`);
+    navigate(`/ann/viewAnn/${id}`);
   }
 
   return (

@@ -25,14 +25,14 @@ export function BoardAnnouncementAdd() {
     setProgress(true);
 
     axios
-      .postForm("/api/board/annAdd", { title, content, files })
+      .postForm("/api/ann/annAdd", { title, content, files })
       .then((res) => res.data)
       .then((data) => {
         const message = data.message;
         const id = data.data.id;
         console.log(id);
         toaster.create({ type: message.type, description: message.text });
-        navigate(`/board/viewAnn/${id}`);
+        navigate(`/ann/viewAnn/${id}`);
       })
       .catch((e) => {
         console.log(e);

@@ -43,7 +43,7 @@ export function BoardQuestionEdit() {
 
   useEffect(() => {
     axios
-      .get(`/api/board/questionView/${id}`)
+      .get(`/api/ques/questionView/${id}`)
       .then((res) => {
         setQuestion(res.data);
       })
@@ -56,7 +56,7 @@ export function BoardQuestionEdit() {
   const handleSaveClick = () => {
     setProgress(true);
     axios
-      .putForm("/api/board/updateQuestion", {
+      .putForm("/api/ques/updateQuestion", {
         id: question.id,
         title: question.title,
         content: question.content,
@@ -70,7 +70,7 @@ export function BoardQuestionEdit() {
           type: message.type,
           description: message.text,
         });
-        navigate(`/board/questionView/${id}`);
+        navigate(`/ques/questionView/${id}`);
       })
       .catch((e) => {
         const message = e.data.message;
@@ -187,7 +187,7 @@ export function BoardQuestionEdit() {
         <Box pb={5}>{fileList}</Box>
       </Stack>
       <Flex pb={5}>
-        <Button onClick={() => navigate(`/board/viewAnn/${id}`)}>
+        <Button onClick={() => navigate(`/ann/viewAnn/${id}`)}>
           <FaArrowLeft />
         </Button>
         <Spacer />

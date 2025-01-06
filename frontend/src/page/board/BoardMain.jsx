@@ -105,7 +105,7 @@ export function BoardMain() {
   };
 
   const handleClick = (id) => {
-    navigate(`/board/viewAnn/${id}`);
+    navigate(`/ann/viewAnn/${id}`);
   };
 
   // 날씨 초기화

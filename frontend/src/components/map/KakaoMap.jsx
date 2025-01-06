@@ -208,6 +208,8 @@ export function KakaoMap() {
     });
   };
 
+  console.log("map = ", map);
+
   const handlePlaceClick = (place, index) => {
     const targetPosition = new kakao.maps.LatLng(
       place.lat || place.y,

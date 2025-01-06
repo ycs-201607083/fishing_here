@@ -1,6 +1,9 @@
 package com.example.backend.mapper.board;
 
-import com.example.backend.dto.board.*;
+import com.example.backend.dto.board.Announcement;
+import com.example.backend.dto.board.Board;
+import com.example.backend.dto.board.FishingAddress;
+import com.example.backend.dto.board.KakaoMapAddress;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -213,7 +216,7 @@ public interface BoardMapper {
     int deleteById(int number);
 
 
-    @Select("""
+  /*  @Select("""
             SELECT *
             FROM question
             ORDER BY id DESC
@@ -267,7 +270,7 @@ public interface BoardMapper {
             FROM ann_file
             WHERE id= #{id}
             """)
-    List<String> selectFilesByAnnId(int id);
+    List<String> selectFilesByAnnId(int id);*/
 
     @Select("""
             SELECT name
@@ -277,7 +280,7 @@ public interface BoardMapper {
             """)
     List<String> selectFilesByAnnIdBanner(Integer id);
 
-    @Delete("""
+ /*   @Delete("""
             DELETE FROM ann_file
             WHERE id = #{id}
             AND name=#{name}
@@ -302,7 +305,7 @@ public interface BoardMapper {
             DELETE FROM announcement
             WHERE id =#{id}
             """)
-    int deleteByAnnId(int id);
+    int deleteByAnnId(int id);*/
 
     @Select("""
             SELECT id, title
@@ -408,7 +411,7 @@ public interface BoardMapper {
     int deleteLikeByBoardIdAndMemberId(Integer number, String name);
 
 
-    @Insert("""
+   /* @Insert("""
             INSERT INTO question
             (title,content,writer)
             VALUES(#{title},#{content},#{writer})
@@ -461,7 +464,7 @@ public interface BoardMapper {
             DELETE FROM question
             WHERE id =#{id}
             """)
-    int deleteByQuesId(int id);
+    int deleteByQuesId(int id);*/
 
     @Delete("""
                 DELETE FROM comment

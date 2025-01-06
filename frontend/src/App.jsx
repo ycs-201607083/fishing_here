@@ -47,19 +47,19 @@ const router = createBrowserRouter([
         element: <BoardMain />,
       },
       {
-        path: "board/announcement",
+        path: "ann/announcement",
         element: <BoardAnnouncement />,
       },
       {
-        path: "board/annAdd",
+        path: "ann/annAdd",
         element: <BoardAnnouncementAdd />,
       },
       {
-        path: "board/viewAnn/:id",
+        path: "ann/viewAnn/:id",
         element: <BoardAnnouncementView />,
       },
       {
-        path: "board/editAnn/:id",
+        path: "ann/editAnn/:id",
         element: <BoardAnnouncementEdit />,
       },
       {
@@ -119,15 +119,15 @@ const router = createBrowserRouter([
         element: <BoardQuestion />,
       },
       {
-        path: "board/questionAdd",
+        path: "ques/questionAdd",
         element: <BoardQuestionAdd />,
       },
       {
-        path: "board/questionView/:id",
+        path: "ques/questionView/:id",
         element: <BoardQuestionView />,
       },
       {
-        path: "board/questionEdit/:id",
+        path: "ques/questionEdit/:id",
         element: <BoardQuestionEdit />,
       },
     ],

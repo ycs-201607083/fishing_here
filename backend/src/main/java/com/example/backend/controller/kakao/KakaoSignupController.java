@@ -1,3 +1,4 @@
+/*
 package com.example.backend.controller.kakao;
 
 import com.example.backend.dto.kakao.KakaoMember;
@@ -26,3 +27,4 @@ public class KakaoSignupController {
         return null;
     }
 }
+*/

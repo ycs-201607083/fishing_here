@@ -43,7 +43,7 @@ export function BoardAnnouncementEdit() {
 
   useEffect(() => {
     axios
-      .get(`/api/board/viewAnn/${id}`)
+      .get(`/api/ann/viewAnn/${id}`)
       .then((res) => {
         setAnnouncement(res.data);
       })
@@ -53,7 +53,7 @@ export function BoardAnnouncementEdit() {
   const handleSaveClick = () => {
     setProgress(true);
     axios
-      .putForm("/api/board/updateAnn", {
+      .putForm("/api/ann/updateAnn", {
         id: announcement.id,
         title: announcement.title,
         content: announcement.content,
@@ -67,7 +67,7 @@ export function BoardAnnouncementEdit() {
           type: message.type,
           description: message.text,
         });
-        navigate(`/board/viewAnn/${id}`);
+        navigate(`/ann/viewAnn/${id}`);
       })
       .catch((e) => {
         const message = e.data.message;
@@ -185,7 +185,7 @@ export function BoardAnnouncementEdit() {
         <Box pb={5}>{fileList}</Box>
       </Stack>
       <Flex pb={5}>
-        <Button onClick={() => navigate(`/board/viewAnn/${id}`)}>
+        <Button onClick={() => navigate(`/ann/viewAnn/${id}`)}>
           <FaArrowLeft />
         </Button>
         <Spacer />

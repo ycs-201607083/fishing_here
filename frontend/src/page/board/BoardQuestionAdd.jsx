@@ -25,13 +25,13 @@ export function BoardQuestionAdd() {
     setProgress(true);
 
     axios
-      .postForm("/api/board/questionAdd", { title, content, files })
+      .postForm("/api/ques/questionAdd", { title, content, files })
       .then((res) => res.data)
       .then((data) => {
         const message = data.message;
         const id = data.data.id;
         toaster.create({ type: message.type, description: message.text });
-        navigate(`/board/questionView/${id}`);
+        navigate(`/ques/questionView/${id}`);
       })
       .catch((e) => {
         console.log(e);
